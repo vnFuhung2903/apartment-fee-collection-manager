@@ -1,20 +1,23 @@
+require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
 
+//Setup database
+const database = require("./config/database.config.js")
+database.connect();
+
 const app = express();
 app.use(express.json());
+
+const port = process.env.PORT;
 app.use(cors({
     origin: [
         "https://localhost:3000"
     ]
 }))
 
-const PORT = 3180;
-const mongodbPassword = process.env.MONGODB_PASSWORD;
-const uri = `mongodb+srv://vnFuhung2903:${mongodbPassword}@vnfuhung2903.45t0xd8.mongodb.net/it3180`;
 
-app.listen(PORT, async () => {
-    await mongoose.connect(uri);
-    console.log("MongoDb connected");
+app.listen(port, () => {
+   console.log(`App is listening on port ${port}`)
 })
