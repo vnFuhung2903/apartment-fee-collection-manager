@@ -8,4 +8,4 @@ const feeSchema = new mongoose.Schema({
 })
 
 const fee = mongoose.model("fees", feeSchema);
-module.exports(fee);
+module.exports=fee;

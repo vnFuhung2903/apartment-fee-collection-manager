@@ -9,4 +9,4 @@ const householdSchema = new mongoose.Schema({
 })
 
 const household = mongoose.model("households", householdSchema);
-module.exports(household);
+module.exports=household;
