@@ -3,7 +3,8 @@ const person = require("./person");
 
 const householdSchema = new mongoose.Schema({
     owner: String,
-    contact_phone: String,
+    room_id:String,
+    contact_phone: Number,
     apartment_number: Number,
     member: [ person ]
 })

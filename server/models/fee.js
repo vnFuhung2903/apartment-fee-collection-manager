@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const feeSchema = new mongoose.Schema({
     name: String,
     amount: Number,
-    due: Date | null,
+    due: Date ,
     status: String
 })
 

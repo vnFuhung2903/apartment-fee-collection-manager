@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const controller = require("../controllers/payment.controller.js");
+const controller = require("../controllers/fee.controller.js");
 router.get("/", controller.index);
-router.get("/detail/household/:id",controller.detail);
+// router.get("/fee/household/:id",controller.checkFee);
 module.exports = router;
