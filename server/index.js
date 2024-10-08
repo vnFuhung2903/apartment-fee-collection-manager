@@ -1,21 +1,24 @@
+require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
-const mongoose = require('mongoose');
-const dotenv = require('dotenv');
-dotenv.config();
 
+//Setup database
+const database = require("./config/database.config.js")
+database.connect();
+
+const routeApi = require("./routes/index.route.js");
 const app = express();
 app.use(express.json());
+
+const port = process.env.PORT;
 app.use(cors({
     origin: [
         "https://localhost:3000"
     ]
 }))
 
-const PORT = 3180;
-const uri = process.env.MONGODB_URI;
+routeApi(app);
 
-app.listen(PORT, async () => {
-    await mongoose.connect(uri);
-    console.log("MongoDb connected");
+app.listen(port, () => {
+   console.log(`App is listening on port ${port}`)
 })

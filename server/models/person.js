@@ -4,9 +4,16 @@ const personSchema = new mongoose.Schema({
     name: String,
     gender: String,
     dob: Date,
+    gender: String,
     relation_to_owner: String,
-    status: String
+    temporary_absence: Boolean,
+    temporary_residence: Boolean,
+    religion: String,
+    nation: String,
+    nation_id: Number,
+    movingIn: Date,
+    contact_phone: Number
 })
 
 const person = mongoose.model("persons", personSchema);
-module.exports(person);
+module.exports=person;
