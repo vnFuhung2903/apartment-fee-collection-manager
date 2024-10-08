@@ -1,11 +1,10 @@
 const mongoose = require("mongoose");
-const person = require("./person");
 
 const householdSchema = new mongoose.Schema({
-    owner: String,
+    head: Schema.Types.ObjectId,
     contact_phone: String,
     apartment_number: Number,
-    member: [ person ]
+    member: [ Schema.Types.ObjectId ]
 })
 
 const household = mongoose.model("households", householdSchema);

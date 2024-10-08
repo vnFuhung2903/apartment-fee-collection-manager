@@ -1,6 +1,8 @@
 const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
+const dotenv = require('dotenv');
+dotenv.config();
 
 const app = express();
 app.use(express.json());
@@ -11,8 +13,7 @@ app.use(cors({
 }))
 
 const PORT = 3180;
-const mongodbPassword = process.env.MONGODB_PASSWORD;
-const uri = `mongodb+srv://vnFuhung2903:${mongodbPassword}@vnfuhung2903.45t0xd8.mongodb.net/it3180`;
+const uri = process.env.MONGODB_URI;
 
 app.listen(PORT, async () => {
     await mongoose.connect(uri);
