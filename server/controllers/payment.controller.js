@@ -1,5 +1,5 @@
 const Payment = require("../models/payment.js");
-
+const mongoose = require("mongoose");
 //[GET] payments/api/v1/payments
 module.exports.index = async (req, res) => {
   try {
@@ -16,7 +16,7 @@ module.exports.index = async (req, res) => {
       sort[req.query.sortKey] = req.query.sortValue;
     }
     //End Sort
-    const payments = await Payment.find(find);
+    const payments = await Payment.find(find).sort(sort);
     if (!payments) {
       return res.status(404).json({ message: "Not Found" });
     } else {
@@ -24,5 +24,26 @@ module.exports.index = async (req, res) => {
     }
   } catch (error) {
     res.status(500).json({ message: "Server Error" });
+  }
+};
+
+//[POST] /payments/api/v1/post
+module.exports.addPayment = async (req, res) => {
+  try {
+    const { fee_id, household_id, amount, payment_date } = req.body;
+
+    const payment = new Payment({
+      fee_id: fee_id,
+      household_id: household_id,
+      amount,
+      payment_date,
+    });
+
+    await payment.save();
+
+    res.status(201).json(payment);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error creating payment", error });
   }
 };
