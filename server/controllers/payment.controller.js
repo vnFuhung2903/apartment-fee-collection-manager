@@ -1,28 +1,26 @@
 const Payment = require("../models/payment.js");
 
-//[GET] /payments
+//[GET] api/v1/payments
 module.exports.index = async (req,res) => {
-    const payments = await Payment.find();
-    res.json(payments);
-}
-
-// [GET] /payments/detail/household/:id
-module.exports.detail = async (req, res) => {
-    try {
-      const household_id = req.params.id;
-    //   console.log(household_id);
-      const payment = await Payment.findOne({
-        household_id: household_id
-      });
-      
-      if (!payment) {
+  try{
+    const find = {};
+    if(req.query.fee_id){
+      find.fee_id = req.query.fee_id;
+    }
+    if(req.query.household_id){
+      find.household_id = req.query.household_id;
+    }
+      const payments = await Payment.find(find);
+      if (!payments) {
         return res.status(404).json({ message: "Not Found" });
       }
-      
-      res.json(payment);
-    } catch (error) {
-      console.error('Error:', error);
-      res.status(500).json({ message: "Server Error" });
-    }
-  };
+      else {
+        res.json(payments);
+      }
+  } catch (error) {
+    res.status(500).json({ message: "Server Error" });
+  }
+};
+
+
 
