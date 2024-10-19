@@ -46,3 +46,39 @@ module.exports.addPayment = async (req, res) => {
     res.status(500).json({ message: "Error creating payment", error });
   }
 };
+
+//[POST] /payments/api/v1/change
+module.exports.changePayment = async (req,res) => {
+  try {
+    const { fee_id, household_id, amount } = req.body;
+    await Payment.updateOne(
+      {
+        fee_id:fee_id,
+        household_id:household_id
+      },{
+        amount:amount
+      });
+
+    res.status(201).json({message: "Update Amount Success"});
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Change Amount Error", error });
+  }
+};
+
+//[POST] /payments/api/v1/delete
+module.exports.deletePayment = async (req,res) => {
+  try {
+    const { fee_id, household_id } = req.body;
+    await Payment.deleteOne(
+      {
+        fee_id:fee_id,
+        household_id:household_id
+      });
+
+    res.status(201).json({message: "Delete Payment Success"});
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Delete Payment Error", error });
+  }
+};
