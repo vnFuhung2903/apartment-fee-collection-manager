@@ -1,5 +1,4 @@
 const Payment = require("../models/payment.js");
-const mongoose = require("mongoose");
 //[GET] payments/api/v1/payments
 module.exports.index = async (req, res) => {
   try {
