@@ -49,3 +49,53 @@ module.exports.addFee = async (req, res) => {
     res.status(500).json({ message: "Error creating fee", error });
   }
 };
+
+//[POST] /payments/api/v1/change
+module.exports.changeFee = async (req,res) => {
+  try {
+    const { name,amount,due,status,type } = req.body;
+    switch (type) {
+      case "amount":
+        await Payment.updateOne(
+          {
+           name:name
+          },{
+            amount:amount
+          });
+      case "due":
+        await Payment.updateOne(
+          {
+            name:name
+          },{
+            due:due
+          });
+      case "status":
+        await Payment.updateOne(
+          {
+            name:name
+          },{
+            status:status
+          });    
+    }
+    res.status(201).json({message: "Change Success"});
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Change Error", error });
+  }
+};
+
+//[POST] /payments/api/v1/delete
+module.exports.deleteFee = async (req,res) => {
+  try {
+    const { name } = req.body;
+    await Fee.deleteOne(
+      {
+        name:name
+      });
+
+    res.status(201).json({message: "Delete Fee Success"});
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Delete Fee Error", error });
+  }
+};
