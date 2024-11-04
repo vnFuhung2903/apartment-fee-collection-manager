@@ -31,22 +31,30 @@ function SignUp(){
     });
   }
 
+  const findAccount = data.find(item => item.email === account.email);
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    fetch("http://localhost:3002/accounts", {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-type": "application/json"
-      },
-      body: JSON.stringify(account)
-    })
-      .then(res => res.json())
-      .then(data => {
-        if (data){
-          navigate("/dashboard");
-        }
+    if (findAccount){
+      alert("Tài khoản đã tồn tại");
+      navigate("/login");
+    }
+    else{
+      fetch("http://localhost:3002/accounts", {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-type": "application/json"
+        },
+        body: JSON.stringify(account)
       })
+        .then(res => res.json())
+        .then(account => {
+          if (account){
+            navigate("/dashboard");
+          }
+        })
+    }
   }
   return (
     <>
