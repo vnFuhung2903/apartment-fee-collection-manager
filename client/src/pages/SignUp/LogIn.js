@@ -1,6 +1,6 @@
-import "../../components/asset/fonts/material-icon/css/material-design-iconic-font.min.css"
-import "../../components/asset/css/style.css"
-import signInImg from "../../components/asset/images/signin-image.jpg"
+import "./asset/fonts/material-icon/css/material-design-iconic-font.min.css"
+import "./asset/css/style.css"
+import signInImg from "./asset/images/signin-image.jpg"
 import { useState, useEffect } from "react"
 import { Link, useNavigate } from "react-router-dom";
 

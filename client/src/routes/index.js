@@ -1,6 +1,8 @@
 import DashBoard from "../pages/DashBoard";
-import LogIn from "../pages/LogIn";
-import SignUp from "../pages/SignUp";
+import LayoutDefault from "../pages/Layout/LayoutDefault";
+import LogIn from "../pages/SignUp/LogIn";
+import SignUp from "../pages/SignUp/SignUp";
+import Stats from "../pages/Stats";
 
 export const routes = [
   {
@@ -12,7 +14,17 @@ export const routes = [
     element: <LogIn/>
   },
   {
-    path: "dashboard",
-    element: <DashBoard/>
+    path: "/",
+    element: <LayoutDefault/>,
+    children: [
+      {
+        path: "dashboard",
+        element: <DashBoard/>
+      },
+      {
+        path: "stats",
+        element: <Stats/>
+      }
+    ]
   }
 ]

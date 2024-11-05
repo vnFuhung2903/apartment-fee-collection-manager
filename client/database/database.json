@@ -54,5 +54,25 @@
       "email": "ethan.martinez@x.dummyjson.com",
       "pass": "ethanmpass"
     }
+  ],
+  "customer_costs":[
+    {
+      "id" : 1,
+      "name": "Michael William",
+      "total": 100,
+      "payed": 100
+    }, 
+    {
+      "id" : 2,
+      "name": "Alexander Jones",
+      "total": 123,
+      "payed": 60
+    },
+    {
+      "id" : 3,
+      "name": "Ava Taylor",
+      "total": 150,
+      "payed": 43
+    }
   ]
 }
