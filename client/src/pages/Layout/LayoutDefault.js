@@ -21,7 +21,7 @@ function LayoutDefault(){
                 </li>
 
                 <li>
-                    <Link to="/">
+                    <Link to="dashboard">
                         <span class="icon">
                             <ion-icon name="home-outline"></ion-icon>
                         </span>
