@@ -327,49 +327,21 @@ MEDIA QUERY PHONE
 ************************/
 
 @media screen and (max-width:768px) {
-  .container{
+  .container__header{
+    width: 100%;
+    grid-template-columns: repeat(1,1fr);
+  }
+
+  .container__body{
     width: 100%;
     grid-template-columns: repeat(1,1fr);
   
-  }
-  
-  aside{
-    position: fixed;
-    width: 18rem;
-    z-index: 3;
-    height: 100vh;
-    background-color: var(--clr-white);
-    display: none;
-    left: -110px;
-    animation:  menuLeft .3s ease forwards;
   }
   
   @keyframes menuLeft {
       to{
         left: 0;
       }
-  }
-  
-
-
-
-  aside .logo h2{
-       display: inline;
-  }
-  aside .sidebar h3{
-    display: inline;
-  }
-  aside .sidebar a{
-    width: 100%;
-    height: 3.4rem;
-  }
-  aside .top div.close  span{
-     display: inline;
-     position: absolute;
-     right: 0;
-     margin-right:30px;
-     font-size: 35px;
-     cursor: pointer;
   }
 
     .right .top{
@@ -400,31 +372,6 @@ MEDIA QUERY PHONE
   margin: 0 auto;
  }
 
-
-
-  .right .profile{
-    position: absolute;
-    left: 70%;
-  }
-
-  .right .top .theme-toggler{
-    width: 4.4rem;
-    position: absolute;
-    left: 50%;
-  }
-   .right .profile .info{
-    display: none;
-   }
-
-   .right .top button{
-     display: inline-block;
-     background: transparent;
-     cursor: pointer;
-     color: var(--clr-dark);
-     position: absolute;
-     left: 1rem;
-
-   }
    .right .recent_order{
     padding: 0 30px;
    }

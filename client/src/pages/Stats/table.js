@@ -1,16 +1,20 @@
 import "./stats.scss"
 import { useState, useEffect } from 'react'
+import { Link } from "react-router-dom";
 
 function Table(){
   const [data, setData] = useState([]);
+  const [showAll, setShowAll] = useState(false);
+  const [visibleData, setVisibleData] = useState([]);
 
   useEffect(() => {
     fetch("http://localhost:3002/customer_costs")
       .then(res => res.json())
       .then(data => {
         setData(data);
+        setVisibleData(showAll == false ? data.slice(0, 2) : data);
       })
-  }, [])
+  }, [showAll])
   return (
     <>
       <div class="container__body">
@@ -27,26 +31,22 @@ function Table(){
                     </tr>
                   </thead>
                     <tbody>
-                      {/* <tr>
-                        <td>Mini USB</td>
-                        <td>4563</td>
-                        <td>Due</td>
-                        <td class="warning">Pending</td>
-                        <td class="primary">Details</td>
-                      </tr> */}
                       {
-                        data.map(item => (
+                        visibleData.map(item => (
                           <tr>
                             <td>{item.name}</td>
                             <td>{item.total}</td>
                             <td>{item.payed}</td>
                             <td>{Math.floor((item.payed / item.total) * 100)}%</td>
+                            <td>
+                              <Link to="*" class="primary">Chi tiết</Link>
+                            </td>
                           </tr>
                         ))
                       }
                     </tbody>
               </table>
-              <a href="#">Show All</a>
+              <a href="#" onClick={() => setShowAll(!showAll)}>Show All</a>
             </div>
         </main>
         </div>

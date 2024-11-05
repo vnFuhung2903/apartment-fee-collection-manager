@@ -37,7 +37,7 @@ function Chart(){
               <span class="material-symbols-sharp">trending_up</span>
               <div class="middle">
                 <div class="left">
-                  <h3>Số hộ đã nộp</h3>
+                  <h3>Số hộ đã nộp đủ</h3>
                   <h1>{payFull}/{data.length}</h1>
                 </div>
                 <div class="progress">
@@ -87,7 +87,7 @@ function Chart(){
             <img src={profile} alt=""/>
          </div>
         <div class="message">
-           <p><b>Babar</b> Recived his order of USB</p>
+           <p><b>Babar</b> Đã đóng $38 tiền nhà</p>
         </div>
       </div>
       <div class="update">
@@ -95,7 +95,7 @@ function Chart(){
         <img src={profile} alt=""/>
         </div>
        <div class="message">
-          <p><b>Ali</b> Recived his order of USB</p>
+          <p><b>Ali</b> Đã đóng $39 phí thu xe </p>
        </div>
      </div>
      <div class="update">
@@ -103,7 +103,7 @@ function Chart(){
          <img src={profile} alt=""/>
       </div>
      <div class="message">
-        <p><b>Ramzan</b> Recived his order of USB</p>
+        <p><b>Ramzan</b> Đã đóng $40 phí thu xe</p>
      </div>
    </div>
   </div>

@@ -12,12 +12,12 @@ function LayoutDefault(){
             <div className="layout-default__sidebar--navigation">
               <ul>
               <li>
-                    <a href="#">
+                    <Link to="dashboard">
                         <span class="icon">
                             <ion-icon name="business-sharp"></ion-icon>
                         </span>
                         <span class="title">BLUEMOON</span>
-                    </a>
+                    </Link>
                 </li>
 
                 <li>
@@ -39,21 +39,21 @@ function LayoutDefault(){
                 </li>
 
                 <li>
-                    <Link to="stats">
+                    <Link to="*">
                         <span class="icon">
                             <ion-icon name="chatbubble-outline"></ion-icon>
                         </span>
-                        <span class="title">Thống kê</span>
+                        <span class="title">Quản lý thu phí chung cư</span>
                     </Link>
                 </li>
 
                 <li>
-                    <a href="#">
+                    <Link to="stats">
                         <span class="icon">
-                            <ion-icon name="help-outline"></ion-icon>
+                            <ion-icon name="stats-chart-outline"></ion-icon>
                         </span>
-                        <span class="title">Help</span>
-                    </a>
+                        <span class="title">Thống kê</span>
+                    </Link>
                 </li>
 
                 <li>
