@@ -20,9 +20,17 @@ toggle.onclick = function () {
   main.classList.toggle("active");
 };
 
-// Xử lý sự kiện nút "Xem"
+//thêm sự kiện thanh điều hướng và nút xem
+// Toggle navigation bar
+document.querySelector('.toggle').onclick = function() {
+  document.querySelector('.navigation').classList.toggle('active');
+  document.querySelector('.main').classList.toggle('active');
+}
+
+// Dummy function for "Xem" buttons
 document.querySelectorAll('.btn-details').forEach(button => {
   button.onclick = function() {
-      window.location.href = 'page2_fee.html';
+      window.location.href="page2_fee.html";
   }
 });
+
