@@ -19,3 +19,21 @@ toggle.onclick = function () {
   navigation.classList.toggle("active");
   main.classList.toggle("active");
 };
+
+//register
+const form = document.querySelector("form");
+        submitBtn = form.querySelector(".submitBtn");
+        allInput = form.querySelectorAll("form input")
+
+submitBtn.addEventListener("click", ()=>{
+  allInput.forEach(input => {
+    if( input.value != "")
+    {
+      form.classList.add('secActive');
+    }
+    else
+    {
+      form.classList.remove('secActive');
+    }
+  })
+})

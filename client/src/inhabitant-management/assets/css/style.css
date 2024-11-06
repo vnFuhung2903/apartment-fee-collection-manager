@@ -268,13 +268,7 @@ body {
   grid-gap: 30px;
   /* margin-top: 10px; */
 }
-.details.page2 {
-  position: relative;
-  width: 100%;
-  padding: 20px;
-  display: block;
-  /* margin-top: 10px; */
-}
+
 
 .details .recentCt {
   position: relative;
@@ -286,7 +280,7 @@ body {
   border-radius: 20px;
 }
 
-.details.page2 .recentCt {
+.details .recentCt.page2 {
   position: relative;
   display: grid;
   min-height: 500px;
@@ -295,6 +289,7 @@ body {
   box-shadow: 0 7px 25px rgba(0, 0, 0, 0.08);
   border-radius: 20px;
   width: 100%;
+  grid-column: span 2;
 }
 
 .details .cardHeader {
@@ -400,6 +395,27 @@ body {
   color: var(--white);
 }
 
+/*===================== Button =====================================*/
+ button.submitBtn{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 45px;
+  max-width: 200px;
+  width: 100px;
+  border: none;
+  outline: none;
+  color: #fff;
+  border-radius: 5px;
+  margin: 25px 0;
+  background-color: #2a2185;
+  transition: all 0.3s linear;
+  cursor: pointer;
+ }
+
+ button.submitBtn:hover{
+  background-color: #2a21c1;
+ }
 /* ====================== Responsive Design ========================== */
 @media (max-width: 991px) {
   .navigation {
