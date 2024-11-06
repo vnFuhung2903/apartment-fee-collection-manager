@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chi Tiết Khoản Phí - BlueMoon</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+</head>
+<body>
+    <div class="container">
+        <!-- Thanh điều hướng -->
+        <div class="navigation">
+            <ul>
+                <li>
+                    <a href="dashboard.html">
+                        <span class="icon"><ion-icon name="business-sharp"></ion-icon></span>
+                        <span class="title">BLUEMOON</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="dashboard.html">
+                        <span class="icon"><ion-icon name="home-outline"></ion-icon></span>
+                        <span class="title">Dashboard</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="fee_management.html">
+                        <span class="icon"><ion-icon name="cash-outline"></ion-icon></span>
+                        <span class="title">Quản lý thu phí</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#">
+                        <span class="icon"><ion-icon name="log-out-outline"></ion-icon></span>
+                        <span class="title">Sign Out</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Nội dung chính -->
+        <div class="main">
+            <div class="topbar">
+                <div class="toggle"><ion-icon name="menu-outline"></ion-icon></div>
+                <div class="search">
+                    <label>
+                        <input type="text" placeholder="Tìm kiếm chi tiết...">
+                        <ion-icon name="search-outline"></ion-icon>
+                    </label>
+                </div>
+                <div class="user"><img src="assets/imgs/customer01.jpg" alt="User Image"></div>
+            </div>
+
+            <!-- Bảng chi tiết khoản phí -->
+            <div class="details">
+                <div class="recentCt">
+                    <div class="cardHeader">
+                        <h2>Chi tiết các khoản phí cho Hộ gia đình: Nguyễn Văn A</h2>
+                        <a href="page1_fee.html" class="btn">Quay lại</a>
+                    </div>
+
+                    <table>
+                        <thead>
+                            <tr>
+                                <td>Loại phí</td>
+                                <td>Số tiền</td>
+                                <td>Ngày thu</td>
+                                <td>Trạng thái</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Phí dịch vụ</td>
+                                <td>500,000 VNĐ</td>
+                                <td>01/11/2024</td>
+                                <td><span class="status paid">Đã thanh toán</span></td>
+                            </tr>
+                            <tr>
+                                <td>Phí quản lý</td>
+                                <td>200,000 VNĐ</td>
+                                <td>01/11/2024</td>
+                                <td><span class="status paid">Đã thanh toán</span></td>
+                            </tr>
+                            <tr>
+                                <td>Phí gửi xe máy</td>
+                                <td>70,000 VNĐ</td>
+                                <td>01/11/2024</td>
+                                <td><span class="status unpaid">Chưa thanh toán</span></td>
+                            </tr>
+                            <tr>
+                                <td>Phí gửi ô tô</td>
+                                <td>1,200,000 VNĐ</td>
+                                <td>01/11/2024</td>
+                                <td><span class="status paid">Đã thanh toán</span></td>
+                            </tr>
+                            <tr>
+                                <td>Tiền điện</td>
+                                <td>300,000 VNĐ</td>
+                                <td>01/11/2024</td>
+                                <td><span class="status unpaid">Chưa thanh toán</span></td>
+                            </tr>
+                            <tr>
+                                <td>Tiền nước</td>
+                                <td>150,000 VNĐ</td>
+                                <td>01/11/2024</td>
+                                <td><span class="status unpaid">Chưa thanh toán</span></td>
+                            </tr>
+                            <tr>
+                                <td>Internet</td>
+                                <td>200,000 VNĐ</td>
+                                <td>01/11/2024</td>
+                                <td><span class="status paid">Đã thanh toán</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Ionicons và JavaScript -->
+    <script src="assets/js/main.js"></script>
+</body>
+</html>
