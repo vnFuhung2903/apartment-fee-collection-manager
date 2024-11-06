@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BlueMoon Fee Management</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+</head>
+<body>
+    <div class="container">
+        <!-- Thanh điều hướng -->
+        <div class="navigation">
+            <ul>
+                <li>
+                    <a href="#">
+                        <span class="icon">
+                            <ion-icon name="business-sharp"></ion-icon>
+                        </span>
+                        <span class="title">BLUEMOON</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="#">
+                        <span class="icon">
+                            <ion-icon name="home-outline"></ion-icon>
+                        </span>
+                        <span class="title">Dashboard</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="#">
+                        <span class="icon">
+                            <ion-icon name="people-outline"></ion-icon>
+                        </span>
+                        <span class="title">Quản lí căn hộ và cư dân</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="#">
+                        <span class="icon">
+                            <ion-icon name="cash-outline"></ion-icon>
+                        </span>
+                        <span class="title">Quản lí thu phí chung cư</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="#">
+                        <span class="icon">
+                            <ion-icon name="chatbubble-outline"></ion-icon>
+                        </span>
+                        <span class="title">Messages</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="#">
+                        <span class="icon">
+                            <ion-icon name="help-outline"></ion-icon>
+                        </span>
+                        <span class="title">Help</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="#">
+                        <span class="icon">
+                            <ion-icon name="settings-outline"></ion-icon>
+                        </span>
+                        <span class="title">Settings</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="#">
+                        <span class="icon">
+                            <ion-icon name="lock-closed-outline"></ion-icon>
+                        </span>
+                        <span class="title">Password</span>
+                    </a>
+                </li>
+                
+                <li>
+                    <a href="#">
+                        <span class="icon">
+                            <ion-icon name="log-out-outline"></ion-icon>
+                        </span>
+                        <span class="title">Sign Out</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Nội dung chính -->
+        <div class="main">
+            <div class="topbar">
+                <div class="toggle"><ion-icon name="menu-outline"></ion-icon></div>
+                <div class="search">
+                    <label>
+                        <input type="text" placeholder="Tìm kiếm hộ gia đình, số căn hộ...">
+                        <ion-icon name="search-outline"></ion-icon>
+                    </label>
+                </div>
+                <div class="user"><img src="assets/imgs/customer01.jpg" alt="User Image"></div>
+            </div>
+
+            <!-- Bảng thông tin và các khoản phí -->
+            <div class="details">
+                <div class="recentCt">
+                    <div class="cardHeader">
+                        <h2>Quản lý thu phí chung cư</h2>
+                        <button class="btn">Thêm khoản phí mới</button>
+                    </div>
+
+                    <table>
+                        <thead>
+                            <tr>
+                                <td>Tên hộ gia đình</td>
+                                <td>Số căn hộ</td>
+                                <td>Diện tích</td>
+                                <td>Phí dịch vụ</td>
+                                <td>Phí quản lý</td>
+                                <td>Khoản khác</td>
+                                <td>Trạng thái</td>
+                                <td>Chi tiết</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Nguyễn Văn A</td>
+                                <td>102</td>
+                                <td>75 m²</td>
+                                <td>500,000 VNĐ</td>
+                                <td>200,000 VNĐ</td>
+                                <td>100,000 VNĐ</td>
+                                <td><span class="status paid">Đã thanh toán</span></td>
+                                <td><button class="btn-details">Xem</button></td>
+                            </tr>
+                            <tr>
+                                <td>Trần Thị B</td>
+                                <td>203</td>
+                                <td>60 m²</td>
+                                <td>400,000 VNĐ</td>
+                                <td>200,000 VNĐ</td>
+                                <td>50,000 VNĐ</td>
+                                <td><span class="status unpaid">Chưa thanh toán</span></td>
+                                <td><button class="btn-details">Xem</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Ionicons và JavaScript -->
+    <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+    <script src="assets/js/main.js"></script>
+</body>
+</html>
