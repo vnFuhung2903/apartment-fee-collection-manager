@@ -4,7 +4,13 @@ import customer01 from "./assets/imgs/customer01.jpg"
 import { Outlet, Link } from "react-router-dom"
 
 function LayoutDefault(){
-  return (
+    let navigation = document.querySelector(".layout-default__sidebar--navigation");
+    let main = document.querySelector(".layout-default__main");
+    const handleClick = () => {
+        navigation.classList.toggle("active");
+        main.classList.toggle("active");
+    }
+    return (
     <>
       <div className="layout-default">
         <div className="layout-default__sidebar">
@@ -13,7 +19,7 @@ function LayoutDefault(){
               <ul>
               <li>
                     <Link to="dashboard">
-                        <span class="icon">
+                        <span className="icon">
                             <ion-icon name="business-sharp"></ion-icon>
                         </span>
                         <span class="title">BLUEMOON</span>
@@ -39,9 +45,9 @@ function LayoutDefault(){
                 </li>
 
                 <li>
-                    <Link to="*">
+                    <Link to="/fee_manage">
                         <span class="icon">
-                            <ion-icon name="chatbubble-outline"></ion-icon>
+                            <ion-icon name="cash-outline"></ion-icon>
                         </span>
                         <span class="title">Quản lý thu phí chung cư</span>
                     </Link>
@@ -89,7 +95,7 @@ function LayoutDefault(){
             {/* ----------------------Main ---------------------- */}
         <div className="layout-default__main">
             <div className="layout-default__main--topbar">
-                <div className="layout-default__main--toggle">
+                <div className="layout-default__main--toggle" onClick={handleClick}>
                     <ion-icon name="menu-outline"></ion-icon>
                 </div>
 

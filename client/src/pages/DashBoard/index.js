@@ -1,9 +1,9 @@
-import LayoutDefault from "../Layout/LayoutDefault"
+import Page1 from "./Page1"
 
 function DashBoard(){
   return (
     <>
-      Page DashBoard
+      <Page1/>
     </>
   )
 }
