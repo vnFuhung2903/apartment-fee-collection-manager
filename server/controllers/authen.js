@@ -3,21 +3,24 @@ const bcrypt = require('bcrypt');
 
 const signIn = async (req, res) => {
   try {
-    const { username, password } = req.body;
+    const { username, password, remember } = req.body;
+    
     const userFound = await user.findOne({ username: username });
 
     if (!userFound) {
       res.status(400).json({ message: "Invalid account" });
     } else {
-      const validate = await bcrypt.compare(password, userFound.password);
+      const validate = bcrypt.compareSync(password, userFound.password);
       if (!validate) {
         return res.status(400).json({ message: "Wrong password" });
       } else {
-        return res.status(200).json(userFound);
+        // if(remember) res.cookie("token", userFound, { maxAge: 365 * 24 * 60 * 60 * 1000 / 2, httpOnly: true, secure: true, signed: true,sameSite: "none" });
+        // else res.cookie("token", userFound, { maxAge: 2 * 60 * 60 * 1000, httpOnly: true, secure: true, signed: true, sameSite: "none" });
+        return res.status(200).json({ message: "Login success", token: userFound });
       }
     }
   } catch (error) {
-    res.status(500).json(error);
+    res.status(500).json({ message: error});
   }
 };
 
@@ -48,7 +51,7 @@ const changePassword = async (req, res) => {
   try {
     const { username, oldPassword, newPassword } = req.body;
     const userFound = await user.findOne({ username });
-    const validate = await bcrypt.compare(oldPassword, userFound.password);
+    const validate = bcrypt.compareSync(oldPassword, userFound.password);
     if (!validate) {
       return res.status(400).json({ message: "Wrong password" });
     }
@@ -63,4 +66,4 @@ const changePassword = async (req, res) => {
   }
 };
 
-export { signIn, signUp, changePassword };
+module.exports = { signIn, signUp, changePassword };

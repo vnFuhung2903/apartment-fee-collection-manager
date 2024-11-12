@@ -9,17 +9,17 @@ function SignUp(){
   const [data, setData] = useState([]);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    fetch("http://localhost:3002/accounts")
-      .then(res => res.json())
-      .then(data => {
-        setData(data);
-        const maxId = data.reduce((max, item) => (max = (max >= item.id) ? max : item.id), 1);
-        setAccount({
-          id: maxId + 1
-        })
-      })
-  }, [])
+  // useEffect(() => {
+  //   fetch("http://localhost:3002/accounts")
+  //     .then(res => res.json())
+  //     .then(data => {
+  //       setData(data);
+  //       const maxId = data.reduce((max, item) => (max = (max >= item.id) ? max : item.id), 1);
+  //       setAccount({
+  //         id: maxId + 1
+  //       })
+  //     })
+  // }, [])
 
 
   const handleChange = (e) => {

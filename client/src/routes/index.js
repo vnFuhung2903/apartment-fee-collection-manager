@@ -11,7 +11,7 @@ import Stats from "../pages/Stats";
 export const routes = [
   {
     path: "/",
-    element: <SignUp/>,
+    element: <LogIn/>,
   },
   {
     path: "login",
