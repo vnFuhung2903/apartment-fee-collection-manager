@@ -110,7 +110,6 @@ module.exports.totalPayment = async (req,res) => {
         const totalAmount = payments.length > 0 ? payments[0].totalAmount : 0;
         //Thông tin chủ hộ
         const headPerson = await Person.findById(household.head).select('name');
-        console.log(headPerson);
         const headName = headPerson ? headPerson.name : "Unknown";
 
         results.push({
