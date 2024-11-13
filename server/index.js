@@ -15,10 +15,11 @@ app.use(bodyParser.urlencoded({ extended: false }))
 
 const port = process.env.PORT;
 app.use(cors({
-    origin: [
-        "https://localhost:3000"
-    ]
-}))
+    origin: 'http://localhost:3000',
+    methods: ['GET', 'POST', 'PUT', 'DELETE'], 
+    credentials: true
+  }));
+  
 
 routeApi(app);
 

@@ -1,7 +1,21 @@
+import React, { useEffect, useState } from 'react';
 import { Link } from "react-router-dom"
+import axios from 'axios';
 import "./style.css"
 
 function FeeMange(){
+  const [totalPayment, setTotalPayments] = useState([]);
+  
+  useEffect(() => {
+    // Gọi API khi component được load
+    axios.get('http://localhost:3180/payments/api/v1/totalPayment')  
+      .then(response => {
+        setTotalPayments(response.data.data); // Lấy dữ liệu từ response.data.data nếu API trả về dạng này
+      })
+      .catch(error => {
+        console.error("Error fetching fees data:", error);
+      });
+  }, []);
   return (
     <>
       <div class="details__fee">
@@ -15,44 +29,26 @@ function FeeMange(){
                         <thead>
                             <tr>
                                 <td>Tên hộ gia đình</td>
-                                <td>Số căn hộ</td>
-                                <td>Diện tích</td>
-                                <td>Phí dịch vụ</td>
-                                <td>Phí quản lý</td>
-                                <td>Khoản khác</td>
+                                <td>Tổng phí</td>
                                 <td>Trạng thái</td>
                                 <td>Chi tiết</td>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>Nguyễn Văn A</td>
-                                <td>102</td>
-                                <td>75 m²</td>
-                                <td>500,000 VNĐ</td>
-                                <td>200,000 VNĐ</td>
-                                <td>100,000 VNĐ</td>
-                                <td><span class="status-paid">Đã thanh toán</span></td>
+                            {totalPayment.map((Tpayment,index) => (
+                              <tr key={index}>
+                                <td>{Tpayment.headName}</td>
+                                <td>{Tpayment.totalAmount}</td>
+                                  <span className={Tpayment.totalAmount === 0 ? "status-paid" : "status-unpaid"}>
+                                    {Tpayment.totalAmount === 0 ? "Đã thanh toán" : "Chưa thanh toán"}
+                                  </span>
                                 <td>
                                   <Link to="/detail">
                                     <button class="btn-details">Xem</button>
                                   </Link>
                                 </td>
-                            </tr>
-                            <tr>
-                                <td>Trần Thị B</td>
-                                <td>203</td>
-                                <td>60 m²</td>
-                                <td>400,000 VNĐ</td>
-                                <td>200,000 VNĐ</td>
-                                <td>50,000 VNĐ</td>
-                                <td><span class="status-unpaid">Chưa thanh toán</span></td>
-                                <td>
-                                  <Link to="/detail">
-                                    <button class="btn-details">Xem</button>
-                                  </Link>
-                                </td>
-                            </tr>
+                              </tr>
+                            ))}
                         </tbody>
                     </table>
                 </div>
