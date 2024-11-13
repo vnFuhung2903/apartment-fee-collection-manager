@@ -17,9 +17,9 @@ function Table(){
   }, [showAll])
   return (
     <>
-      <div class="container__body">
+      <div className="container__body">
         <main>
-          <div class="recent_order">
+          <div className="recent_order">
               <h2>Thống kê các khoản thu</h2>
               <table> 
                   <thead>
@@ -39,7 +39,7 @@ function Table(){
                             <td>{item.payed}</td>
                             <td>{Math.floor((item.payed / item.total) * 100)}%</td>
                             <td>
-                              <Link to="*" class="primary">Chi tiết</Link>
+                              <Link to="*" className="primary">Chi tiết</Link>
                             </td>
                           </tr>
                         ))

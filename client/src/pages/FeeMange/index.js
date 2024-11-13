@@ -4,11 +4,11 @@ import "./style.css"
 function FeeMange(){
   return (
     <>
-      <div class="details__fee">
-                <div class="recentCt">
-                    <div class="cardHeader">
+      <div className="details__fee">
+                <div className="recentCt">
+                    <div className="cardHeader">
                         <h2>Quản lý thu phí chung cư</h2>
-                        <button class="btn">Thêm khoản phí mới</button>
+                        <button className="btn">Thêm khoản phí mới</button>
                     </div>
 
                     <table>
@@ -32,10 +32,10 @@ function FeeMange(){
                                 <td>500,000 VNĐ</td>
                                 <td>200,000 VNĐ</td>
                                 <td>100,000 VNĐ</td>
-                                <td><span class="status-paid">Đã thanh toán</span></td>
+                                <td><span className="status-paid">Đã thanh toán</span></td>
                                 <td>
                                   <Link to="/detail">
-                                    <button class="btn-details">Xem</button>
+                                    <button className="btn-details">Xem</button>
                                   </Link>
                                 </td>
                             </tr>
@@ -46,10 +46,10 @@ function FeeMange(){
                                 <td>400,000 VNĐ</td>
                                 <td>200,000 VNĐ</td>
                                 <td>50,000 VNĐ</td>
-                                <td><span class="status-unpaid">Chưa thanh toán</span></td>
+                                <td><span className="status-unpaid">Chưa thanh toán</span></td>
                                 <td>
                                   <Link to="/detail">
-                                    <button class="btn-details">Xem</button>
+                                    <button className="btn-details">Xem</button>
                                   </Link>
                                 </td>
                             </tr>

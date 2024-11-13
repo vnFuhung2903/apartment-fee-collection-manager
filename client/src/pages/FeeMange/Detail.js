@@ -3,11 +3,11 @@ import "./style.css"
 function Detail(){
   return (
     <>
-      <div class="details__fee">
-                <div class="recentCt">
-                    <div class="cardHeader">
+      <div className="details__fee">
+                <div className="recentCt">
+                    <div className="cardHeader">
                         <h2>Chi tiết các khoản phí cho Hộ gia đình: Nguyễn Văn A</h2>
-                        <a href="page1_fee.html" class="btn">Quay lại</a>
+                        <a href="page1_fee.html" className="btn">Quay lại</a>
                     </div>
 
                     <table>
@@ -24,43 +24,43 @@ function Detail(){
                                 <td>Phí dịch vụ</td>
                                 <td>500,000 VNĐ</td>
                                 <td>01/11/2024</td>
-                                <td><span class="status-paid">Đã thanh toán</span></td>
+                                <td><span className="status-paid">Đã thanh toán</span></td>
                             </tr>
                             <tr>
                                 <td>Phí quản lý</td>
                                 <td>200,000 VNĐ</td>
                                 <td>01/11/2024</td>
-                                <td><span class="status-paid">Đã thanh toán</span></td>
+                                <td><span className="status-paid">Đã thanh toán</span></td>
                             </tr>
                             <tr>
                                 <td>Phí gửi xe máy</td>
                                 <td>70,000 VNĐ</td>
                                 <td>01/11/2024</td>
-                                <td><span class="status-unpaid">Chưa thanh toán</span></td>
+                                <td><span className="status-unpaid">Chưa thanh toán</span></td>
                             </tr>
                             <tr>
                                 <td>Phí gửi ô tô</td>
                                 <td>1,200,000 VNĐ</td>
                                 <td>01/11/2024</td>
-                                <td><span class="status-paid">Đã thanh toán</span></td>
+                                <td><span className="status-paid">Đã thanh toán</span></td>
                             </tr>
                             <tr>
                                 <td>Tiền điện</td>
                                 <td>300,000 VNĐ</td>
                                 <td>01/11/2024</td>
-                                <td><span class="status-unpaid">Chưa thanh toán</span></td>
+                                <td><span className="status-unpaid">Chưa thanh toán</span></td>
                             </tr>
                             <tr>
                                 <td>Tiền nước</td>
                                 <td>150,000 VNĐ</td>
                                 <td>01/11/2024</td>
-                                <td><span class="status-unpaid">Chưa thanh toán</span></td>
+                                <td><span className="status-unpaid">Chưa thanh toán</span></td>
                             </tr>
                             <tr>
                                 <td>Internet</td>
                                 <td>200,000 VNĐ</td>
                                 <td>01/11/2024</td>
-                                <td><span class="status-paid">Đã thanh toán</span></td>
+                                <td><span className="status-paid">Đã thanh toán</span></td>
                             </tr>
                         </tbody>
                     </table>
