@@ -1,4 +1,7 @@
+const mongoose = require("mongoose");
 const Payment = require("../models/payment.js");
+const Household = require('../models/household.js');
+const Person = require('../models/person.js');
 //[GET] payments/api/v1/payments
 module.exports.index = async (req, res) => {
   try {
@@ -80,5 +83,44 @@ module.exports.deletePayment = async (req,res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Delete Payment Error", error });
+  }
+};
+
+//[GET] /payments/api/v1/totalPayment
+module.exports.totalPayment = async (req,res) => {
+  try {
+    const findHousehold = {};
+    const households = await Household.find(findHousehold);
+    if(!households) {
+      return res.status(404).json({ message: "Not Found" });
+    } else {
+      const results = [];
+      for (const household of households) {
+        const householdId = household._id;
+        //Sum payments
+        const  payments = await Payment.aggregate([
+          {$match:{
+            household_id:householdId.toString(),
+            status: { $ne: "Chưa thanh toán" }
+          }},
+          {$group:{_id:householdId.toString(),totalAmount: {$sum:"$amount"}}}
+        ]);
+        
+        //Nếu không có khoản thanh toán nào,sum = 0
+        const totalAmount = payments.length > 0 ? payments[0].totalAmount : 0;
+        //Thông tin chủ hộ
+        const headPerson = await Person.findById(household.head).select('name');
+        const headName = headPerson ? headPerson.name : "Unknown";
+
+        results.push({
+          household_id: householdId,
+          headName,
+          totalAmount
+        });
+      }
+      res.status(200).json({data:results});
+    }
+  } catch (error) {
+    res.status(500).json({ message: "Server Error" });
   }
 };

@@ -1,11 +1,12 @@
 const mongoose = require("mongoose");
 
-const userSchema = new mongoose.Schema({
-    number: number,
+const apartmentSchema = new mongoose.Schema({
+    id: { type: mongoose.Schema.Types.ObjectId, ref: 'households' },
+    number: Number,
     type: String,
-    totaArea: Number
+    totalArea: Number
 
 })
 
-const room = mongoose.model("rooms", userSchema);
-module.exports=room;
+const apartment = mongoose.model("apartment", apartmentSchema);
+module.exports=apartment;
