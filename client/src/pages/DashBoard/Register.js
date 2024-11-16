@@ -3,37 +3,37 @@ import "./style_register.css"
 function Register(){
   return(
   <>
-    <div class = "details">
-      <div class = "recentCt page2">
-        <div class="cardHeader">
+    <div className = "details">
+      <div className = "recentCt page2">
+        <div className="cardHeader">
             <h2>Đăng kí</h2>
         </div>
         <form action="#">
-            <div class="form first">
+            <div className="form first">
                 <span id = "title">Thông tin chủ hộ</span>
                 
-                <div class="fields">
-                    <div class="input-fields">
+                <div className="fields">
+                    <div className="input-fields">
                         <label htmlFor="name">Họ và tên</label>
                         <input id="name" type="text" placeholder="" required />
                     </div>
-                    <div class="input-fields">
+                    <div className="input-fields">
                         <label htmlFor="">CCCD</label>
                         <input type="text" placeholder="" required />
                     </div>
-                    <div class="input-fields">
+                    <div className="input-fields">
                         <label htmlFor="">Ngày sinh</label>
                         <input type="date" placeholder="" required />
                     </div>
-                    <div class="input-fields">
+                    <div className="input-fields">
                         <label htmlFor="">Quốc tịch</label>
                         <input type="text" placeholder="" required /> 
                     </div>
-                    <div class="input-fields">
+                    <div className="input-fields">
                         <label htmlFor="">Nghề nghiệp</label>
                         <input type="text" placeholder="" required />
                     </div>
-                    <div class="input-fields">
+                    <div className="input-fields">
                         <label htmlFor="">Giới tính</label>
                         <select name="sex" id="sex">
                             <option value="">Nam</option>
@@ -41,46 +41,46 @@ function Register(){
                             <option value="">Khác</option>
                         </select>
                     </div>
-                    <div class="input-fields">
+                    <div className="input-fields">
                         <label htmlFor="">Quê quán</label>
                         <input type="text" placeholder="" required />
                     </div>
-                    <div class="input-fields">
+                    <div className="input-fields">
                         <label htmlFor="">Dân tộc</label>
                         <input type="text" placeholder="" required />
                     </div>
-                    <div class="input-fields">
+                    <div className="input-fields">
                         <label htmlFor="">Số điện thoại</label>
                         <input type="number" placeholder="" required />
                     </div>
                 </div>
             </div>
             <hr/>
-            <div class="form second">
+            <div className="form second">
                 <span id = "title">Thông tin hộ khẩu</span>
                 
-                <div class="fields">
-                    <div class="input-fields">
+                <div className="fields">
+                    <div className="input-fields">
                         <label htmlFor="">Tên chủ hộ</label>
                         <input type="text" placeholder="" required />
                     </div>
-                    <div class="input-fields">
+                    <div className="input-fields">
                         <label htmlFor="">CCCD</label>
                         <input type="text" placeholder="" required />
                     </div>
-                    <div class="input-fields">
+                    <div className="input-fields">
                         <label htmlFor="">Ngày sinh</label>
                         <input type="date" placeholder="" required />
                     </div>
-                    <div class="input-fields">
+                    <div className="input-fields">
                         <label htmlFor="">Số nhà</label>
                         <input type="number" placeholder="" required />
                     </div>
-                    <div class="input-fields">
+                    <div className="input-fields">
                         <label htmlFor="">Số tầng</label>
                         <input type="number" placeholder="" required />
                     </div>
-                    <div class="input-fields">
+                    <div className="input-fields">
                         <label htmlFor="">Loại số</label>
                         <select name="sex" id="sex">
                             <option value="">Thường trú</option>
@@ -89,9 +89,9 @@ function Register(){
                     </div>
                 </div>
             </div>
-            <div class ="buttons">
-                <button class = "submitBtn">
-                    <span class = "buttonSm">Submit</span>
+            <div className ="buttons">
+                <button className = "submitBtn">
+                    <span className = "buttonSm">Submit</span>
                 </button>
             </div>
         </form>
