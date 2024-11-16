@@ -5,6 +5,7 @@ import FeeMange from "../pages/FeeMange";
 import Detail from "../pages/FeeMange/Detail";
 import LayoutDefault from "../pages/Layout/LayoutDefault";
 import LogIn from "../pages/LogIn/LogIn";
+import Password from "../pages/Password";
 import Stats from "../pages/Stats";
 
 export const routes = [
@@ -43,6 +44,10 @@ export const routes = [
       {
         path: "detail",
         element: <Detail/>
+      },
+      {
+        path: "password",
+        element: <Password/>
       }
     ]
   }
