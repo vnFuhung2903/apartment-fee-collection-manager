@@ -26,70 +26,70 @@ function LayoutDefault(){
                         <span className="icon">
                             <ion-icon name="business-sharp"></ion-icon>
                         </span>
-                        <span class="title">BLUEMOON</span>
+                        <span className="title">BLUEMOON</span>
                     </Link>
                 </li>
 
                 <li>
                     <Link to="dashboard">
-                        <span class="icon">
+                        <span className="icon">
                             <ion-icon name="home-outline"></ion-icon>
                         </span>
-                        <span class="title">Dashboard</span>
+                        <span className="title">Dashboard</span>
                     </Link>
                 </li>
 
                 <li>
                     <Link to="dashboard">
-                        <span class="icon">
+                        <span className="icon">
                             <ion-icon name="people-outline"></ion-icon>
                         </span>
-                        <span class="title">Quản lí căn hộ và cư dân</span>
+                        <span className="title">Quản lí căn hộ và cư dân</span>
                     </Link>
                 </li>
 
                 <li>
                     <Link to="/fee_manage">
-                        <span class="icon">
+                        <span className="icon">
                             <ion-icon name="cash-outline"></ion-icon>
                         </span>
-                        <span class="title">Quản lý thu phí chung cư</span>
+                        <span className="title">Quản lý thu phí chung cư</span>
                     </Link>
                 </li>
 
                 <li>
                     <Link to="stats">
-                        <span class="icon">
+                        <span className="icon">
                             <ion-icon name="stats-chart-outline"></ion-icon>
                         </span>
-                        <span class="title">Thống kê</span>
+                        <span className="title">Thống kê</span>
                     </Link>
                 </li>
 
                 <li>
                     <a href="#">
-                        <span class="icon">
+                        <span className="icon">
                             <ion-icon name="settings-outline"></ion-icon>
                         </span>
-                        <span class="title">Settings</span>
+                        <span className="title">Settings</span>
                     </a>
                 </li>
 
                 <li>
-                    <a href="#">
-                        <span class="icon">
+                    <Link to="/password">
+                        <span className="icon">
                             <ion-icon name="lock-closed-outline"></ion-icon>
                         </span>
-                        <span class="title">Password</span>
-                    </a>
+                        <span className="title">Password</span>
+                    </Link>
                 </li>
 
                 <li>
                     <a href="#">
-                        <span class="icon">
+                        <span className="icon">
                             <ion-icon name="log-out-outline"></ion-icon>
                         </span>
-                        <span class="title">Sign Out</span>
+                        <span className="title">Sign Out</span>
                     </a>
                 </li>
               </ul>
