@@ -34,6 +34,7 @@ submitBtn.addEventListener("click", ()=>{
     else
     {
       form.classList.remove('secActive');
+      alert("Chưa điền đủ thông tin!");
     }
   })
 })
