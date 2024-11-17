@@ -82,9 +82,7 @@ const getFilterdList = async (req, res) => {
       const { name, gender, status } = req.body;
       let listFiltered = await person.find();
       if(name !== null)  listFiltered = listFiltered.filter((personFound) => personFound.name === name);
-
       if(gender !== null)  listFiltered = listFiltered.filter((personFound) => personFound.gender === gender);
-
       if(status !== null) listFiltered = listFiltered.filter((personFound) => personFound.status === status);
       res.status(200).json(listFiltered);
     } catch (error) {

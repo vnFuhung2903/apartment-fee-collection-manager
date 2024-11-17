@@ -3,11 +3,8 @@ import "./asset/css/style.css"
 import signInImg from "./asset/images/signin-image.jpg"
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { FacebookAuthProvider, getAuth, GoogleAuthProvider, signInWithPopup, TwitterAuthProvider } from "firebase/auth";
-import app from "../../firebase/firebase";
 
 function LogIn() {
-  const auth = getAuth(app);
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
   const [remember, setRemeber] = useState(false);
@@ -28,42 +25,10 @@ function LogIn() {
         navigate("/dashboard");
       }
       else{
+        console.log(data);
         alert(data.message);
       }
     })
-  }
-
-  const googleSignIn = async () => {
-    const provider = new GoogleAuthProvider();
-    try {
-      const result = await signInWithPopup(auth, provider);
-      const user = result.user;
-      console.log("User signed in with Facebook:", user);
-    } catch (error) {
-      console.error("Error signing in with Facebook:", error);
-    }
-  }
-
-  const facebookSignIn = async () => {
-    const provider = new FacebookAuthProvider();
-    try {
-      const result = await signInWithPopup(auth, provider);
-      const user = result.user;
-      console.log("User signed in with Google:", user);
-    } catch (error) {
-      console.error("Error signing in with Google:", error);
-    }
-  }
-
-  const xSignIn = async () => {
-    const provider = new TwitterAuthProvider();
-    try {
-      const result = await signInWithPopup(auth, provider);
-      const user = result.user;
-      console.log("User signed in with Google:", user);
-    } catch (error) {
-      console.error("Error signing in with Google:", error);
-    }
   }
 
   return (
@@ -96,14 +61,14 @@ function LogIn() {
                           <input type="submit" name="signin" id="signin" className="form-submit" value="Log in"/>
                       </div>
                   </form>
-                  <div className="social-login">
+                  {/* <div className="social-login">
                       <span className="social-label">Or login with</span>
                       <ul className="socials">
                           <li><a onClick={facebookSignIn}><i className="display-flex-center zmdi zmdi-facebook"></i></a></li>
                           <li><a onClick={xSignIn}><i className="display-flex-center zmdi zmdi-twitter"></i></a></li>
                           <li><a onClick={googleSignIn}><i className="display-flex-center zmdi zmdi-google"></i></a></li>
                       </ul>
-                  </div>
+                  </div> */}
               </div>
             </div>
           </div>

@@ -2,10 +2,10 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const householdSchema = new mongoose.Schema({
-    head: Schema.Types.ObjectId,
+    head: { type: Schema.Types.ObjectId, ref: 'persons'},
     contact_phone: String,
-    apartments: [Schema.Types.ObjectId],
-    member: [ Schema.Types.ObjectId ]
+    apartments: [{ type: Schema.Types.ObjectId, ref: 'apartments'}],
+    members: [ { type: Schema.Types.ObjectId, ref: 'persons'} ]
 })
 
 const household = mongoose.model("households", householdSchema);

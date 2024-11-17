@@ -11,7 +11,7 @@ const personSchema = new mongoose.Schema({
     nation: String,
     nation_id: Number,
     movingIn: Date,
-    contact_phone: Number
+    contact_phone: String
 })
 
 const person = mongoose.model("persons", personSchema);

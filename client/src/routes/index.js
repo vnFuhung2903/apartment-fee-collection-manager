@@ -37,10 +37,10 @@ export const routes = [
         path: "stats",
         element: <Stats/>
       },
-      {
-        path: "fee_manage",
-        element: <FeeMange/>
-      },
+      // {
+      //   path: "fee_manage",
+      //   element: <FeeMange/>
+      // },
       {
         path: "detail",
         element: <Detail/>
