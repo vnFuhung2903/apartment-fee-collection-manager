@@ -59,6 +59,7 @@
 .details .recentCt {
   position: relative;
   display: grid;
+  grid-template-rows: 10% auto;
   min-height: 500px;
   background: var(--white);
   padding: 20px;
