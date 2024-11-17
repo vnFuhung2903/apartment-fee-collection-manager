@@ -228,12 +228,16 @@ input[type=checkbox]:not(old):checked + label > span:before {
   font-size: 11px;
   line-height: 1.2;
   text-align: center;
-  font-family: 'Material-Design-Iconic-Font';
+  font-family: "Ubuntu", sans-serif;
   font-weight: bold;
 }
 
 .password-input-field.old-password{
   padding-bottom: 30px;
+}
+
+.password-input-field > label{
+  padding-right: 5px;
 }
 
 .password-input-field.old-password > label{
@@ -251,6 +255,10 @@ input[type=checkbox]:not(old):checked + label > span:before {
   -ms-transform: translateY(-50%);
   color: #222; 
   font-weight: 500;
+}
+
+.password-require{
+  padding-bottom: 10px;
 }
 
 .material-icons-name {
