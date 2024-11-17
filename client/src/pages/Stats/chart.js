@@ -3,35 +3,54 @@ import profile from "./images/profile-1.jpg"
 import { useState, useEffect } from 'react'
 
 function Chart(){
-  const [data, setData] = useState([]);
-  const [payFull, setPayFull] = useState(0);
-  const [payment, setPayment] = useState(0);
-  const [total, setTotal] = useState(0);
+  const [data, setData] = useState([
+    {
+      "id" : 1,
+      "name": "Michael William",
+      "total": 100,
+      "payed": 100
+    }, 
+    {
+      "id" : 2,
+      "name": "Alexander Jones",
+      "total": 123,
+      "payed": 60
+    },
+    {
+      "id" : 3,
+      "name": "Ava Taylor",
+      "total": 150,
+      "payed": 43
+    }
+  ]);
+  const [payFull, setPayFull] = useState(2);
+  const [payment, setPayment] = useState(100);
+  const [total, setTotal] = useState(300);
   const r = 30;
 
-  useEffect(() => {
-    fetch("http://localhost:3002/customer_costs")
-      .then(res => res.json())
-      .then(data => {
-        setData(data);
-        setPayFull(data.reduce((payFull, item) => (
-          payFull = (item.payed === item.total) ? payFull + 1 : payFull 
-        ), 0));
-        setPayment(data.reduce((sum, item) => (
-          sum += item.payed 
-        ), 0))
-        setTotal(data.reduce((sum, item) => (
-          sum += item.total
-        ), 0))
-      })
-  }, [])
+  // useEffect(() => {
+  //   fetch("http://localhost:3002/customer_costs")
+  //     .then(res => res.json())
+  //     .then(data => {
+  //       setData(data);
+  //       setPayFull(data.reduce((payFull, item) => (
+  //         payFull = (item.payed === item.total) ? payFull + 1 : payFull 
+  //       ), 0));
+  //       setPayment(data.reduce((sum, item) => (
+  //         sum += item.payed 
+  //       ), 0))
+  //       setTotal(data.reduce((sum, item) => (
+  //         sum += item.total
+  //       ), 0))
+  //     })
+  // }, [])
 
   return (
     <>
     {/* Insights Part */}
       <div className="container__header">
         <main>
-          <h1>Biểu đồ</h1>
+          <h2>Biểu đồ</h2>
           <div className="insights">
             <div div className="pay-full">
               <span className="material-symbols-sharp">trending_up</span>
@@ -42,7 +61,7 @@ function Chart(){
                 </div>
                 <div className="progress">
                     <svg>
-                        <circle  r={r} cy="40" cx="40" stroke-dasharray={2 * Math.PI * r} stroke-dashoffset={2 * Math.PI * r * (1 - payFull/(data.length))} transform={`rotate(-90, 40, 40)`}></circle>
+                        <circle  r={r} cy="40" cx="40" strokeDasharray={2 * Math.PI * r} strokeDashoffset={2 * Math.PI * r * (1 - payFull/(data.length))} transform={`rotate(-90, 40, 40)`}></circle>
                     </svg>
                     <div className="number"><p>{Math.floor(payFull/(data.length) * 100)}%</p></div>
                 </div>
@@ -59,7 +78,7 @@ function Chart(){
                   </div>
                    <div className="progress">
                        <svg>
-                       <circle  r={r} cy="40" cx="40" stroke-dasharray={2 * Math.PI * r} stroke-dashoffset={2 * Math.PI * r * (1 - payment/total)} transform={`rotate(-90, 40, 40)`}></circle>
+                       <circle  r={r} cy="40" cx="40" strokeDasharray={2 * Math.PI * r} strokeDashoffset={2 * Math.PI * r * (1 - payment/total)} transform={`rotate(-90, 40, 40)`}></circle>
                        </svg>
                        <div className="number"><p>{Math.floor(payment/total * 100)}%</p></div>
                    </div>

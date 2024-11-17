@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
 import "./style.css"
-
+import {useState, useEffect} from "react"
+import axios from 'axios'
+import { Link } from 'react-router-dom';
 
 function Detail(){
     const [fees, setFees] = useState([]);
@@ -14,7 +14,6 @@ function Detail(){
           .catch(error => {
             console.error("Error fetching fees data:", error);
           });
-          
       }, []);
     
   return (
@@ -23,7 +22,7 @@ function Detail(){
                 <div className="recentCt">
                     <div className="cardHeader">
                         <h2>Chi tiết các khoản phí cho Hộ gia đình: Nguyễn Văn A</h2>
-                        <a href="page1_fee.html" className="btn">Quay lại</a>
+                        <Link to="/fee_manage" className="btn">Quay lại</Link>
                     </div>
 
                     <table>
@@ -32,7 +31,6 @@ function Detail(){
                                 <td>Loại phí</td>
                                 <td>Số tiền</td>
                                 <td>Ngày thu</td>
-                                <td>Hình thức</td>
                                 <td>Trạng thái</td>
                             </tr>
                         </thead>
@@ -41,7 +39,9 @@ function Detail(){
                                 <tr key={index}>
                                     <td>{fee.name}</td>
                                     <td>{fee.amount} VNĐ</td>
-                                    <td>{fee.due}</td>
+                                    <td>
+                                        {fee.due ? new Date(fee.due).toLocaleDateString('vi-VN') : 'Chưa có ngày'}                                     
+                                    </td>
                                     <td>{fee.status}</td>
                                     <td>
                                         <span className={fee.status === 'paid' ? 'status-paid' : 'status-unpaid'}>

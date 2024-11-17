@@ -4,15 +4,27 @@ const mongoose = require('mongoose');
 
 const createPerson = async (req, res) => {
   try {
-    const { name, gender, dob, status } = req.body;
-    const newPerson = new person({
-      name: name,
-      gender: gender,
-      dob: dob,
-      status: status
-    });
-    await newPerson.save();
-    res.status(200).json(newPerson);
+    const { name, cic, dob, nationality, occupation, gender, hometown, ethnic, phone, status } = req.body;
+    const personFound = await person.findOne({ cic: cic });
+    if(personFound)
+      res.status(200).json(personFound._id);
+    else {
+      const newPerson = new person({
+        name: name,
+        cic: cic,
+        gender: gender,
+        dob: dob,
+        status: status,
+        ethnicity: ethnic,
+        nation: nationality,
+        hometown: hometown,
+        contact_phone: phone,
+        movingIn: Date.now(),
+        occupation: occupation
+      });
+      await newPerson.save();
+      res.status(200).json(newPerson._id);
+    }
   } catch (error) {
     res.status(500).json(error);
   }
@@ -90,10 +102,9 @@ const getFilterdList = async (req, res) => {
     }
   };
 
-module.exports({
+module.exports = {
   createPerson,
   editPerson,
   deletePerson,
-  getPersonDetail,
-  getFilterdList
-});
+  getPersonDetail
+};

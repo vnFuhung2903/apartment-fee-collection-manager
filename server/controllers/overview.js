@@ -6,8 +6,8 @@ const getDashboardOverview = async (req, res) => {
       const recentCustomers = await person.find().sort({ movingIn: -1 });
       const numApartment = await apartment.countDocuments();
       const numPerson = await person.countDocuments();
-      const numAbsence = await person.countDocuments({ temporary_absence: true });
-      const numTemporary = await person.countDocuments({ temporary_residence: true });
+      const numAbsence = await person.countDocuments({ status: "temporary_absence" });
+      const numTemporary = await person.countDocuments({ status: "temporary_residence" });
       
       let json = {
         recentCustomers: recentCustomers.slice(0, 10),

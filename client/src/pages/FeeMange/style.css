@@ -4,17 +4,17 @@
   padding: 20px;
   display: grid;
   grid-gap: 30px;
-  grid-template-columns: auto;
 }
 
 .details__fee .recentCt {
   position: relative;
   display: grid;
-  min-height: 500px;
+  min-height: 400px;
   background: var(--white);
   padding: 20px;
   box-shadow: 0 7px 25px rgba(0, 0, 0, 0.08);
   border-radius: 20px;
+  grid-template-rows: 100px 1fr;
 }
 
 .details__fee .cardHeader {
@@ -23,8 +23,36 @@
   align-items: flex-start;
 }
 
-.details__fee .cardHeader h2{
-  font-family: Calibri;
+.details__fee table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+.details__fee table thead td {
+  font-weight: 600;
+}
+.details__fee .recentCt table tr {
+  color: var(--black1);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+.details__fee .recentCt  table tr:last-child {
+  border-bottom: none;
+}
+.details__fee .recentCt table tbody tr:hover {
+  background: var(--blue);
+  color: var(--white);
+}
+.details__fee .recentCt table tr td {
+  padding: 10px;
+}
+.details__fee .recentCt table tr td:last-child {
+  text-align: end;
+}
+.details__fee .recentCt table tr td:nth-child(2) {
+  text-align: center;
+}
+.details__fee .recentCt table tr td:nth-child(3) {
+  text-align: center;
 }
 
 span{
@@ -42,9 +70,14 @@ span{
   color: #fff;
 }
 
+.btn{
+  cursor: pointer;
+}
+
 .btn-details{
   padding: 10px;
   border-radius: 10px;
-  background-color: #2A2185;
+  background-color: #8de02c;
   color: #fff;
+  cursor: pointer;
 }

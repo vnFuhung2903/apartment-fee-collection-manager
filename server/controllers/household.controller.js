@@ -29,14 +29,21 @@ const getHouseholds = async (req, res) => {
 const createHousehold = async (req, res) => {
   try {
     const { apartmentNumber, headId, contact } = req.body;
-    const newHousehold = new household({
-      head: headId,
-      apartment_number: apartmentNumber,
-      contact_phone: contact,
-      members: []
-    });
-    await newHousehold.save();
-    res.status(200).json(newHousehold);
+    const apartmentFound = await apartment.findOne({ number: apartmentNumber });
+    if(apartmentFound.household)
+      res.status(200).json({ message: "In used" });
+    else {
+      const newHousehold = new household({
+        head: headId,
+        apartment_number: apartmentNumber,
+        contact_phone: contact,
+        members: []
+      });
+      await newHousehold.save();
+      apartmentFound.household = newHousehold._id;
+      await apartmentFound.save();
+      res.status(200).json({ message: "Success", household: newHousehold });
+    }
   } catch (error) {
     res.status(500).json(error);
   }

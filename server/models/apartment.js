@@ -8,4 +8,4 @@ const apartmentSchema = new mongoose.Schema({
 })
 
 const apartment = mongoose.model("apartments", apartmentSchema);
-module.exports=apartment;
+module.exports = apartment;

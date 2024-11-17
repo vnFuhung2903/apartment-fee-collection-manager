@@ -16,7 +16,7 @@ const signIn = async (req, res) => {
       } else {
         // if(remember) res.cookie("token", userFound, { maxAge: 365 * 24 * 60 * 60 * 1000 / 2, httpOnly: true, secure: true, signed: true,sameSite: "none" });
         // else res.cookie("token", userFound, { maxAge: 2 * 60 * 60 * 1000, httpOnly: true, secure: true, signed: true, sameSite: "none" });
-        return res.status(200).json({ message: "Login success", token: userFound });
+        return res.status(200).json({ message: "Login success", token: userFound._id });
       }
     }
   } catch (error) {
@@ -49,9 +49,15 @@ const signUp = async (req, res) => {
 
 const changePassword = async (req, res) => {
   try {
-    const { username, oldPassword, newPassword } = req.body;
-    const userFound = await user.findOne({ username });
+    const { userId, oldPassword, newPassword } = req.body;
+    console.log(userId);
+    
+    const userFound = await user.findOne({ _id: userId });
+    console.log(userFound);
+    
     const validate = bcrypt.compareSync(oldPassword, userFound.password);
+    console.log(validate);
+    
     if (!validate) {
       return res.status(400).json({ message: "Wrong password" });
     }
@@ -60,7 +66,7 @@ const changePassword = async (req, res) => {
     const hash = await bcrypt.hash(newPassword, salt);
     userFound.password = hash;
     await userFound.save();
-    res.status(200).json({ message: "Password updated" });
+    res.status(200).json({ message: "Password updated", token: userFound._id });
   } catch (error) {
     res.status(500).json(error);
   }
