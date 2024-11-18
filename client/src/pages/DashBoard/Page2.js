@@ -4,7 +4,7 @@ import { useEffect, useState } from "react"
 function Page2(){
     const [households, setHouseholds] = useState([]);
     useEffect(() => {
-        fetch("http://localhost:8386/household/api/v1/all", {
+        fetch("http://localhost:3180/household/api/v1/all", {
             method: "GET",
             headers: {"Content-Type": "application/json"}
         })

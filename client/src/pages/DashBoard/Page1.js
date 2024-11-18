@@ -11,7 +11,7 @@ function Page1(){
     const [numTemporary, setNumTemporary] = useState(0);
     const [numAbsence, setNumAbsence] = useState(0);
     useEffect(() => {
-        fetch("http://localhost:8386/household/api/v1/all", {
+        fetch("http://localhost:3180/household/api/v1/all", {
             method: "GET",
             headers: {"Content-Type": "application/json"}
         })
@@ -23,7 +23,7 @@ function Page1(){
             setHouseholds(data);
         });
 
-        fetch("http://localhost:8386/api/v1/dashboard", {
+        fetch("http://localhost:3180/api/v1/dashboard", {
             method: "GET",
             headers: {"Content-Type": "application/json"}
         })
