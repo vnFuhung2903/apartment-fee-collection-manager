@@ -8,13 +8,17 @@ function Table(){
   const [visibleData, setVisibleData] = useState([]);
 
   useEffect(() => {
-    fetch("http://localhost:3002/customer_costs")
+    fetch("http://localhost:3180/payments/api/v1/totalPayment")
       .then(res => res.json())
-      .then(data => {
+      .then(response => {
+        const data = response.data; // Trích xuất mảng data từ kết quả trả về
         setData(data);
-        setVisibleData(showAll == false ? data.slice(0, 2) : data);
+        setVisibleData(showAll === false ? data.slice(0, 2) : data); // Xử lý hiển thị tùy thuộc vào showAll
       })
-  }, [showAll])
+      .catch(error => {
+        console.error("Error fetching data:", error);
+      });
+  }, [showAll]);
   return (
     <>
       <div className="container__body">
@@ -34,10 +38,10 @@ function Table(){
                       {
                         visibleData.map(item => (
                           <tr>
-                            <td>{item.name}</td>
-                            <td>{item.total}</td>
+                            <td>{item.headName}</td>
+                            <td>{item.totalAmount}</td>
                             <td>{item.payed}</td>
-                            <td>{Math.floor((item.payed / item.total) * 100)}%</td>
+                            <td>{Math.floor((item.payed / item.totalAmount) * 100)}%</td>
                             <td>
                               <Link to="*" className="primary">Chi tiết</Link>
                             </td>

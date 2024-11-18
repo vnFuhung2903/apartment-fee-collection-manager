@@ -38,7 +38,7 @@ function FeeMange(){
                             {totalPayment.map((Tpayment,index) => (
                               <tr key={index}>
                                 <td>{Tpayment.headName}</td>
-                                <td>{Tpayment.totalAmount}</td>
+                                <td>{Tpayment.totalAmount - Tpayment.payed}</td>
                                   <span className={Tpayment.totalAmount === 0 ? "status-paid" : "status-unpaid"}>
                                     {Tpayment.totalAmount === 0 ? "Đã thanh toán" : "Chưa thanh toán"}
                                   </span>

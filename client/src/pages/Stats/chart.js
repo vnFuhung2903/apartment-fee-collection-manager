@@ -1,30 +1,48 @@
 import "./stats.scss"
 import profile from "./images/profile-1.jpg"
 import { useState, useEffect } from 'react'
+import axios from 'axios';
 
 function Chart(){
-  const [data, setData] = useState([]);
+  const[data,getTotalHousehold]  = useState([]);
   const [payFull, setPayFull] = useState(0);
   const [payment, setPayment] = useState(0);
   const [total, setTotal] = useState(0);
+  const [payments, getPayments] = useState([]);
   const r = 30;
 
   useEffect(() => {
-    fetch("http://localhost:3002/customer_costs")
-      .then(res => res.json())
-      .then(data => {
-        setData(data);
-        setPayFull(data.reduce((payFull, item) => (
-          payFull = (item.payed === item.total) ? payFull + 1 : payFull 
-        ), 0));
-        setPayment(data.reduce((sum, item) => (
-          sum += item.payed 
-        ), 0))
-        setTotal(data.reduce((sum, item) => (
-          sum += item.total
-        ), 0))
-      })
-  }, [])
+      // Gọi API khi component Detail được load
+      axios.get('http://localhost:3180/payments/api/v1/payments?limit=3&status=done')  
+        .then(response => {
+          getPayments(response.data);
+        })
+        .catch(error => {
+          console.error("Error fetching fees data:", error);
+        });
+        
+    }, []);
+
+    useEffect(() => {
+      axios.get('http://localhost:3180/payments/api/v1/totalPayment')
+      .then(response => {
+        const data = response.data.data;
+        if (Array.isArray(data)) {
+          setPayFull(data.reduce((payFull, item) => (
+            payFull = (item.payed === item.totalAmount) ? payFull + 1 : payFull
+          ), 0));
+          
+          setPayment(data.reduce((sum, item) => sum + item.payed, 0));
+          
+          setTotal(data.reduce((sum, item) => sum + item.totalAmount, 0));
+          getTotalHousehold(data);
+        } else {
+          console.error("Dữ liệu không phải là mảng:", data);
+        }
+      }).catch(error => {
+        console.error("Error fetching fees data:", error);
+      });
+    },[]);
 
   return (
     <>
@@ -82,30 +100,16 @@ function Chart(){
   <div className="recent_updates">
      <h2>Cập nhật gần đây</h2>
    <div className="updates">
-      <div className="update">
-         <div className="profile-photo">
-            <img src={profile} alt=""/>
-         </div>
-        <div className="message">
-           <p><b>Babar</b> Đã đóng $38 tiền nhà</p>
-        </div>
-      </div>
-      <div className="update">
-        <div className="profile-photo">
-        <img src={profile} alt=""/>
-        </div>
-       <div className="message">
-          <p><b>Ali</b> Đã đóng $39 phí thu xe </p>
-       </div>
-     </div>
-     <div className="update">
+    {payments.map((payment, index) => (
+      <div className="update" >
       <div className="profile-photo">
-         <img src={profile} alt=""/>
+        <img src={profile} alt=""/>
       </div>
-     <div className="message">
-        <p><b>Ramzan</b> Đã đóng $40 phí thu xe</p>
-     </div>
-   </div>
+      <div className="message">
+        <p><b>{payment.householdHead}</b> Đã đóng {payment.amount} VND {payment.feeName}</p>
+      </div>
+    </div>
+    ))}
   </div>
   </div>
 </div>
