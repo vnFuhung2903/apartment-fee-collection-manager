@@ -14,7 +14,7 @@ function Chart() {
   useEffect(() => {
     // Gọi API khi component Detail được load
     axios
-      .get("http://localhost:3180/payments/api/v1/payments?limit=3&status=done")
+      .get("http://localhost:8386/payments/api/v1/payments?limit=3&status=done")
       .then((response) => {
         getPayments(response.data);
       })
@@ -25,7 +25,7 @@ function Chart() {
 
   useEffect(() => {
     axios
-      .get("http://localhost:3180/payments/api/v1/totalPayment")
+      .get("http://localhost:8386/payments/api/v1/totalPayment")
       .then((response) => {
         const data = response.data.data;
         if (Array.isArray(data)) {

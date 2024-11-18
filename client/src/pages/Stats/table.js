@@ -8,7 +8,7 @@ function Table(){
   const [visibleData, setVisibleData] = useState([]);
 
   useEffect(() => {
-    fetch("http://localhost:3180/payments/api/v1/totalPayment")
+    fetch("http://localhost:8386/payments/api/v1/totalPayment")
       .then(res => res.json())
       .then(response => {
         const data = response.data; // Trích xuất mảng data từ kết quả trả về

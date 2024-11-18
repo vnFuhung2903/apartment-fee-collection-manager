@@ -24,7 +24,7 @@ function Register(){
     });
 
     useEffect(() => {
-        fetch("http://localhost:3180/apartments/api/v1/remains", {
+        fetch("http://localhost:8386/apartments/api/v1/remains", {
             method: "GET",
             headers: {"Content-Type": "application/json"}
         })
@@ -59,7 +59,7 @@ function Register(){
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        fetch("http://localhost:3180/person/api/v1/create", {
+        fetch("http://localhost:8386/person/api/v1/create", {
             method: "POST",
             headers: {"Content-Type": "application/json"},
             body: personalInfor
@@ -68,7 +68,7 @@ function Register(){
             return res.json();
         })
         .then(data => {
-            fetch("http://localhost:3180/household/api/v1/create", {
+            fetch("http://localhost:8386/household/api/v1/create", {
                 method: "POST",
                 headers: {"Content-Type": "application/json"},
                 body: JSON.stringify({ headId: data, apartmentNumber: householdInfor.number, contact: personalInfor.phone })

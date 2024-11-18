@@ -7,7 +7,7 @@ function Detail(){
     const [fees, setFees] = useState([]);
     useEffect(() => {
         // Gọi API khi component Detail được load
-        axios.get('http://localhost:3180/fees/api/v1/fees')  
+        axios.get('http://localhost:8386/fees/api/v1/fees')  
           .then(response => {
             setFees(response.data);
           })
