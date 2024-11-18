@@ -8,7 +8,7 @@ function FeeMange(){
   
   useEffect(() => {
     // Gọi API khi component được load
-    axios.get('http://localhost:3180/payments/api/v1/totalPayment')  
+    axios.get('http://localhost:8386/payments/api/v1/totalPayment')  
       .then(response => {
         setTotalPayments(response.data.data); // Lấy dữ liệu từ response.data.data nếu API trả về dạng này
       })
@@ -38,7 +38,7 @@ function FeeMange(){
                             {totalPayment.map((Tpayment,index) => (
                               <tr key={index}>
                                 <td>{Tpayment.headName}</td>
-                                <td>{Tpayment.totalAmount}</td>
+                                <td>{Tpayment.totalAmount - Tpayment.payed}</td>
                                   <span className={Tpayment.totalAmount === 0 ? "status-paid" : "status-unpaid"}>
                                     {Tpayment.totalAmount === 0 ? "Đã thanh toán" : "Chưa thanh toán"}
                                   </span>
