@@ -2,22 +2,17 @@ import "./asset/css/material-design-iconic-font.min.css"
 import "./asset/css/style.css"
 import { useState, useRef } from "react";
 import { FcOk } from "react-icons/fc";
+import { useNavigate } from "react-router-dom";
 
 function Password(){
   const [password, setPassword] = useState("");
-  const [isValid, setIsValid] = useState(false);
-  const [newClass, setNewClass] = useState("");
+  const [oldPassword, setOldPassword] = useState("");
+  const navigate = useNavigate();
 
-  //Process old password; 
-  const validatePassword = (password) => {
-    return password === "123456" ? true : false;
-  }
+
   const handleOldPassword = (e) => {
     e.preventDefault();
-    setPassword(e.target.value);
-    setIsValid(validatePassword(e.target.value));
-    if (e.target.value !== "")
-    setNewClass(validatePassword(e.target.value) ? "correct" : "incorrect");
+    setOldPassword(e.target.value);
   }
 
   //Process new password;
@@ -73,8 +68,28 @@ function Password(){
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (isValid && isNewValid && check)
-    alert("Thay đổi mật khẩu thành công");
+    if (check) {
+      fetch("http://localhost:8386/auth/api/v1/changePassword", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({
+          userId: localStorage.getItem("user"),
+          oldPassword: oldPassword,
+          newPassword: password
+        })
+      })
+      .then((res) => {
+          return res.json();
+      })
+      .then(data => {
+        if (data.message === "Password updated") {
+          navigate("/dashboard");
+        }
+        else{
+          alert(data.message);
+        }
+      })
+    }
     else alert ("Chưa thoả mãn yêu cầu");
   }
 
@@ -90,10 +105,7 @@ function Password(){
                       <div className="form-group">
                         <div className="password-input-field old-password">
                           <label htmlFor="old-password">Old Password</label>
-                          {
-                            isValid && <FcOk/>
-                          }
-                          <input type="password" name="old-password" id="old-password" placeholder="Old Password" onChange={handleOldPassword} className={`${newClass}`}/>
+                          <input type="password" name="old-password" id="old-password" placeholder="Old Password" onChange={handleOldPassword}/>
                         </div>
                         <div className="password-input-field">
                           <label htmlFor="new-password">New Password</label>

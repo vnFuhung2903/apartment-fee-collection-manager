@@ -2,12 +2,9 @@ import "./asset/css/material-design-iconic-font.min.css"
 import "./asset/css/style.css"
 import signInImg from "./asset/images/signin-image.jpg"
 import { useState } from "react";
-import {useNavigate } from "react-router-dom";
-import { FacebookAuthProvider, getAuth, GoogleAuthProvider, signInWithPopup, TwitterAuthProvider } from "firebase/auth";
-import app from "../../firebase/firebase";
+import { Link, useNavigate } from "react-router-dom";
 
 function LogIn() {
-  const auth = getAuth(app);
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
   const [remember, setRemeber] = useState(false);
@@ -25,45 +22,13 @@ function LogIn() {
     })
     .then(data => {
       if (data.message === "Login success") {
+        localStorage.setItem("user", data.token)
         navigate("/dashboard");
       }
       else{
         alert(data.message);
       }
     })
-  }
-
-  const googleSignIn = async () => {
-    const provider = new GoogleAuthProvider();
-    try {
-      const result = await signInWithPopup(auth, provider);
-      const user = result.user;
-      console.log("User signed in with Facebook:", user);
-    } catch (error) {
-      console.error("Error signing in with Facebook:", error);
-    }
-  }
-
-  const facebookSignIn = async () => {
-    const provider = new FacebookAuthProvider();
-    try {
-      const result = await signInWithPopup(auth, provider);
-      const user = result.user;
-      console.log("User signed in with Google:", user);
-    } catch (error) {
-      console.error("Error signing in with Google:", error);
-    }
-  }
-
-  const xSignIn = async () => {
-    const provider = new TwitterAuthProvider();
-    try {
-      const result = await signInWithPopup(auth, provider);
-      const user = result.user;
-      console.log("User signed in with Google:", user);
-    } catch (error) {
-      console.error("Error signing in with Google:", error);
-    }
   }
 
   return (
@@ -74,10 +39,11 @@ function LogIn() {
             <div className="signin-content">
               <div className="signin-image">
                   <figure><img src={signInImg} alt="sign in" /></figure>
+                  <Link to="/" className="signup-image-link">Create an account</Link>
               </div>
 
               <div className="signin-form">
-                  <h2 className="form-title">Đăng nhập</h2>
+                  <h2 className="form-title">Sign in</h2>
                   <form onSubmit={handleSubmit} className="register-form" id="login-form">
                       <div className="form-group">
                           <label htmlFor="your_name"><i className="zmdi zmdi-account material-icons-name"></i></label>
@@ -92,17 +58,17 @@ function LogIn() {
                           <label htmlFor="remember-me" className="label-agree-term"><span><span></span></span>Remember me</label>
                       </div>
                       <div className="form-group form-button">
-                          <input type="submit" name="signin" id="signin" className="form-submit" value="Đăng nhập"/>
+                          <input type="submit" name="signin" id="signin" className="form-submit" value="Log in"/>
                       </div>
                   </form>
-                  <div className="social-login">
-                      <span className="social-label">Hoặc đăng nhập với</span>
+                  {/* <div className="social-login">
+                      <span className="social-label">Or login with</span>
                       <ul className="socials">
                           <li><a onClick={facebookSignIn}><i className="display-flex-center zmdi zmdi-facebook"></i></a></li>
                           <li><a onClick={xSignIn}><i className="display-flex-center zmdi zmdi-twitter"></i></a></li>
                           <li><a onClick={googleSignIn}><i className="display-flex-center zmdi zmdi-google"></i></a></li>
                       </ul>
-                  </div>
+                  </div> */}
               </div>
             </div>
           </div>
