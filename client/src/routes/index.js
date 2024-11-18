@@ -9,14 +9,14 @@ import Password from "../pages/Password";
 import Stats from "../pages/Stats";
 
 export const routes = [
-  {
+  /*{
     path: "/",
     element: <LogIn/>,
   },
   {
     path: "login",
     element: <LogIn/>
-  },
+  },*/
   {
     path: "/",
     element: <LayoutDefault/>,

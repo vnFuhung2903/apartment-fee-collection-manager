@@ -21,7 +21,7 @@ form .fields{
   margin-bottom: 10px;
 }
 .second .fields{
-  grid-template-rows: repeat(2,1fr);
+  grid-template-rows: 1fr;
 }
 form .fields .input-fields{
   display: flex;
@@ -69,6 +69,7 @@ select{
   font-size: 16px;
   font-weight: 500px;
   color: #333;
+  padding: 0%;
 }
 form .second{
   margin-top: 10px;
