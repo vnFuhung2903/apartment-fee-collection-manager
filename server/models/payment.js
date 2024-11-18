@@ -1,11 +1,12 @@
 const mongoose = require("mongoose");
 
 const paymentSchema = new mongoose.Schema({
-    fee_id: Schema.Types.ObjectId,
-    household_id: Schema.Types.ObjectId,
-    amount: Number,
-    payment_date: Date
-})
+  fee_id: { type: mongoose.Schema.Types.ObjectId, ref: 'fees' },
+  household_id: { type: mongoose.Schema.Types.ObjectId, ref: 'households' },
+  amount: { type: Number, required: true },  
+  payment_date: { type: Date, required: true },  
+  status: { type: String, required: true }  
+});
 
-const payment = mongoose.model("payments", paymentSchema);
-module.exports = payment;
+const Payment = mongoose.model("payments", paymentSchema);
+module.exports = Payment;
