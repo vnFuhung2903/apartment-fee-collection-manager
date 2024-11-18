@@ -2,16 +2,16 @@ const mongoose = require("mongoose");
 
 const personSchema = new mongoose.Schema({
     name: String,
+    cic: String,
     dob: Date,
     gender: String,
-    relation_to_owner: String,
-    temporary_absence: Boolean,
-    temporary_residence: Boolean,
-    religion: String,
+    status: String,
+    ethnicity: String,
     nation: String,
-    nation_id: Number,
+    hometown: String,
     movingIn: Date,
-    contact_phone: Number
+    contact_phone: String,
+    occupation: String
 })
 
 const person = mongoose.model("persons", personSchema);

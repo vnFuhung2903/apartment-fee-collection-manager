@@ -1,6 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,500;0,600;0,700;0,800;1,600&display=swap');
 @import url("https://fonts.googleapis.com/css2?family=Material+Symbols+Sharp:opsz,wght,FILL,GRAD@48,400,0,0");
-
 
 /* variables */
 
@@ -38,7 +36,6 @@
   text-decoration: none;
   list-style: none;
   appearance: none;
-  // font-family: "Ubuntu", sans-serif!important;
 }
 
 
@@ -49,8 +46,9 @@
   grid-template-columns: auto 16rem;
   margin: 0 auto;
 
-  h1{
-    font-family: Calibri;
+  h2{
+    font-weight: 600;
+    color: var(--blue);
   }
 }
 
@@ -223,8 +221,8 @@ main .recent_order{
 }
 
 main .recent_order h2{
-    color: var(--clr-dark);
-    font-family: Arial, Helvetica, sans-serif;
+  font-weight: 600;
+  color: var(--blue);
 }
 
 main .recent_order h2{
@@ -270,7 +268,6 @@ Right Side
 }
 .right h2{
   color: var(--clr-dark);
-  font-family: Calibri;
 }
 
 /* recent update */

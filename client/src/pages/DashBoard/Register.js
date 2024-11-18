@@ -1,57 +1,140 @@
 import "./style_register.css"
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 function Register(){
-  return(
-  <>
-    <div class = "details">
-      <div class = "recentCt page2">
+    const navigate = useNavigate();
+    const [remain, setRemain] = useState([]);
+    const [personalInfor, setPersonalInfor] = useState({
+        name: "",
+        cic: "",
+        dob: "",
+        nationality: "",
+        occupation: "",
+        gender: "Nam",
+        hometown: "",
+        ethnic: "",
+        phone: "",
+        status: "Thường trú"
+    })
+
+    const [householdInfor, setHouseholdInfor] = useState({
+    number: "",
+    // floor: ""
+    });
+
+    useEffect(() => {
+        fetch("http://localhost:8386/apartments/api/v1/remains", {
+            method: "GET",
+            headers: {"Content-Type": "application/json"}
+        })
+        .then(res => {
+            if(res.status === 200)
+                return res.json();
+        })
+        .then(data => {
+            setRemain(data);
+        });
+    })
+
+    const handlePersonalChange = (e) => {
+        e.preventDefault();
+        const name = e.target.name;
+        const value = e.target.value;
+        setPersonalInfor({
+            ...personalInfor, 
+            [name]: value
+        });
+    }
+
+    const handleHouseholdChange = (e) => {
+        e.preventDefault();
+        const name = e.target.name;
+        const value = e.target.value;
+        setHouseholdInfor({
+            ...householdInfor, 
+            [name]: value 
+        });
+    };
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        fetch("http://localhost:8386/person/api/v1/create", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: personalInfor
+        })
+        .then((res) => {
+            return res.json();
+        })
+        .then(data => {
+            fetch("http://localhost:8386/household/api/v1/create", {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify({ headId: data, apartmentNumber: householdInfor.number, contact: personalInfor.phone })
+            })
+            .then(res => {
+                return res.json()
+            })
+            .then(data => {
+                if(data.message === 'Success')
+                    navigate("/dashboard");
+                else alert(data.message);
+            })
+        })
+    }
+
+    return(
+    <>
+    <div className = "details">
+        <div className = "recentCt page2">
         <div className="cardHeader">
             <h2>Đăng kí</h2>
         </div>
-        <form action="#">
+        <form onSubmit={handleSubmit}>
             <div className="form first">
                 <span id = "title">Thông tin chủ hộ</span>
                 
                 <div className="fields">
                     <div className="input-fields">
                         <label htmlFor="name">Họ và tên</label>
-                        <input id="name" type="text" placeholder="" required />
+                        <input id="name" name="name" type="text" placeholder="" onChange={handlePersonalChange} required />
                     </div>
                     <div className="input-fields">
                         <label htmlFor="">CCCD</label>
-                        <input type="text" placeholder="" required />
+                        <input id="cic" name="cic" type="text" placeholder="" onChange={handlePersonalChange} required />
                     </div>
                     <div className="input-fields">
                         <label htmlFor="">Ngày sinh</label>
-                        <input type="date" placeholder="" required />
+                        <input id="dob" name="dob" type="date" placeholder="" onChange={handlePersonalChange} required />
                     </div>
                     <div className="input-fields">
                         <label htmlFor="">Quốc tịch</label>
-                        <input type="text" placeholder="" required /> 
+                        <input id="nationality" name="nationality" type="text" placeholder="" onChange={handlePersonalChange} required /> 
                     </div>
                     <div className="input-fields">
                         <label htmlFor="">Nghề nghiệp</label>
-                        <input type="text" placeholder="" required />
+                        <input id="occupation" name="occupation" type="text" placeholder="" onChange={handlePersonalChange} required />
                     </div>
                     <div className="input-fields">
                         <label htmlFor="">Giới tính</label>
-                        <select name="sex" id="sex">
-                            <option value="">Nam</option>
-                            <option value="">Nữ</option>
-                            <option value="">Khác</option>
+                        <select name="gender" id="gender" onChange={handlePersonalChange}>
+                            <option value="Nam">Nam</option>
+                            <option value="Nữ">Nữ</option>
+                            <option value="Khác">Khác</option>
                         </select>
                     </div>
                     <div className="input-fields">
                         <label htmlFor="">Quê quán</label>
-                        <input type="text" placeholder="" required />
+                        <input id="hometown" name="hometown" type="text" placeholder="" onChange={handlePersonalChange} required />
                     </div>
                     <div className="input-fields">
                         <label htmlFor="">Dân tộc</label>
-                        <input type="text" placeholder="" required />
+                        <input id="ethnic" name="ethnic" type="text" placeholder="" onChange={handlePersonalChange} required />
                     </div>
                     <div className="input-fields">
                         <label htmlFor="">Số điện thoại</label>
-                        <input type="number" placeholder="" required />
+                        <input id="phone" name="phone" type="number" placeholder="" onChange={handlePersonalChange} required />
                     </div>
                 </div>
             </div>
@@ -60,45 +143,44 @@ function Register(){
                 <span id = "title">Thông tin hộ khẩu</span>
                 
                 <div className="fields">
-                    <div className="input-fields">
+                    {/* <div className="input-fields">
                         <label htmlFor="">Tên chủ hộ</label>
-                        <input type="text" placeholder="" required />
+                        <input id="householdName" name="householdName" type="text" placeholder="" onChange={handleHouseholdChange} required />
                     </div>
                     <div className="input-fields">
                         <label htmlFor="">CCCD</label>
-                        <input type="text" placeholder="" required />
+                        <input id="householdCCCD" name="householdCCCD" type="text" placeholder="" onChange={handleHouseholdChange} required />
                     </div>
                     <div className="input-fields">
                         <label htmlFor="">Ngày sinh</label>
-                        <input type="date" placeholder="" required />
-                    </div>
+                        <input id="householdDOB" name="householdDOB" type="date" placeholder="" onChange={handleHouseholdChange} required />
+                    </div> */}
                     <div className="input-fields">
                         <label htmlFor="">Số nhà</label>
-                        <input type="number" placeholder="" required />
+                        <input id="houseNumber" name="number" type="number" placeholder="" onChange={handleHouseholdChange} required />
                     </div>
-                    <div className="input-fields">
+                    {/* <div className="input-fields">
                         <label htmlFor="">Số tầng</label>
-                        <input type="number" placeholder="" required />
-                    </div>
+                        <input id="floorNumber" name="floor" type="number" placeholder="" onChange={handleHouseholdChange} required />
+                    </div> */}
                     <div className="input-fields">
-                        <label htmlFor="">Loại số</label>
-                        <select name="sex" id="sex">
-                            <option value="">Thường trú</option>
-                            <option value="">Tạm trú</option>
+                        <label htmlFor="">Trạng thái</label>
+                        <select id="residenceType" name="status" onChange={handlePersonalChange}>
+                            <option value="permanent_residence">Thường trú</option>
+                            <option value="temporary_residence">Tạm trú</option>
                         </select>
                     </div>
                 </div>
             </div>
-            <div class ="buttons">
-                <button class = "submitBtn">
-                    <span class = "buttonSm">Submit</span>
+            <div className ="buttons">
+                <button className = "submitBtn">
+                    <span className = "buttonSm">Submit</span>
                 </button>
             </div>
         </form>
                     
-      </div>
+        </div>
     </div>
-  </>
-  )
-}
+    </>
+)}
 export default Register

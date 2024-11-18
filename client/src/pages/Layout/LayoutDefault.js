@@ -2,20 +2,24 @@ import "./assets/css/style.scss"
 import "https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"
 import customer01 from "./assets/imgs/customer01.jpg"
 import { Outlet, Link } from "react-router-dom"
+import {useRef} from "react"
 
 function LayoutDefault(){
-    let navigation = document.querySelector(".layout-default__sidebar--navigation");
-    let main = document.querySelector(".layout-default__main");
+    const navigationRef = useRef(null);
+    const mainRef = useRef(null);
+
     const handleClick = () => {
-        navigation.classList.toggle("active");
-        main.classList.toggle("active");
-    }
+        if (navigationRef.current && mainRef.current) {
+          navigationRef.current.classList.toggle("active");
+          mainRef.current.classList.toggle("active");
+        }
+      };
     return (
     <>
       <div className="layout-default">
         <div className="layout-default__sidebar">
           <div className="layout-default__sidebar--container">
-            <div className="layout-default__sidebar--navigation">
+            <div className="layout-default__sidebar--navigation" ref={navigationRef}>
               <ul>
               <li>
                     <Link to="dashboard">
@@ -72,12 +76,12 @@ function LayoutDefault(){
                 </li>
 
                 <li>
-                    <a href="#">
+                    <Link to="/password">
                         <span className="icon">
                             <ion-icon name="lock-closed-outline"></ion-icon>
                         </span>
                         <span className="title">Password</span>
-                    </a>
+                    </Link>
                 </li>
 
                 <li>
@@ -93,7 +97,7 @@ function LayoutDefault(){
           </div>
         </div>
             {/* ----------------------Main ---------------------- */}
-        <div className="layout-default__main">
+        <div className="layout-default__main" ref={mainRef}>
             <div className="layout-default__main--topbar">
                 <div className="layout-default__main--toggle" onClick={handleClick}>
                     <ion-icon name="menu-outline"></ion-icon>
