@@ -1,55 +1,29 @@
 import "./stats.scss";
 import profile from "./images/profile-1.jpg";
 import { useState, useEffect } from "react";
-import axios from "axios";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchPayments, fetchTotalPayment } from "../../actions/chart";
 
 function Chart() {
-  const [data, getTotalHousehold] = useState([]);
-  const [payFull, setPayFull] = useState(0);
-  const [payment, setPayment] = useState(0);
-  const [total, setTotal] = useState(0);
-  const [payments, getPayments] = useState([]);
+  const dispatch = useDispatch();
+  const { payments, totalPaymentData } = useSelector((state) => state.chartReducer);
+
   const r = 30;
 
-  useEffect(() => {
-    // Gọi API khi component Detail được load
-    axios
-      .get("http://localhost:8386/payments/api/v1/payments?limit=3&status=done")
-      .then((response) => {
-        getPayments(response.data);
-      })
-      .catch((error) => {
-        console.error("Error fetching fees data:", error);
-      });
-  }, []);
+  const payFull = totalPaymentData.reduce(
+      (payFull, item) =>
+        item.payed === item.totalAmount ? payFull + 1 : payFull,
+      0
+    ) || 0;
+
+  const payment = totalPaymentData.reduce((sum, item) => sum + item.payed, 0) || 0;
+
+  const total = totalPaymentData.reduce((sum, item) => sum + item.totalAmount, 0) || 0;
 
   useEffect(() => {
-    axios
-      .get("http://localhost:8386/payments/api/v1/totalPayment")
-      .then((response) => {
-        const data = response.data.data;
-        if (Array.isArray(data)) {
-          setPayFull(
-            data.reduce(
-              (payFull, item) =>
-                (payFull =
-                  item.payed === item.totalAmount ? payFull + 1 : payFull),
-              0
-            )
-          );
-
-          setPayment(data.reduce((sum, item) => sum + item.payed, 0));
-
-          setTotal(data.reduce((sum, item) => sum + item.totalAmount, 0));
-          getTotalHousehold(data);
-        } else {
-          console.error("Dữ liệu không phải là mảng:", data);
-        }
-      })
-      .catch((error) => {
-        console.error("Error fetching fees data:", error);
-      });
-  }, []);
+    dispatch(fetchPayments());
+    dispatch(fetchTotalPayment());
+  }, [dispatch]);
 
   return (
     <>
@@ -64,7 +38,7 @@ function Chart() {
                 <div className="left">
                   <h3>Số hộ đã nộp đủ</h3>
                   <h1>
-                    {payFull}/{data.length}
+                    {payFull}/{totalPaymentData.length}
                   </h1>
                 </div>
                 <div className="progress">
@@ -75,13 +49,13 @@ function Chart() {
                       cx="40"
                       strokeDasharray={2 * Math.PI * r}
                       strokeDashoffset={
-                        2 * Math.PI * r * (1 - payFull / data.length)
+                        2 * Math.PI * r * (1 - payFull / totalPaymentData.length)
                       }
                       transform={`rotate(-90, 40, 40)`}
                     ></circle>
                   </svg>
                   <div className="number">
-                    <p>{Math.floor((payFull / data.length) * 100)}%</p>
+                    <p>{Math.floor((payFull / totalPaymentData.length) * 100)}%</p>
                   </div>
                 </div>
               </div>

@@ -1,24 +1,19 @@
 import "./stats.scss"
 import { useState, useEffect } from 'react'
 import { Link } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchTotalPayment } from "../../actions/chart"
 
 function Table(){
-  const [data, setData] = useState([]);
+  const dispatch = useDispatch();
+  const {totalPaymentData } = useSelector((state) => state.chartReducer);
   const [showAll, setShowAll] = useState(false);
-  const [visibleData, setVisibleData] = useState([]);
+
+  const visibleData = totalPaymentData;
 
   useEffect(() => {
-    fetch("http://localhost:8386/payments/api/v1/totalPayment")
-      .then(res => res.json())
-      .then(response => {
-        const data = response.data; // Trích xuất mảng data từ kết quả trả về
-        setData(data);
-        setVisibleData(showAll === false ? data.slice(0, 2) : data); // Xử lý hiển thị tùy thuộc vào showAll
-      })
-      .catch(error => {
-        console.error("Error fetching data:", error);
-      });
-  }, [showAll]);
+    dispatch(fetchTotalPayment());
+  }, [dispatch]);
   return (
     <>
       <div className="container__body">

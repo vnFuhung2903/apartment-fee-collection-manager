@@ -1,21 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from "react-router-dom"
-import axios from 'axios';
 import "./style.css"
+import { useDispatch, useSelector } from "react-redux";
+import { fetchTotalPayments } from "../../actions/feeManage";
 
 function FeeMange(){
-  const [totalPayment, setTotalPayments] = useState([]);
-  
+  const dispatch = useDispatch();
+
+  const totalPayment = useSelector((state) => state.feeManageReducer.totalPayments);
+
   useEffect(() => {
-    // Gọi API khi component được load
-    axios.get('http://localhost:8386/payments/api/v1/totalPayment')  
-      .then(response => {
-        setTotalPayments(response.data.data); // Lấy dữ liệu từ response.data.data nếu API trả về dạng này
-      })
-      .catch(error => {
-        console.error("Error fetching fees data:", error);
-      });
-  }, []);
+    dispatch(fetchTotalPayments());
+  }, [dispatch]);
   return (
     <>
       <div className="details__fee">

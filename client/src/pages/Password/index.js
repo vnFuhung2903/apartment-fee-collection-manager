@@ -3,12 +3,13 @@ import "./asset/css/style.css"
 import { useState } from "react";
 import { FcOk } from "react-icons/fc";
 import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { changePassword } from "../../actions/password";
 
 function Password(){
   const [password, setPassword] = useState("");
   const [oldPassword, setOldPassword] = useState("");
   const navigate = useNavigate();
-
 
   const handleOldPassword = (e) => {
     e.preventDefault();
@@ -66,32 +67,16 @@ function Password(){
     console.log(value);
   }
 
+  const dispatch = useDispatch();
+
   const handleSubmit = (e) => {
     e.preventDefault();
     if (check) {
-      fetch("http://localhost:8386/auth/api/v1/changePassword", {
-        method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({
-          userId: localStorage.getItem("user"),
-          oldPassword: oldPassword,
-          newPassword: password
-        })
-      })
-      .then((res) => {
-          return res.json();
-      })
-      .then(data => {
-        if (data.message === "Password updated") {
-          navigate("/dashboard");
-        }
-        else{
-          alert(data.message);
-        }
-      })
+      dispatch(changePassword(oldPassword, newPassword, navigate));
+    } else {
+      alert("Chưa thoả mãn yêu cầu");
     }
-    else alert ("Chưa thoả mãn yêu cầu");
-  }
+  };
 
   return(
     <>
