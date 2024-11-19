@@ -31,6 +31,7 @@ function Detail(){
                                 <td>Loại phí</td>
                                 <td>Số tiền</td>
                                 <td>Ngày thu</td>
+                                <td>Tình trạng</td>
                                 <td>Trạng thái</td>
                             </tr>
                         </thead>

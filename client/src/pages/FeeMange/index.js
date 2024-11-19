@@ -39,9 +39,11 @@ function FeeMange(){
                               <tr key={index}>
                                 <td>{Tpayment.headName}</td>
                                 <td>{Tpayment.totalAmount - Tpayment.payed}</td>
+                                <td>
                                   <span className={Tpayment.totalAmount === 0 ? "status-paid" : "status-unpaid"}>
                                     {Tpayment.totalAmount === 0 ? "Đã thanh toán" : "Chưa thanh toán"}
                                   </span>
+                                </td>
                                 <td>
                                   <Link to="/detail">
                                     <button className="btn-details">Xem</button>

@@ -94,7 +94,7 @@ function Chart() {
                 <div className="left">
                   <h3>Tổng thu</h3>
                   <h1>
-                    ${payment} / ${total}
+                    {payment}VNĐ / {total}VNĐ
                   </h1>
                 </div>
                 <div className="progress">
@@ -129,12 +129,12 @@ function Chart() {
             <h2>Cập nhật gần đây</h2>
             <div className="updates">
               {payments.map((payment, index) => (
-                <div className="update">
+                <div className="update" key={index}>
                   <img src={profile} alt="" />
                   <div className="message">
                     <p>
                       <b>{payment.householdHead}</b> Đã đóng {payment.amount}{" "}
-                      VND {payment.feeName}
+                      VNĐ {payment.feeName}
                     </p>
                   </div>
                 </div>

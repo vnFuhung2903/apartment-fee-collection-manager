@@ -1,6 +1,6 @@
 import "./asset/css/material-design-iconic-font.min.css"
 import "./asset/css/style.css"
-import { useState, useRef } from "react";
+import { useState } from "react";
 import { FcOk } from "react-icons/fc";
 import { useNavigate } from "react-router-dom";
 

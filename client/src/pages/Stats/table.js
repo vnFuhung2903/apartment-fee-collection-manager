@@ -29,21 +29,21 @@ function Table(){
                   <thead>
                     <tr>
                       <th>Tên chủ căn hộ</th>
-                      <th>Tổng phải nộp</th>
-                      <th>Tổng thu</th>
+                      <th>Tổng phải nộp (VNĐ)</th>
+                      <th>Tổng thu (VNĐ)</th>
                       <th>Trạng thái</th>
                     </tr>
                   </thead>
                     <tbody>
                       {
-                        visibleData.map(item => (
-                          <tr>
+                        visibleData.map((item, index) => (
+                          <tr key={index}>
                             <td>{item.headName}</td>
                             <td>{item.totalAmount}</td>
                             <td>{item.payed}</td>
                             <td>{Math.floor((item.payed / item.totalAmount) * 100)}%</td>
                             <td>
-                              <Link to="*" className="primary">Chi tiết</Link>
+                              <Link to="/detail" className="primary">Chi tiết</Link>
                             </td>
                           </tr>
                         ))
