@@ -15,12 +15,21 @@
   box-shadow: 0 7px 25px rgba(0, 0, 0, 0.08);
   border-radius: 20px;
   grid-template-rows: 100px 1fr;
+  overflow: visible !important;
 }
 
 .details__fee .cardHeader {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
+}
+
+.details__fee .cardHeader .all-button{
+  display: flex;
+}
+
+.details__fee .cardHeader .all-button > .btn{
+  margin: 5px;
 }
 
 .details__fee table {
@@ -76,8 +85,18 @@ span{
 
 .btn-details{
   padding: 10px;
+  margin-left: 10px;
   border-radius: 10px;
   background-color: #8de02c;
   color: #fff;
   cursor: pointer;
+}
+
+.ant-form-item-label {
+  overflow: visible !important;
+}
+
+.btn-details.delete-icon{
+  background-color: #B6261D;
+  padding: 5px;
 }

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { Link } from "react-router-dom"
 import "./style.css"
 import { useDispatch, useSelector } from "react-redux";
@@ -18,7 +18,9 @@ function FeeMange(){
                 <div className="recentCt">
                     <div className="cardHeader">
                         <h2>Quản lý thu phí chung cư</h2>
-                        <button className="btn">Thêm khoản phí mới</button>
+                        <Link to="/fee_list">
+                          <button className="btn">Danh sách các loại phí</button>
+                        </Link>
                     </div>
 
                     <table>
