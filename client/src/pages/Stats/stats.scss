@@ -45,6 +45,7 @@
   gap: 1.8rem;
   grid-template-columns: auto 16rem;
   margin: 0 auto;
+  max-height: 45vh;
 
   h2{
     font-weight: 600;
@@ -267,14 +268,27 @@ Right Side
   margin-top: 1.4rem;
 }
 .right h2{
-  color: var(--clr-dark);
+  color: var(--blue);
 }
 
 /* recent update */
 
 .right .recent_updates{
+  background-color: var(--clr-white);
+  border-radius: var(--card-border-radius);
   margin-top: 1rem;
-  margin-left: -20px;
+  box-shadow: var(--box-shadow);
+  transition: all .3s ease;
+  overflow-y: auto;
+  max-height: calc(100% * 2 / 3);
+
+  h2{
+    padding-left: 5px;
+  }
+}
+
+.right .recent_updates::-webkit-scrollbar {
+  display: none; /* Ẩn thanh cuộn */
 }
 .right .recent_updates .updates{
   background-color: var(--clr-white);
@@ -290,7 +304,7 @@ Right Side
    display: grid;
    grid-template-columns: 2.6rem auto;
    gap: 1rem;
-   margin-bottom: 1rem;
+   padding-bottom: 1rem;
 }
 
 

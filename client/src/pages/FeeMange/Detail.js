@@ -1,20 +1,16 @@
 import "./style.css"
 import {useState, useEffect} from "react"
-import axios from 'axios'
 import { Link } from 'react-router-dom';
+import { useDispatch, useSelector } from "react-redux";
+import { fetchFees } from "../../actions/feeDetail";
 
 function Detail(){
-    const [fees, setFees] = useState([]);
+    const dispatch = useDispatch();
+    const fees = useSelector(state => state.feeDetailReducer.fees);
+
     useEffect(() => {
-        // Gọi API khi component Detail được load
-        axios.get('http://localhost:3180/fees/api/v1/fees')  
-          .then(response => {
-            setFees(response.data);
-          })
-          .catch(error => {
-            console.error("Error fetching fees data:", error);
-          });
-      }, []);
+        dispatch(fetchFees());
+      },[dispatch]);
     
   return (
     <>
@@ -31,6 +27,7 @@ function Detail(){
                                 <td>Loại phí</td>
                                 <td>Số tiền</td>
                                 <td>Ngày thu</td>
+                                <td>Tình trạng</td>
                                 <td>Trạng thái</td>
                             </tr>
                         </thead>
