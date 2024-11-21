@@ -280,7 +280,7 @@ Right Side
   box-shadow: var(--box-shadow);
   transition: all .3s ease;
   overflow-y: auto;
-  max-height: calc(100% * 2 / 3);
+  max-height: 71%;
 
   h2{
     padding-left: 5px;
@@ -297,7 +297,7 @@ Right Side
   box-shadow: var(--box-shadow);
   transition: all .3s ease;
 }
-.right .recent_updates .updates:hover{
+.right .recent_updates:hover{
   box-shadow: none;
 }
 .right .recent_updates .update{
