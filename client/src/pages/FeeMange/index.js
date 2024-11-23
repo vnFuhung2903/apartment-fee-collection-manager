@@ -43,9 +43,9 @@ function FeeMange(){
                                   </span>
                                 </td>
                                 <td>
-                                  <Link to="/detail">
-                                    <button className="btn-details">Xem</button>
-                                  </Link>
+                                <Link to={`/detail/${Tpayment.household_id || ""}`}>
+                                  <button className="btn-details">Xem</button>
+                                </Link>
                                 </td>
                               </tr>
                             ))}

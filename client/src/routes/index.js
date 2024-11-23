@@ -57,7 +57,7 @@ export const routes = [
         element: <EditFee/>
       },
       {
-        path: "detail",
+        path: "detail/:household_id",
         element: <Detail/>
       },
       {

@@ -5,7 +5,12 @@ const apartment = require('../models/apartment.js');
 
 const getHouseholds = async (req, res) => {
   try {
-    let householdsFound = await household.find();
+    const {id} = req.query;
+    const conditions = {};
+    if (id) {
+      conditions._id = id;
+    }
+    let householdsFound = await household.find(conditions);
     let json = [];
     let status = 'permanent_residence' 
     for(const data of householdsFound) {

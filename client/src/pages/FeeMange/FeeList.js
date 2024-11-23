@@ -1,23 +1,37 @@
 import "./style.css"
 import { Link, useNavigate } from 'react-router-dom';
 import { CloseOutlined } from "@ant-design/icons"
-import { useState } from "react";
+import { useState,useEffect  } from "react";
+import axios from "axios";
 
 function FeeList(){
   const navigate = useNavigate();
-  const [fees, setFees] = useState([
-    { id: 1, name: "Phí dịch vụ chung cư", price: 3000, dueDate: "2024-11-21", mandatory: "Bắt buộc" },
-    { id: 2, name: "Phí dịch vụ chung cư", price: 3000, dueDate: "2024-11-30", mandatory: "Bắt buộc" },
-    { id: 3, name: "Quỹ từ thiện", price: 10000, dueDate: "2024-11-30", mandatory: "Không bắt buộc" },
-  ]);
+  const [fees, getFees] = useState([]);
+  // const [fees, setFees] = useState([]);
+  // const [fees, setFees] = useState([
+  //   { id: 1, name: "Phí dịch vụ chung cư", price: 3000, dueDate: "2024-11-21", mandatory: "Bắt buộc" },
+  //   { id: 2, name: "Phí dịch vụ chung cư", price: 3000, dueDate: "2024-11-30", mandatory: "Bắt buộc" },
+  //   { id: 3, name: "Quỹ từ thiện", price: 10000, dueDate: "2024-11-30", mandatory: "Không bắt buộc" },
+  // ]);
 
-  const handleDelete = (id) => {
-    setFees(fees.filter(fee => fee.id !== id));
-  };
+  // const handleDelete = (id) => {
+  //   setFees(fees.filter(fee => fee.id !== id));
+  // };
 
   const handleEdit = (fee) => {
     navigate("/edit_fee", { state: { fee } });
   };
+  useEffect(() => {
+    // Gọi API khi component Detail được load
+    axios
+      .get("http://localhost:8386/fees/api/v1/fees")
+      .then((response) => {
+        getFees(response.data);
+      })
+      .catch((error) => {
+        console.error("Error fetching fees data:", error);
+      });
+  }, []);
 
   return (
     <>
@@ -43,19 +57,22 @@ function FeeList(){
               </tr>
             </thead>
             <tbody>
-              {fees.map(fee => (
-                <tr key={fee.id}>
-                  <td>{fee.id}</td>
+            {fees.map((fee, index) => {
+              const formattedDueDate = fee.due ? new Date(fee.due).toLocaleDateString("vi-VN") : "Không xác định";
+              return (
+                <tr key={index + 1}>
+                  <td>{index + 1}</td> 
                   <td>{fee.name}</td>
-                  <td>{fee.price}</td>
-                  <td>{fee.dueDate}</td>
-                  <td>{fee.mandatory}</td>
+                  <td>{fee.amount} VNĐ</td>
+                  <td>{formattedDueDate}</td>
+                  <td>{fee.status}</td>
                   <td>
                     <button className="btn-details" onClick={() => handleEdit(fee)}>Cập nhật</button>
-                    <button className="btn-details delete-icon" onClick={() => handleDelete(fee.id)}><CloseOutlined /></button>
+                    <button className="btn-details delete-icon" ><CloseOutlined /></button>
                   </td>
                 </tr>
-              ))}
+              );
+            })}
             </tbody>
           </table>
         </div>

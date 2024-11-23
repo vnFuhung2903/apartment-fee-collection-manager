@@ -1,5 +1,5 @@
 const initialState = {
-  fees: []
+  fees: [],
 };
 
 const feeDetailReducer = (state = initialState, action) => {
