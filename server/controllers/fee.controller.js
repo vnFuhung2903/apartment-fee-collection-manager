@@ -53,34 +53,29 @@ module.exports.addFee = async (req, res) => {
 //[POST] /payments/api/v1/change
 module.exports.changeFee = async (req,res) => {
   try {
-    const { name,amount,due,status,type } = req.body;
-    switch (type) {
-      case "amount":
-        await Payment.updateOne(
-          {
-           name:name
-          },{
-            amount:amount
-          });
-      case "due":
-        await Payment.updateOne(
-          {
-            name:name
-          },{
-            due:due
-          });
-      case "status":
-        await Payment.updateOne(
-          {
-            name:name
-          },{
-            status:status
-          });    
+    const {id,amount,due,status} = req.body;
+    if(!id){
+      return res.status(400).json({message:"Thiếu ID của phí cần cập nhật !!!!"});
     }
-    res.status(201).json({message: "Change Success"});
+    const updateFields = {};
+    if(amount !== undefined){
+      updateFields.amount = amount;
+    }
+    if (due !== undefined) {
+      updateFields.due = due;
+    }
+    if (status !== undefined) {
+      updateFields.status = status;
+    }
+    
+    if (Object.keys(updateFields).length === 0) {
+      return res.status(400).json({ message: "Không có trường nào để cập nhật!!!" });
+    }
+    const updatedFee = await Fee.findByIdAndUpdate(id,updateFields,{new:true});
+    res.status(200).json({ message: "Cập nhật thành công!", data: updatedFee });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Change Error", error });
+    console.log(error);
+    res.status(500).json({ message: "Lỗi khi cập nhật!", error });
   }
 };
 

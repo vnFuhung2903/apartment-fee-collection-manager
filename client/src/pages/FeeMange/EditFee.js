@@ -1,13 +1,37 @@
 import { Input, Form, Button, InputNumber, Select, DatePicker } from "antd";
 import { Link, useLocation } from "react-router-dom";
 import dayjs from "dayjs";
+import axios from "axios";
 
 function EditFee() {
   const { state } = useLocation();
   const fee = state ? state.fee : null;
 
-  const handleSubmit = (values) => {
-    console.log(values);
+  const handleSubmit = async (values) => {
+    try {
+      const payload = { _id: values.id };
+      if (values.name) {
+        payload.name = values.name;
+      }
+      if (values.amount !== undefined) {
+        payload.amount = values.amount;
+      }
+      if (values.due) {
+        payload.due = values.due.format("YYYY-MM-DD");
+      }
+      if (values.status) {
+        payload.status = values.status;
+      }
+      // console.log(payload);
+      const response = await axios.post("http://localhost:8386/fees/api/v1/change", payload);
+      if (response.status === 201) {
+        alert("Cập nhật thành công!");
+      } else {
+        alert("Cập nhật thất bại!");
+      }
+    } catch (error) {
+      alert("Có lỗi xảy ra khi gửi yêu cầu !!!");
+    }
   };
 
   const { Option } = Select;
@@ -44,11 +68,12 @@ function EditFee() {
             name="create-fee" 
             onFinish={handleSubmit}
             initialValues={{
-              STT: fee ? fee.id : undefined,
-              feeName: fee ? fee.name : '',
-              price: fee ? fee.price : undefined,
-              deadline: fee ? dayjs(fee.dueDate) : undefined,
-              status: fee ? fee.mandatory : '',
+              id:fee._id,
+              STT:  undefined,
+              name: fee ? fee.name : '',
+              amount: fee ? fee.amount : undefined,
+              due: fee ? dayjs(fee.due) : undefined,
+              status: fee ? (fee.status ? "Bắt buộc" : "Không bắt buộc") : '',
             }}
           >
             <Form.Item
@@ -59,29 +84,25 @@ function EditFee() {
             </Form.Item>
             <Form.Item
               label="Tên loại phí"
-              name="feeName"
-              rules={[{ required: true, message: 'Bắt buộc!' }]}
+              name="name"
             >
               <Input />
             </Form.Item>
             <Form.Item
               label="Giá/đơn vị"
-              name="price"
-              rules={[{ required: true, message: 'Bắt buộc!' }]}
+              name="amount"
             >
               <InputNumber />
             </Form.Item>
             <Form.Item
               label="Hạn nộp"
-              name="deadline"
-              rules={[{ required: true, message: 'Bắt buộc!' }]}
+              name="due"
             >
               <DatePicker />
             </Form.Item>
             <Form.Item
               label="Trạng thái"
               name="status"
-              rules={[{ required: true, message: 'Bắt buộc!' }]}
             >
               <Select placeholder="Chọn trạng thái">
                 <Option value="Bắt buộc">Bắt buộc</Option>

@@ -34,8 +34,8 @@ function Table(){
                         visibleData.map((item, index) => (
                           <tr key={index}>
                             <td>{item.headName}</td>
-                            <td>{item.totalAmount}</td>
-                            <td>{item.payed}</td>
+                            <td>{item.totalAmount.toLocaleString("vi-VN")} VNĐ</td>
+                            <td>{item.payed.toLocaleString("vi-VN")} VNĐ</td>
                             <td>{Math.floor((item.payed / item.totalAmount) * 100)}%</td>
                             <td>
                               <Link to={`/detail/${item.household_id || ""}`} className="primary">Chi tiết</Link>

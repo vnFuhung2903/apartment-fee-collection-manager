@@ -46,7 +46,7 @@ function Detail(){
                             {fees.map((fee, index) => (
                                 <tr key={index}>
                                     <td>{fee.feeName}</td>
-                                    <td>{fee.amount} VNĐ</td>
+                                    <td>{fee.amount.toLocaleString("vi-VN")} VNĐ</td>
                                     <td>
                                         {fee.payment_date ? new Date(fee.payment_date).toLocaleDateString('vi-VN') : 'Chưa có ngày'}                                     
                                     </td>

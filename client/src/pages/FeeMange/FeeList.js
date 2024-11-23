@@ -7,13 +7,6 @@ import axios from "axios";
 function FeeList(){
   const navigate = useNavigate();
   const [fees, getFees] = useState([]);
-  // const [fees, setFees] = useState([]);
-  // const [fees, setFees] = useState([
-  //   { id: 1, name: "Phí dịch vụ chung cư", price: 3000, dueDate: "2024-11-21", mandatory: "Bắt buộc" },
-  //   { id: 2, name: "Phí dịch vụ chung cư", price: 3000, dueDate: "2024-11-30", mandatory: "Bắt buộc" },
-  //   { id: 3, name: "Quỹ từ thiện", price: 10000, dueDate: "2024-11-30", mandatory: "Không bắt buộc" },
-  // ]);
-
   // const handleDelete = (id) => {
   //   setFees(fees.filter(fee => fee.id !== id));
   // };
@@ -63,7 +56,7 @@ function FeeList(){
                 <tr key={index + 1}>
                   <td>{index + 1}</td> 
                   <td>{fee.name}</td>
-                  <td>{fee.amount} VNĐ</td>
+                  <td>{fee.amount.toLocaleString("vi-VN")} VNĐ</td>
                   <td>{formattedDueDate}</td>
                   <td>{fee.status}</td>
                   <td>
