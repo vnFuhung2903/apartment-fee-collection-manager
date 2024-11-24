@@ -27,7 +27,6 @@ function EditFee() {
       if (values.status) {
         payload.status = values.status;
       }
-      console.log(payload);
       const response = await axios.post("http://localhost:8386/fees/api/v1/change", payload, {
         headers: {
           "Content-Type": "application/json",
