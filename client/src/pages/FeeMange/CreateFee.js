@@ -1,8 +1,9 @@
 import { Input, Form, Button, InputNumber, Select, DatePicker } from "antd";
-import { Link } from "react-router-dom";
+import { Link,useNavigate  } from "react-router-dom";
 import axios from "axios";
 
 function CreateFee(){ 
+  const navigate = useNavigate();
   const handleSubmit = async (values) => {
     try {
       const payload = {
@@ -26,6 +27,7 @@ function CreateFee(){
       );
       if (response.status === 201) {
         alert("Tạo mới thành công! ");
+        navigate('/fee_list');
       } else{
         alert("Tạo mới thất bại!");
       }

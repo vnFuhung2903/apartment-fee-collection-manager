@@ -1,10 +1,11 @@
 import { Input, Form, Button, InputNumber, Select, DatePicker } from "antd";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation,useNavigate } from "react-router-dom";
 import dayjs from "dayjs";
 import axios from "axios";
 
 function EditFee() {
   const { state } = useLocation();
+  const navigate = useNavigate();
   const fee = state ? state.fee : null;
   const handleSubmit = async (values) => {
     try {
@@ -34,6 +35,7 @@ function EditFee() {
       });
       if (response.status === 200) {
         alert("Cập nhật thành công!");
+        navigate('/fee_list');
       } else {
         alert("Cập nhật thất bại!");
       }
