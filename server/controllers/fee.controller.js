@@ -50,7 +50,7 @@ module.exports.addFee = async (req, res) => {
   }
 };
 
-//[POST] /payments/api/v1/change
+//[POST] /fees/api/v1/change
 module.exports.changeFee = async (req,res) => {
   try {
     const {id,amount,due,status} = req.body;

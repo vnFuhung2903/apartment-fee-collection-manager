@@ -6,10 +6,15 @@ import axios from "axios";
 function EditFee() {
   const { state } = useLocation();
   const fee = state ? state.fee : null;
-
   const handleSubmit = async (values) => {
     try {
-      const payload = { _id: values.id };
+      const payload = {};
+      if (values.id) {
+        payload.id = values.id;
+      } else {
+        alert("ID thiếu hoặc không hợp lệ !!!");
+        return;
+      }
       if (values.name) {
         payload.name = values.name;
       }
@@ -22,9 +27,13 @@ function EditFee() {
       if (values.status) {
         payload.status = values.status;
       }
-      // console.log(payload);
-      const response = await axios.post("http://localhost:8386/fees/api/v1/change", payload);
-      if (response.status === 201) {
+      console.log(payload);
+      const response = await axios.post("http://localhost:8386/fees/api/v1/change", payload, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      if (response.status === 200) {
         alert("Cập nhật thành công!");
       } else {
         alert("Cập nhật thất bại!");
@@ -68,7 +77,7 @@ function EditFee() {
             name="create-fee" 
             onFinish={handleSubmit}
             initialValues={{
-              id:fee._id,
+              id: fee ? fee._id : undefined,
               STT:  undefined,
               name: fee ? fee.name : '',
               amount: fee ? fee.amount : undefined,
@@ -76,6 +85,12 @@ function EditFee() {
               status: fee ? (fee.status ? "Bắt buộc" : "Không bắt buộc") : '',
             }}
           >
+            <Form.Item
+              name="id"
+              style={{ display: "none" }}
+              >
+              <Input />
+            </Form.Item>
             <Form.Item
               label="STT"
               name="STT"
