@@ -3,27 +3,70 @@ import { Link, useNavigate } from 'react-router-dom';
 import { CloseOutlined } from "@ant-design/icons"
 import { useState,useEffect  } from "react";
 import axios from "axios";
+import { Modal } from "antd";
 
 function FeeList(){
   const navigate = useNavigate();
-  const [fees, getFees] = useState([]);
-  // const handleDelete = (id) => {
-  //   setFees(fees.filter(fee => fee.id !== id));
-  // };
+  const [fees, setFees] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  const fetchFees = async () => {
+    setLoading(true);
+    try {
+      const response = await axios.get("http://localhost:8386/fees/api/v1/fees");
+      setFees(response.data);
+    } catch (error) {
+      console.error("Error fetching fees data:", error);
+      alert("Có lỗi khi tải dữ liệu!");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDelete = async (id) => {
+    try {
+      // Hiển thị modal xác nhận trước khi xóa
+      Modal.confirm({
+        title: "Xác nhận xóa",
+        content: "Bạn có chắc chắn muốn xóa loại phí này không?",
+        okText: "Xóa",
+        okType: "danger",
+        cancelText: "Hủy",
+        onOk: async () => {
+          try {
+            const response = await axios.post(
+              "http://localhost:8386/fees/api/v1/delete",
+              { id },
+              {
+                headers: {
+                  "Content-Type": "application/json",
+                },
+              }
+            );
+
+            if (response.status === 200 || response.status === 201) {
+              alert("Xóa thành công!");
+              await fetchFees();
+            } else {
+              alert("Xóa thất bại!");
+            }
+          } catch (error) {
+            alert("Có lỗi xảy ra khi xóa !")
+          } finally {
+            setLoading(false);
+          }
+        },
+      });
+    } catch (error) {
+      alert("Error in delete handler !");
+    }
+  };
 
   const handleEdit = (fee) => {
     navigate("/edit_fee", { state: { fee } });
   };
   useEffect(() => {
-    // Gọi API khi component Detail được load
-    axios
-      .get("http://localhost:8386/fees/api/v1/fees")
-      .then((response) => {
-        getFees(response.data);
-      })
-      .catch((error) => {
-        console.error("Error fetching fees data:", error);
-      });
+    fetchFees();
   }, []);
 
   return (
@@ -61,7 +104,7 @@ function FeeList(){
                   <td>{fee.status}</td>
                   <td>
                     <button className="btn-details" onClick={() => handleEdit(fee)}>Cập nhật</button>
-                    <button className="btn-details delete-icon" ><CloseOutlined /></button>
+                    <button className="btn-details delete-icon" onClick={() => handleDelete(fee._id)} ><CloseOutlined /></button>
                   </td>
                 </tr>
               );

@@ -82,10 +82,10 @@ module.exports.changeFee = async (req,res) => {
 //[POST] /payments/api/v1/delete
 module.exports.deleteFee = async (req,res) => {
   try {
-    const { name } = req.body;
+    const { id } = req.body;
     await Fee.deleteOne(
       {
-        name:name
+        _id:id
       });
 
     res.status(201).json({message: "Delete Fee Success"});
