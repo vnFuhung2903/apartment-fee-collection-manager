@@ -1,10 +1,40 @@
 import { Input, Form, Button, InputNumber, Select, DatePicker } from "antd";
-import { Link } from "react-router-dom";
+import { Link,useNavigate  } from "react-router-dom";
+import axios from "axios";
 
 function CreateFee(){ 
-  const handleSubmit = (values) => {
-    console.log(values);
-  }
+  const navigate = useNavigate();
+  const handleSubmit = async (values) => {
+    try {
+      const payload = {
+        name:values.feeName,
+        amount:values.price,
+        due:values.deadline ? values.deadline.format("YYYY-MM-DD") : null,
+        status:values.status === "required" ? "Bắt buộc" : "Không bắt buộc"
+      };
+      if(!payload.name || !payload.amount || !payload.due) {
+        alert("Vui lòng điền đủ thông tin bắt buộc !");
+        return;
+      }
+      const response = await axios.post(
+        "http://localhost:8386/fees/api/v1/post",
+        payload,
+        {
+          headers: {
+            "Content-Type":"application/json",
+          },
+        }
+      );
+      if (response.status === 201) {
+        alert("Tạo mới thành công! ");
+        navigate('/fee_list');
+      } else{
+        alert("Tạo mới thất bại!");
+      }
+    } catch (error) {
+      alert("Có lỗi xảy ra khi gửi yêu cầu ! !!");
+    }
+  };
   const { Option } = Select;
   const formItemLayout = {
     labelCol: {
