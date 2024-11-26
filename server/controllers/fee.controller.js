@@ -142,6 +142,7 @@ module.exports.changeFee = async (req, res) => {
 module.exports.deleteFee = async (req,res) => {
   try {
     const { id } = req.body;
+    await Payment.deleteMany({ fee_id: id });
     await Fee.deleteOne(
       {
         _id:id

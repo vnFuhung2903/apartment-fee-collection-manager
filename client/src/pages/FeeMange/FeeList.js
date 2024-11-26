@@ -1,11 +1,21 @@
-import "./style.css"
+import "./style.css";
 import { Link, useNavigate } from 'react-router-dom';
-import { CloseOutlined } from "@ant-design/icons"
-import { useState,useEffect  } from "react";
+import { CloseOutlined } from "@ant-design/icons";
+import { useState, useEffect } from "react";
 import axios from "axios";
-import { Modal } from "antd";
+import { Modal, notification } from "antd";
 
-function FeeList(){
+const openNotification = (type, message, description) => {
+  notification[type]({
+    message,
+    description,
+    placement: "topRight",
+    duration: 2,
+    pauseOnHover: true,
+  });
+};
+
+function FeeList() {
   const navigate = useNavigate();
   const [fees, setFees] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -17,7 +27,7 @@ function FeeList(){
       setFees(response.data);
     } catch (error) {
       console.error("Error fetching fees data:", error);
-      alert("Có lỗi khi tải dữ liệu!");
+      openNotification("error", "Lỗi", "Có lỗi khi tải dữ liệu!");
     } finally {
       setLoading(false);
     }
@@ -45,26 +55,27 @@ function FeeList(){
             );
 
             if (response.status === 200 || response.status === 201) {
-              alert("Xóa thành công!");
+              openNotification("success", "Thành công", "Xóa thành công!");
               await fetchFees();
             } else {
-              alert("Xóa thất bại!");
+              openNotification("error", "Thất bại", "Xóa thất bại!");
             }
           } catch (error) {
-            alert("Có lỗi xảy ra khi xóa !")
+            openNotification("error", "Lỗi", "Có lỗi xảy ra khi xóa!");
           } finally {
             setLoading(false);
           }
         },
       });
     } catch (error) {
-      alert("Error in delete handler !");
+      openNotification("error", "Lỗi", "Error in delete handler!");
     }
   };
 
   const handleEdit = (fee) => {
     navigate("/edit_fee", { state: { fee } });
   };
+
   useEffect(() => {
     fetchFees();
   }, []);
@@ -75,10 +86,10 @@ function FeeList(){
         <div className="recentCt">
           <div className="cardHeader">
             <h2>Danh sách các loại phí</h2>
-              <div className="all-button"> 
-                <Link to="/fee_create" className="btn">Thêm loại phí</Link>
-                <Link to="/fee_manage" className="btn">Quay lại</Link>
-              </div>
+            <div className="all-button">
+              <Link to="/fee_create" className="btn">Thêm loại phí</Link>
+              <Link to="/fee_manage" className="btn">Quay lại</Link>
+            </div>
           </div>
 
           <table>
@@ -93,28 +104,28 @@ function FeeList(){
               </tr>
             </thead>
             <tbody>
-            {fees.map((fee, index) => {
-              const formattedDueDate = fee.due ? new Date(fee.due).toLocaleDateString("vi-VN") : "Không xác định";
-              return (
-                <tr key={index + 1}>
-                  <td>{index + 1}</td> 
-                  <td>{fee.name}</td>
-                  <td>{fee.amount.toLocaleString("vi-VN")} VNĐ</td>
-                  <td>{formattedDueDate}</td>
-                  <td>{fee.status}</td>
-                  <td>
-                    <button className="btn-details" onClick={() => handleEdit(fee)}>Cập nhật</button>
-                    <button className="btn-details delete-icon" onClick={() => handleDelete(fee._id)} ><CloseOutlined /></button>
-                  </td>
-                </tr>
-              );
-            })}
+              {fees.map((fee, index) => {
+                const formattedDueDate = fee.due ? new Date(fee.due).toLocaleDateString("vi-VN") : "Không xác định";
+                return (
+                  <tr key={index + 1}>
+                    <td>{index + 1}</td>
+                    <td>{fee.name}</td>
+                    <td>{fee.amount.toLocaleString("vi-VN")} VNĐ</td>
+                    <td>{formattedDueDate}</td>
+                    <td>{fee.status}</td>
+                    <td>
+                      <button className="btn-details" onClick={() => handleEdit(fee)}>Cập nhật</button>
+                      <button className="btn-details delete-icon" onClick={() => handleDelete(fee._id)}><CloseOutlined /></button>
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>
       </div>
     </>
-  )
+  );
 }
 
 export default FeeList;
