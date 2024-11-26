@@ -35,7 +35,7 @@ function LayoutDefault(){
                         <span className="icon">
                             <ion-icon name="home-outline"></ion-icon>
                         </span>
-                        <span className="title">Dashboard</span>
+                        <span className="title">Trang chủ</span>
                     </Link>
                 </li>
 
@@ -67,20 +67,11 @@ function LayoutDefault(){
                 </li>
 
                 <li>
-                    <a href="#">
-                        <span className="icon">
-                            <ion-icon name="settings-outline"></ion-icon>
-                        </span>
-                        <span className="title">Settings</span>
-                    </a>
-                </li>
-
-                <li>
                     <Link to="/password">
                         <span className="icon">
                             <ion-icon name="lock-closed-outline"></ion-icon>
                         </span>
-                        <span className="title">Password</span>
+                        <span className="title">Đổi mật khẩu</span>
                     </Link>
                 </li>
 
@@ -89,7 +80,7 @@ function LayoutDefault(){
                         <span className="icon">
                             <ion-icon name="log-out-outline"></ion-icon>
                         </span>
-                        <span className="title">Sign Out</span>
+                        <span className="title">Đăng xuất</span>
                     </a>
                 </li>
               </ul>

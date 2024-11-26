@@ -85,39 +85,39 @@ function Password(){
           <div className="password-container">
             <div className="password-content">
               <div className="password-form">
-                  <h2 className="form-title">Change Password</h2>
+                  <h2 className="form-title">Đổi mật khẩu</h2>
                     <form onSubmit={handleSubmit}>
                       <div className="form-group">
                         <div className="password-input-field old-password">
-                          <label htmlFor="old-password">Old Password</label>
-                          <input type="password" name="old-password" id="old-password" placeholder="Old Password" onChange={handleOldPassword}/>
+                          <label htmlFor="old-password">Mật khẩu cũ</label>
+                          <input type="password" name="old-password" id="old-password" placeholder="Mật khẩu cũ" onChange={handleOldPassword}/>
                         </div>
                         <div className="password-input-field">
-                          <label htmlFor="new-password">New Password</label>
+                          <label htmlFor="new-password">Mật khẩu mới</label>
                           {
                             isNewValid && <FcOk/>
                           }
-                          <input type="password" name="new-password" id="new-password" placeholder="New Password" onChange={handleNewPassword} className={`${checkClass}`}/>
+                          <input type="password" name="new-password" id="new-password" placeholder="Mật khẩu mới" onChange={handleNewPassword} className={`${checkClass}`}/>
                         </div> 
                         <div className="password-require">
-                          <p>Please add all necessary characters to create safe password</p>
+                          <h5>Yêu cầu</h5>
                           <ul>
-                            <li className={isMinLengthValid ? "valid" : "invalid"}>Minimum characters 8</li>
-                            <li className={isHasUpperCase ? "valid" : "invalid"}>One uppercase character</li>
-                            <li className={isHasLowerCase ? "valid" : "invalid"}>One lowercase character</li>
-                            <li className={isHasSpecialChar ? "valid" : "invalid"}>One special character</li>
-                            <li className={isHasNumber ? "valid" : "invalid"}>One number</li>
+                            <li className={isMinLengthValid ? "valid" : "invalid"}>Có ít nhất 8 kí tự</li>
+                            <li className={isHasUpperCase ? "valid" : "invalid"}>Có ít nhất 1 kí tự viết hoa</li>
+                            <li className={isHasLowerCase ? "valid" : "invalid"}>Có ít nhất 1 kí tự viết thường</li>
+                            <li className={isHasSpecialChar ? "valid" : "invalid"}>Có ít nhất 1 kí tự đặc biệt</li>
+                            <li className={isHasNumber ? "valid" : "invalid"}>Có số</li>
                           </ul>
                         </div>
                         <div className="password-input-field">
-                          <label htmlFor="confirm-password">Confirm New Password</label>
+                          <label htmlFor="confirm-password">Xác nhận mật khẩu</label>
                           {
                             check && <FcOk/>
                           }
-                          <input type="password" name="confirm-password" id="confirm-password" placeholder="Enter your confirm new password" onChange={handleConfirmedPassword} className={check ? "correct" : "incorrect"}/>
+                          <input type="password" name="confirm-password" id="confirm-password" placeholder="Xác nhận mật khẩu" onChange={handleConfirmedPassword} className={check ? "correct" : "incorrect"}/>
                         </div> 
                         <div className="form-group form-button">
-                            <input type="submit" name="change-password" id="change-password" className="form-submit" value="Change Password"/>
+                            <input type="submit" name="change-password" id="change-password" className="form-submit" value="Đổi mật khẩu"/>
                         </div>
                       </div>
                     </form>
