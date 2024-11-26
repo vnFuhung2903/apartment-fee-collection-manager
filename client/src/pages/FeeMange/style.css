@@ -100,3 +100,21 @@ span{
   background-color: #B6261D;
   padding: 5px;
 }
+
+/* styles.css hoặc trong <style> của bạn */
+.checkbox-group {
+  display: flex;
+  flex-direction: column; /* Xếp các checkbox theo chiều dọc */
+}
+
+.checkbox-group .ant-checkbox-wrapper {
+  margin-bottom: 8px; /* Khoảng cách giữa các checkbox */
+}
+
+.ant-select-multiple .ant-select-selection-item{
+  height: auto;
+}
+
+.ant-select-selection-item{
+  padding: 1px;
+}
