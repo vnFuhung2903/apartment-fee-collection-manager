@@ -1,14 +1,31 @@
 import { Input, Form, Button, InputNumber, Select, DatePicker, notification } from "antd";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { useState } from "react";
+import { useState,useEffect } from "react";
 
 function CreateFee() {
-  const households = [
-    { value: "101", label: "Hộ 101" },
-    { value: "102", label: "Hộ 102" },
-    { value: "103", label: "Hộ 103" },
-  ];
+  const [households, setHouseholdsOptions] = useState([]);
+  const [loadingHouseholds, setLoadingHouseholds] = useState(true);
+
+  useEffect(() => {
+    const fetchHouseholds = async () => {
+      try {
+        const response = await axios.get("http://localhost:8386/household/api/v1/all");
+        const options = response.data.map((household) => ({
+          id:household.id,
+          value: household.numbers[0],
+          label: `Hộ ${household.head}`,
+        }));
+        setHouseholdsOptions(options);
+        setLoadingHouseholds(false);
+      } catch (error) {
+        console.error("Error fetching household options:", error);
+        setLoadingHouseholds(false);
+      }
+    };
+
+    fetchHouseholds();
+  }, []);
   const [isMandatory, setIsMandatory] = useState(true);
   const navigate = useNavigate();
 
@@ -19,7 +36,6 @@ function CreateFee() {
   const [checkedList, setCheckedList] = useState(households);
 
   const handleChange = (list) => {
-    //console.log("Checked List:", checkedList);
     setCheckedList(list);
   };
 
@@ -53,10 +69,9 @@ function CreateFee() {
       };
 
       if (!payload.name || !payload.amount || !payload.due) {
-        alert("Vui lòng điền đủ thông tin bắt buộc!");
+        openNotification("error", "Thất bại", "Vui lòng điền đủ thông tin bắt buộc!");
         return;
       }
-
       const response = await axios.post(
         "http://localhost:8386/fees/api/v1/post",
         payload,
@@ -74,7 +89,7 @@ function CreateFee() {
         openNotification("error", "Thất bại", "Thêm mới thất bại!");
       }
     } catch (error) {
-      alert("Có lỗi xảy ra khi gửi yêu cầu!");
+      openNotification("error", "Thất bại", "Có lỗi xảy ra khi gửi yêu cầu!");
     }
   };
 
@@ -129,19 +144,23 @@ function CreateFee() {
               name="households"
               rules={!isMandatory ? [{ required: true }] : []}
             >
-              <Select
-                {...sharedProps}
-                placeholder={isMandatory ? "Tất cả hộ gia đình" : "Chọn hộ gia đình"}
-                disabled={isMandatory}
-                value={checkedList}
-                onChange={handleChange}
-              >
-                {households.map((option) => (
-                  <Select.Option key={option.value} value={option.value} onChange={e => console.log(e.target)}>
-                    {option.label}
-                  </Select.Option>
-                ))}
-              </Select>
+              {loadingHouseholds ? (
+                <p>Đang tải danh sách hộ gia đình...</p>
+              ) : (
+                <Select
+                  {...sharedProps}
+                  placeholder={isMandatory ? "Tất cả hộ gia đình" : "Chọn hộ gia đình"}
+                  disabled={isMandatory}
+                  value={checkedList}
+                  onChange={handleChange}
+                >
+                  {households.map((option) => (
+                    <Select.Option key={option.value} value={option.id}>
+                      {option.label}
+                    </Select.Option>
+                  ))}
+                </Select>
+              )}
             </Form.Item>
 
             <Form.Item>

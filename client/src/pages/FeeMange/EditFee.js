@@ -1,6 +1,6 @@
 import { Input, Form, Button, InputNumber, Select, DatePicker, notification } from "antd";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import dayjs from "dayjs";
 import axios from "axios";
 
@@ -9,29 +9,46 @@ function EditFee() {
   const navigate = useNavigate();
   const fee = state ? state.fee : null;
 
-  const householdsOptions = [
-    { value: "101", label: "Hộ 101" },
-    { value: "102", label: "Hộ 102" },
-    { value: "103", label: "Hộ 103" },
-  ];
+  const [householdsOptions, setHouseholdsOptions] = useState([]);
+  const [loadingHouseholds, setLoadingHouseholds] = useState(true);
+
+  useEffect(() => {
+    const fetchHouseholds = async () => {
+      try {
+        const response = await axios.get("http://localhost:8386/household/api/v1/all");
+        const options = response.data.map((household) => ({
+          household_id:household.id,
+          value: household.numbers[0],
+          label: `Hộ ${household.head}`,
+        }));
+        setHouseholdsOptions(options);
+        setLoadingHouseholds(false);
+      } catch (error) {
+        console.error("Error fetching household options:", error);
+        setLoadingHouseholds(false);
+      }
+    };
+
+    fetchHouseholds();
+  }, []);
+
   const [isMandatory, setIsMandatory] = useState(true);
   const handleStatusChange = (value) => {
     setIsMandatory(value === "required");
   };
 
-  const [checkedList, setCheckedList] = useState(householdsOptions);
-
+  const [checkedList, setCheckedList] = useState([]);
   const handleChange = (list) => {
-    console.log("Checked List:", checkedList);
     setCheckedList(list);
   };
+
   const sharedProps = {
-    mode: 'multiple',
+    mode: "multiple",
     style: {
-      width: '100%',
+      width: "100%",
     },
-    placeholder: 'Chọn hộ gia đình...',
-    maxTagCount: 'responsive',
+    placeholder: "Chọn hộ gia đình...",
+    maxTagCount: "responsive",
   };
 
   const openNotification = (type, message, description) => {
@@ -63,7 +80,10 @@ function EditFee() {
         payload.due = values.due.format("YYYY-MM-DD");
       }
       if (values.status) {
-        payload.status = values.status;
+        payload.status = values.status === "required" ? "Bắt buộc" : "Không bắt buộc";
+      }
+      if(values.households) {
+        payload.households = values.status === "required" ? "Tất cả" : values.households;
       }
 
       const response = await axios.post("http://localhost:8386/fees/api/v1/change", payload, {
@@ -81,7 +101,7 @@ function EditFee() {
         openNotification("error", "Thất bại", "Cập nhật thất bại!");
       }
     } catch (error) {
-      alert("Có lỗi xảy ra khi gửi yêu cầu !!!");
+      openNotification("error", "Lỗi", "Có lỗi xảy ra khi gửi yêu cầu !!!");
     }
   };
 
@@ -145,19 +165,23 @@ function EditFee() {
               name="households"
               rules={!isMandatory ? [{ required: true }] : []}
             >
-              <Select
-                {...sharedProps}
-                placeholder={isMandatory ? "Tất cả hộ gia đình" : "Chọn hộ gia đình"}
-                disabled={isMandatory}
-                value={checkedList}
-                onChange={handleChange}
-              >
-                {householdsOptions.map((option) => (
-                  <Select.Option key={option.value} value={option.value}>
-                    {option.label}
-                  </Select.Option>
-                ))}
-              </Select>
+              {loadingHouseholds ? (
+                <p>Đang tải danh sách hộ gia đình...</p>
+              ) : (
+                <Select
+                  {...sharedProps}
+                  placeholder={isMandatory ? "Tất cả hộ gia đình" : "Chọn hộ gia đình"}
+                  disabled={isMandatory}
+                  value={checkedList}
+                  onChange={handleChange}
+                >
+                  {householdsOptions.map((option) => (
+                    <Select.Option key={option.value} value={option.household_id}>
+                      {option.label}
+                    </Select.Option>
+                  ))}
+                </Select>
+              )}
             </Form.Item>
             <Form.Item label={null}>
               <Button type="primary" htmlType="submit">
