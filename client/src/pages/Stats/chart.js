@@ -68,7 +68,7 @@ function Chart() {
                 <div className="left">
                   <h3>Tổng thu</h3>
                   <h1>
-                    {payment}VNĐ / {total}VNĐ
+                    {payment.toLocaleString("vi-VN")} VNĐ / {total.toLocaleString("vi-VN")} VNĐ
                   </h1>
                 </div>
                 <div className="progress">
@@ -107,7 +107,7 @@ function Chart() {
                   <img src={profile} alt="" />
                   <div className="message">
                     <p>
-                      <b>{payment.householdHead}</b> Đã đóng {payment.amount}{" "}
+                      <b>{payment.householdHead}</b> Đã đóng {payment.amount.toLocaleString("vi-VN")}{" "}
                       VNĐ {payment.feeName}
                     </p>
                   </div>
