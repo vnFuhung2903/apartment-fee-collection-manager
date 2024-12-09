@@ -282,6 +282,7 @@ Right Side
   border-radius: var(--card-border-radius);
   box-shadow: var(--box-shadow);
   transition: all .3s ease;
+  overflow: visible;
 }
 .right .recent_updates .updates:hover{
   box-shadow: none;

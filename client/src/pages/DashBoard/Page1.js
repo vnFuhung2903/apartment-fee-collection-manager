@@ -1,6 +1,6 @@
 import "./style.css"
 import customer01 from "../Layout/assets/imgs/customer01.jpg"
-import { Link } from "react-router-dom"
+import { Link , useNavigate } from "react-router-dom"
 import { useEffect, useState } from "react"
 
 function Page1(){
@@ -10,7 +10,8 @@ function Page1(){
     const [numPerson, setNumPerson] = useState(0);
     const [numTemporary, setNumTemporary] = useState(0);
     const [numAbsence, setNumAbsence] = useState(0);
-    useEffect(() => {
+
+        useEffect(() => {
         fetch("http://localhost:8386/household/api/v1/all", {
             method: "GET",
             headers: {"Content-Type": "application/json"}
@@ -39,6 +40,7 @@ function Page1(){
             setRecentCustomers(data.recentCustomers);
         });
     }, [])
+
 
     return (
     <>
@@ -121,23 +123,24 @@ function Page1(){
                                     {household.status}
                                   </span> 
                             </td>
-                            <td><span className="status">Mở rộng</span></td>
+                            <td><span className="status"><Link to="/household_infor"  onClick={() => {localStorage.setItem("id",household.numbers);}}>Mở rộng</Link></span></td>
                          </tr>
                       )}
-                                {/* <tr>
-                                    <td>Star Refrigerator</td>
-                                    <td>8</td>
-                                    <td>808</td>
-                                    <td><span className="status">Mở rộng</span></td>
-                                </tr>
-
+                                { 
+                                /*
                                 <tr>
                                     <td>Dell Laptop</td>
+                                    <td>0192361309</td>
                                     <td>9</td>
                                     <td>902</td>
-                                    <td><span className="status">Mở rộng</span></td>
+                                    <td>
+                                    <span className="permanent_residence-status">
+                                    permanent_residence
+                                     </span> 
+                                    </td>
+                                    <td><span className="status"><Link to="/household_infor">Mở rộng</Link></span></td>
                                 </tr>
-
+                                
                                 <tr>
                                     <td>Apple Watch</td>
                                     <td>5</td>

@@ -101,6 +101,7 @@
   width: 100%;
   border-collapse: collapse;
   margin-top: 10px;
+  overflow: visible;
 }
 .details table thead td {
   font-weight: 600;
@@ -120,7 +121,7 @@
   padding: 10px;
 }
 .details .recentCt table tr td:last-child {
-  text-align: start;
+  text-align: center;
 }
 .details .recentCt table tr td:nth-child(1) {
   text-align: center;
