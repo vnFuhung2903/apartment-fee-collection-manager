@@ -88,7 +88,7 @@ const HouseholdInfo = () => {
     occupation: "Kỹ sư",
     hometown: "Hà Nội",
     ethnic: "Kinh",
-    status: "Đang sống"
+    status: "Thường trú"
   });
 
   // Hàm mở Modal
