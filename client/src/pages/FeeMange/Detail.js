@@ -3,7 +3,7 @@ import {useState, useEffect} from "react"
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from 'react-router-dom';
-import { fetchFees,fetchHouseholdDetails  } from "../../actions/feeDetail";
+import { fetchFees,fetchHouseholdDetail } from "../../actions";
 
 function Detail(){
     const dispatch = useDispatch();
@@ -13,7 +13,7 @@ function Detail(){
     useEffect(() => {
         Promise.all([
           dispatch(fetchFees(household_id)),      // Gọi API fetchFees
-          dispatch(fetchHouseholdDetails(household_id)) // Gọi API fetchHouseholdDetails
+          dispatch(fetchHouseholdDetail(household_id)) // Gọi API fetchHouseholdDetails
         ])
         .catch((error) => {
           console.error("Error in one or both API calls:", error);

@@ -4,7 +4,7 @@ export const setFees = (fees) => ({
   type: "SET_FEES",
   payload: fees,
 });
-export const getHousehold = (households) => ({
+export const setHouseholdDetail = (households) => ({
   type: "SET_HOUSEHOLD",
   payload: households,
 });
@@ -21,11 +21,11 @@ export const fetchFees = (household_id) => {
   };
 };
 
-export const fetchHouseholdDetails = (household_id) => {
+export const fetchHouseholdDetail = (household_id) => {
   return (dispatch) => {
     return axios.get(`http://localhost:8386/household/api/v1/all?id=${household_id}`)
       .then(response => {
-        dispatch(getHousehold(response.data));
+        dispatch(setHouseholdDetail(response.data));
       })
       .catch(error => {
         console.error("Error fetching household details:", error);

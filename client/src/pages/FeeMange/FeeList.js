@@ -4,6 +4,7 @@ import { CloseOutlined } from "@ant-design/icons";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { Modal, notification } from "antd";
+import { useDispatch } from "react-redux";
 
 const openNotification = (type, message, description) => {
   notification[type]({
@@ -17,6 +18,7 @@ const openNotification = (type, message, description) => {
 
 function FeeList() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [fees, setFees] = useState([]);
   const [loading, setLoading] = useState(false);
 

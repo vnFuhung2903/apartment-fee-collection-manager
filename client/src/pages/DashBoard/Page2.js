@@ -1,15 +1,15 @@
 import { Link } from "react-router-dom"
-import { useEffect, useState } from "react"
+import { useEffect } from "react"
 import { useSelector, useDispatch } from "react-redux";
-import { fetchDashboardData, fetchHouseholds } from "../../actions/page1";
+import { fetchDashboardData, fetchHouseholds } from "../../actions";
 
 function Page2(){
     const dispatch = useDispatch();
     const households = useSelector((state) => state.page1Reducer.households);
   
     useEffect(() => {
-      dispatch(fetchHouseholds());
-      dispatch(fetchDashboardData());
+        dispatch(fetchHouseholds());
+        dispatch(fetchDashboardData());
     }, [dispatch]);
 
     return (

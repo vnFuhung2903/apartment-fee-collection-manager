@@ -1,9 +1,9 @@
 import './App.css';
-import AllRounter from './components/AllRoutes';
+import AllRouter from './components/AllRoutes';
 
 function App() {
   return (
-    <AllRounter/>
+    <AllRouter/>
   );
 }
 

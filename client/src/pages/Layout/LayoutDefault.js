@@ -1,19 +1,32 @@
 import "./assets/css/style.scss"
 import "https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"
 import customer01 from "./assets/imgs/customer01.jpg"
-import { Outlet, Link } from "react-router-dom"
-import {useRef} from "react"
+import { Outlet, Link, useNavigate } from "react-router-dom"
+import { useRef, useEffect } from "react"
+import { checkAuth } from "../../actions"
 
 function LayoutDefault(){
     const navigationRef = useRef(null);
     const mainRef = useRef(null);
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        if(checkAuth())
+            navigate("/");
+    }, [mainRef]);
 
     const handleClick = () => {
         if (navigationRef.current && mainRef.current) {
           navigationRef.current.classList.toggle("active");
           mainRef.current.classList.toggle("active");
         }
-      };
+    };
+
+    const logout = () => {
+        document.cookie = "token=; path=/; max-age=0";
+        navigate("/");
+    }
+
     return (
     <>
       <div className="layout-default">
@@ -76,12 +89,12 @@ function LayoutDefault(){
                 </li>
 
                 <li>
-                    <a href="#">
+                    <div onClick={logout}>
                         <span className="icon">
                             <ion-icon name="log-out-outline"></ion-icon>
                         </span>
                         <span className="title">Đăng xuất</span>
-                    </a>
+                    </div>
                 </li>
               </ul>
             </div>

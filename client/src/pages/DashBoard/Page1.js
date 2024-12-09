@@ -1,24 +1,24 @@
 import "./style.css"
 import customer01 from "../Layout/assets/imgs/customer01.jpg"
 import { Link } from "react-router-dom"
-import { useEffect, useState } from "react"
+import { useEffect } from "react"
 import { useSelector, useDispatch } from "react-redux";
-import { fetchDashboardData, fetchHouseholds } from "../../actions/page1";
+import { fetchDashboardData, fetchHouseholds } from "../../actions";
 
 function Page1(){
     const dispatch = useDispatch();
     const {
-      households,
-      recentCustomers,
-      numApartment,
-      numPerson,
-      numTemporary,
-      numAbsence,
+        households,
+        recentCustomers,
+        numApartment,
+        numPerson,
+        numTemporary,
+        numAbsence,
     } = useSelector((state) => state.page1Reducer);
   
     useEffect(() => {
-      dispatch(fetchHouseholds());
-      dispatch(fetchDashboardData());
+        dispatch(fetchHouseholds());
+        dispatch(fetchDashboardData());
     }, [dispatch]);
 
     return (

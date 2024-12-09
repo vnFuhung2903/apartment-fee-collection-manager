@@ -10,11 +10,6 @@ const chartReducer = (state = initialState, action) => {
         ...state,
         payments: action.payload,
       };
-    case "SET_TOTAL_PAYMENT":
-      return {
-        ...state,
-        totalPaymentData: action.payload,
-      };
     default:
       return state;
   }

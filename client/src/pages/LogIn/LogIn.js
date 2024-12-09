@@ -2,7 +2,7 @@ import "./asset/css/material-design-iconic-font.min.css"
 import "./asset/css/style.css"
 import signInImg from "./asset/images/signin-image.jpg"
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 function LogIn() {
   const [name, setName] = useState("");
@@ -22,7 +22,6 @@ function LogIn() {
     })
     .then(data => {
       if (data.message === "Login success") {
-        localStorage.setItem("user", data.token)
         navigate("/dashboard");
       }
       else{

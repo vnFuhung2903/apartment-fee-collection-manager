@@ -2,7 +2,7 @@ import "./stats.scss"
 import { useState, useEffect } from 'react'
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchTotalPayment } from "../../actions/chart"
+import { fetchTotalPayments } from "../../actions"
 
 function Table(){
   const dispatch = useDispatch();
@@ -12,7 +12,7 @@ function Table(){
   const visibleData = totalPaymentData;
 
   useEffect(() => {
-    dispatch(fetchTotalPayment());
+    dispatch(fetchTotalPayments());
   }, [dispatch]);
   return (
     <>

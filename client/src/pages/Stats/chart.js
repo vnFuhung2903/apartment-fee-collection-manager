@@ -2,7 +2,7 @@ import "./stats.scss";
 import profile from "./images/profile-1.jpg";
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchPayments, fetchTotalPayment } from "../../actions/chart";
+import { fetchPayments, fetchTotalPayments } from "../../actions";
 
 function Chart() {
   const dispatch = useDispatch();
@@ -22,7 +22,7 @@ function Chart() {
 
   useEffect(() => {
     dispatch(fetchPayments());
-    dispatch(fetchTotalPayment());
+    dispatch(fetchTotalPayments());
   }, [dispatch]);
 
   return (

@@ -3,11 +3,10 @@ import "./asset/css/style.css"
 import { useState } from "react";
 import { FcOk } from "react-icons/fc";
 import { useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { changePassword } from "../../actions/password";
+import { useDispatch } from "react-redux";
+import { changePassword } from "../../actions";
 
 function Password(){
-  const [password, setPassword] = useState("");
   const [oldPassword, setOldPassword] = useState("");
   const navigate = useNavigate();
 
