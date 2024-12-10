@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BlueMoon Management</title>
+    <!-- ======= Styles ====== -->
+    <link rel = "stylesheet" href = "assets/css/style.css">
+    <style>
+        .details .recentCt.page2 {
+            width: 80%;
+            margin-left: 10%;   
+            display: inline;
+            padding-left:30px;
+            padding-right:30px;
+        }
+        form {
+            position: relative;
+            margin-top: 16px;
+            min-height: 200px;
+            margin-bottom: 10px;
+        }
+        form .fields{
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            grid-template-rows: repeat(3,1fr);
+            column-gap: 15px;
+            row-gap: 10px;
+            margin-bottom: 10px;
+        }
+        .second .fields{
+            grid-template-rows: repeat(2,1fr);
+        }
+        form .fields .input-fields{
+            display: flex;
+            flex-direction: column;
+            
+        }
+        .input-fields label{
+            font-size: 12px;
+            font-weight: 500px;
+            color: #2e2e2e;
+        }
+        .input-fields input,select{
+            height: 42px;
+            margin: 8px 0;
+            padding: 0 15px;
+            outline: none;
+            border: 1px solid #aaa;
+            border-radius: 5px;
+            font-size: 14px;
+            font-weight: 400px;
+            color: #333;
+        }
+        .input-fields input:is(:focus,:valid)
+        {
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.13);
+        }
+        select:is(:focus,:valid)
+        {
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.13);
+        }
+        .input-fields input[type="date"]{
+            color: #707070;
+        }
+        .input-fields input[type="date"]:valid{
+            color: #333;
+        }
+        #title{
+            display: block;
+            margin-bottom: 8px;
+            font-size: 16px;
+            font-weight: 500px;
+            color: #333;
+        }
+        form .second{
+            margin-top: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- =============== Navigation ================ -->
+    <div class="container">
+        <div class="navigation">
+            <ul>
+                <li>
+                    <a href="#">
+                        <span class="icon">
+                            <ion-icon name="business-sharp"></ion-icon>
+                        </span>
+                        <span class="title">BLUEMOON</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="#">
+                        <span class="icon">
+                            <ion-icon name="home-outline"></ion-icon>
+                        </span>
+                        <span class="title">Dashboard</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="#">
+                        <span class="icon">
+                            <ion-icon name="people-outline"></ion-icon>
+                        </span>
+                        <span class="title">Quản lí căn hộ và cư dân</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="#">
+                        <span class="icon">
+                            <ion-icon name="chatbubble-outline"></ion-icon>
+                        </span>
+                        <span class="title">Messages</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="#">
+                        <span class="icon">
+                            <ion-icon name="help-outline"></ion-icon>
+                        </span>
+                        <span class="title">Help</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="#">
+                        <span class="icon">
+                            <ion-icon name="settings-outline"></ion-icon>
+                        </span>
+                        <span class="title">Settings</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="#">
+                        <span class="icon">
+                            <ion-icon name="lock-closed-outline"></ion-icon>
+                        </span>
+                        <span class="title">Password</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="#">
+                        <span class="icon">
+                            <ion-icon name="log-out-outline"></ion-icon>
+                        </span>
+                        <span class="title">Sign Out</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- ========================= Main ==================== -->
+        <div class="main">
+            <div class="topbar">
+                <div class="toggle">
+                    <ion-icon name="menu-outline"></ion-icon>
+                </div>
+                <div class="user">
+                    <img src="assets/imgs/customer01.jpg" alt="">
+                </div>
+            </div>
+
+            <!-- ======================= searching  ================== -->
+            <div class = "search ">
+
+            </div>
+
+            <!-- ================ Registation page ================= -->
+             <div class = "details">
+                <div class = "recentCt page2">
+                    <div class="cardHeader">
+                        <h2>Đăng kí hộ khẩu</h2>
+                    </div>
+                    <form action="#">
+                        <div class="form first">
+                            <span id = "title">Thông tin chủ hộ</span>
+                            
+                            <div class="fields">
+                                <div class="input-fields">
+                                    <label for="">Họ và tên</label>
+                                    <input type="text" placeholder="" required>
+                                </div>
+                                <div class="input-fields">
+                                    <label for="">CCCD</label>
+                                    <input type="text" placeholder="" required>
+                                </div>
+                                <div class="input-fields">
+                                    <label for="">Ngày sinh</label>
+                                    <input type="date" placeholder="" required>
+                                </div>
+                                <div class="input-fields">
+                                    <label for="">Quốc tịch</label>
+                                    <input type="text" placeholder="" required>
+                                </div>
+                                <div class="input-fields">
+                                    <label for="">Nghề nghiệp</label>
+                                    <input type="text" placeholder="" required>
+                                </div>
+                                <div class="input-fields">
+                                    <label for="">Giới tính</label>
+                                    <select name="sex" id="sex">
+                                        <option value="">Nam</option>
+                                        <option value="">Nữ</option>
+                                        <option value="">Khác</option>
+                                    </select>
+                                </div>
+                                <div class="input-fields">
+                                    <label for="">Quê quán</label>
+                                    <input type="text" placeholder="" required>
+                                </div>
+                                <div class="input-fields">
+                                    <label for="">Dân tộc</label>
+                                    <input type="text" placeholder="" required>
+                                </div>
+                                <div class="input-fields">
+                                    <label for="">Số điện thoại</label>
+                                    <input type="number" placeholder="" required>
+                                </div>
+                                <div class="input-fields">
+                                    <label for="">Số nhà</label>
+                                    <input type="number" placeholder="" required>
+                                </div>
+                                <div class="input-fields">
+                                    <label for="">Số tầng</label>
+                                    <input type="number" placeholder="" required>
+                                </div>
+                                <div class="input-fields">
+                                    <label for="">Loại số</label>
+                                    <select name="sex" id="sex">
+                                        <option value="">Thường trú</option>
+                                        <option value="">Tạm trú</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class ="buttons">
+                            <button class = "submitBtn">
+                                <span class = "buttonSm">Submit</span>
+                            </button>
+                        </div>
+                    </form>
+                    
+                </div>
+             </div>
+            
+             
+        </div>
+    </div>
+
+    <!-- =========== Scripts =========  -->
+    <script src="assets/js/main.js"></script>
+
+    <!-- ====== ionicons ======= -->
+    <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+</body>
+
+</html>

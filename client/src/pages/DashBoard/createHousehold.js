@@ -5,6 +5,15 @@ import { useNavigate } from "react-router-dom";
 function Register(){
     const navigate = useNavigate();
     const [remain, setRemain] = useState([]);
+    //test
+     const remains = [
+        { floor: 1, room: 103 },
+        { floor: 1, room: 104 },
+        { floor: 2, room: 201 },
+        { floor: 2, room: 202 },
+        { floor: 3, room: 301 },
+        { floor: 3, room: 302 },
+    ];
     const [personalInfor, setPersonalInfor] = useState({
         name: "",
         cic: "",
@@ -20,7 +29,7 @@ function Register(){
 
     const [householdInfor, setHouseholdInfor] = useState({
     number: "",
-    // floor: ""
+    floor: ""
     });
 
     useEffect(() => {
@@ -84,6 +93,10 @@ function Register(){
         })
     }
 
+    const availableFloors = [...new Set(remains.map(item => item.floor))];
+    const availableRooms = remains.filter(item => item.floor === parseInt(householdInfor.floor, 10));
+
+
     return(
     <>
     <div className = "details">
@@ -140,7 +153,7 @@ function Register(){
             </div>
             <hr/>
             <div className="form second">
-                <span id = "title">Thông tin hộ khẩu</span>
+                <span id = "title">Thông tin căn hộ</span>
                 
                 <div className="fields">
                     {/* <div className="input-fields">
@@ -156,8 +169,22 @@ function Register(){
                         <input id="householdDOB" name="householdDOB" type="date" placeholder="" onChange={handleHouseholdChange} required />
                     </div> */}
                     <div className="input-fields">
-                        <label htmlFor="">Số nhà</label>
-                        <input id="houseNumber" name="number" type="number" placeholder="" onChange={handleHouseholdChange} required />
+                         <label htmlFor="floor">Chọn tầng</label>
+                          <select id="floor" name="floor" onChange={handleHouseholdChange} required>
+                             <option value="">Chọn tầng</option>
+                                {availableFloors.map(floor => (
+                                <option key={floor} value={floor}>{floor}</option>
+                                ))}
+                          </select>
+                    </div>
+                    <div className="input-fields">
+                          <label htmlFor="room">Chọn phòng</label>
+                          <select id="room" name="room" onChange={handleHouseholdChange} required>
+                          <option value="">Chọn phòng</option>
+                            {availableRooms.map(room => (
+                            <option key={room.room} value={room.room}>{room.room}</option>
+                             ))}
+                          </select>
                     </div>
                     {/* <div className="input-fields">
                         <label htmlFor="">Số tầng</label>

@@ -101,6 +101,7 @@
   width: 100%;
   border-collapse: collapse;
   margin-top: 10px;
+  overflow: visible;
 }
 .details table thead td {
   font-weight: 600;
@@ -120,24 +121,46 @@
   padding: 10px;
 }
 .details .recentCt table tr td:last-child {
-  text-align: end;
+  text-align: center;
+}
+.details .recentCt table tr td:nth-child(1) {
+  text-align: center;
 }
 .details .recentCt table tr td:nth-child(2) {
-  text-align: start;
-}
-.details .recentCt table tr td:nth-child(4) {
   text-align: center;
 }
 .details .recentCt table tr td:nth-child(3) {
   text-align: center;
 }
+.details .recentCt table tr td:nth-child(4) {
+  text-align: center;
+}
+.details .recentCt table tr td:nth-child(5) {
+  text-align: center;
+}
+/*=========================status =============================*/
+
+span{
+  padding: 5px;
+  border-radius: 10px;
+}
+
+.permanent_residence-status{
+  background-color: #b97527;
+  color: #fff;
+  text-align: center;
+}
+
+.temporary_residence-status{
+  background-color: #B6261D;
+  color: #fff;
+  text-align: center;
+}
+
 .status {
-  padding: 2px 4px;
-  background: #8de02c;
-  color: var(--white);
-  border-radius: 4px;
-  font-size: 14px;
-  font-weight: 500;
+  background-color: #7DB927;
+  color: #fff;
+  text-align: center;
 }
 
 

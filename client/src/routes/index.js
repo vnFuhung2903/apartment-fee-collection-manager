@@ -1,6 +1,6 @@
 import DashBoard from "../pages/DashBoard";
 import Page2 from "../pages/DashBoard/Page2";
-import Register from "../pages/DashBoard/Register";
+import Register from "../pages/DashBoard/createHousehold";
 import FeeMange from "../pages/FeeMange";
 import CreateFee from "../pages/FeeMange/CreateFee";
 import Detail from "../pages/FeeMange/Detail";
@@ -10,16 +10,17 @@ import LayoutDefault from "../pages/Layout/LayoutDefault";
 import LogIn from "../pages/LogIn/LogIn";
 import Password from "../pages/Password";
 import Stats from "../pages/Stats";
+import HouseholdInfo from "../pages/DashBoard/HouseholdInfo";
 
 export const routes = [
-  {
-    path: "/",
-    element: <LogIn/>,
-  },
-  {
-    path: "login",
-    element: <LogIn/>
-  },
+  // {
+  //   path: "/",
+  //   element: <LogIn/>,
+  // },
+  // {
+  //   path: "login",
+  //   element: <LogIn/>
+  // },
   {
     path: "/",
     element: <LayoutDefault/>,
@@ -35,6 +36,10 @@ export const routes = [
       {
         path: "register_resident",
         element: <Register/>
+      },
+      {
+        path: "household_infor",
+        element: <HouseholdInfo/>
       },
       {
         path: "stats",
