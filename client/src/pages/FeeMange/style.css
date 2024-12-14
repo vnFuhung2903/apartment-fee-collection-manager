@@ -63,7 +63,10 @@
 .details__fee .recentCt table tr td:nth-child(3) {
   text-align: center;
 }
-
+.details__fee .recentCt table tr td:nth-child(4) {
+  margin: 5px 0;
+  text-align: center;
+}
 span{
   padding: 5px;
   border-radius: 10px;
@@ -76,6 +79,11 @@ span{
 
 .status-unpaid{
   background-color: #B6261D;
+  color: #fff;
+}
+
+.partially-paid{
+  background-color: #f8c20a;
   color: #fff;
 }
 
@@ -117,4 +125,18 @@ span{
 
 .ant-select-selection-item{
   padding: 1px;
+}
+
+.gutter-row{
+  display: flex;
+  flex-direction: column;
+}
+
+.filter_fee{
+  height: 130px;
+}
+
+.ant-picker{
+  padding: 0px 11px;
+  width: 90%;
 }

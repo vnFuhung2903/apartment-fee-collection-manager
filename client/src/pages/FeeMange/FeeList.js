@@ -4,7 +4,8 @@ import { CloseOutlined } from "@ant-design/icons";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { Modal, notification } from "antd";
-import { useDispatch } from "react-redux";
+import EditFee from "./EditFee";
+import CreateFee from "./CreateFee";
 
 const openNotification = (type, message, description) => {
   notification[type]({
@@ -17,10 +18,13 @@ const openNotification = (type, message, description) => {
 };
 
 function FeeList() {
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
   const [fees, setFees] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [reload, setReload] = useState(false);
+
+  const handleReload = () => {
+    setReload(!reload);
+  }
 
   const fetchFees = async () => {
     setLoading(true);
@@ -74,13 +78,9 @@ function FeeList() {
     }
   };
 
-  const handleEdit = (fee) => {
-    navigate("/edit_fee", { state: { fee } });
-  };
-
   useEffect(() => {
     fetchFees();
-  }, []);
+  }, [reload]);
 
   return (
     <>
@@ -89,7 +89,8 @@ function FeeList() {
           <div className="cardHeader">
             <h2>Danh sách các loại phí</h2>
             <div className="all-button">
-              <Link to="/fee_create" className="btn">Thêm loại phí</Link>
+              <CreateFee onReload={handleReload}/>
+              {/* <Link to="/fee_create" className="btn">Thêm loại phí</Link> */}
               <Link to="/fee_manage" className="btn">Quay lại</Link>
             </div>
           </div>
@@ -116,7 +117,7 @@ function FeeList() {
                     <td>{formattedDueDate}</td>
                     <td>{fee.status}</td>
                     <td>
-                      <button className="btn-details" onClick={() => handleEdit(fee)}>Cập nhật</button>
+                      <EditFee item={fee} onReload={handleReload}/>
                       <button className="btn-details delete-icon" onClick={() => handleDelete(fee._id)}><CloseOutlined /></button>
                     </td>
                   </tr>
