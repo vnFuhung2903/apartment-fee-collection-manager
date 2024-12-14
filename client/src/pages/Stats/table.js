@@ -6,7 +6,7 @@ import { fetchTotalPayments } from "../../actions"
 
 function Table(){
   const dispatch = useDispatch();
-  const {totalPaymentData } = useSelector((state) => state.chartReducer);
+  const totalPaymentData = useSelector((state) => state.feeManageReducer.totalPayments);
   const [showAll, setShowAll] = useState(false);
 
   const visibleData = totalPaymentData;
@@ -45,7 +45,7 @@ function Table(){
                       }
                     </tbody>
               </table>
-              <a href="#" onClick={() => setShowAll(!showAll)}>Show All</a>
+              <a href="#" onClick={() => setShowAll(!showAll)}>Xem tất cả</a>
             </div>
         </main>
         </div>
