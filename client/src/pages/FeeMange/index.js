@@ -162,6 +162,7 @@ function FeeMange(){
                 <td>Tên hộ dân cư</td>
                 <td>Tên khoản thu</td>
                 <td>Số tiền cần thu</td>
+                <td>Trạng thái</td>
                 <td>Cập nhật</td>
               </tr>
             </thead>
@@ -173,6 +174,7 @@ function FeeMange(){
                   <td>{Tpayment.householdHead}</td>
                   <td>{Tpayment.feeName}</td> {/* Hiển thị tên khoản thu */}
                   <td>{Number(Tpayment.amount).toLocaleString("vi-VN")} VNĐ</td> {/* Định dạng số tiền */}
+                  <td>{Tpayment.status}</td> {/* Hiển thị tên khoản thu */}
                   <td>
                     <button className="btn-details" onClick={() => showModal(Tpayment)}>Cập nhật</button>
                     <Modal

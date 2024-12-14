@@ -2,12 +2,12 @@ import "./stats.scss";
 import profile from "./images/profile-1.jpg";
 import { useState, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchPayments, fetchTotalPayments } from "../../actions";
+import { fetchPayments, fetchTotalPayment } from "../../actions";
 
 function Chart() {
   const dispatch = useDispatch();
   const payments = useSelector((state) => state.chartReducer.payments);
-  const totalPaymentData = useSelector((state) => state.feeManageReducer.totalPayments)
+  const totalPaymentData = useSelector((state) => state.feeManageReducer.totalPayment)
 
   const r = 30;
 
@@ -23,7 +23,7 @@ function Chart() {
 
   useEffect(() => {
     dispatch(fetchPayments());
-    dispatch(fetchTotalPayments());
+    dispatch(fetchTotalPayment());
   }, [dispatch]);
 
   const mainRef = useRef(null);

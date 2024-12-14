@@ -2,17 +2,17 @@ import "./stats.scss"
 import { useState, useEffect } from 'react'
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchTotalPayments } from "../../actions"
+import { fetchTotalPayment} from "../../actions"
 
 function Table(){
   const dispatch = useDispatch();
-  const totalPaymentData = useSelector((state) => state.feeManageReducer.totalPayments);
+  const totalPaymentData = useSelector((state) => state.feeManageReducer.totalPayment);
   const [showAll, setShowAll] = useState(false);
 
   const visibleData = totalPaymentData;
 
   useEffect(() => {
-    dispatch(fetchTotalPayments());
+    dispatch(fetchTotalPayment());
   }, [dispatch]);
   return (
     <>

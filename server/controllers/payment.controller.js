@@ -245,7 +245,7 @@ module.exports.autoGeneratePayments = async () => {
     for (const fee of mandatoryFees){
       const paymentID = generatePaymentID();
 
-      const dueDate = calulateDueDate(fee.Date);
+      const dueDate = calulateDueDate(fee.due);
       //Do hàm getMonth() trong Javascript trả về giá trị từ 0-11 nên phải +1
       const newPayment = new Payment({
         fee_id: fee.id,

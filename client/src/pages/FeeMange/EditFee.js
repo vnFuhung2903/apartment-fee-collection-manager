@@ -155,7 +155,7 @@ function EditFee(props) {
             STT: undefined,
             name: fee ? fee.name : "",
             amount: fee ? fee.amount : undefined,
-            due: fee ? dayjs(fee.due) : undefined,
+            due: fee ? fee.due : undefined,
             status: fee ? (fee.status ? "Bắt buộc" : "Không bắt buộc") : "",
           }}
         >
