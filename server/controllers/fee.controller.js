@@ -105,9 +105,10 @@ module.exports.changeFee = async (req, res) => {
         );
         const newPayments = missingPayments.map((household) => ({
           fee_id: id,
+          payment_id: generatePaymentID(),
           household_id: household._id,
           amount: updatedFee.amount,
-          payment_date: updatedFee.due,
+          payment_date: calculateDueDate(updatedFee.due),
           status: "Chưa thanh toán",
         }));
 
@@ -137,6 +138,14 @@ module.exports.changeFee = async (req, res) => {
     res.status(500).json({ message: "Lỗi khi cập nhật!", error });
   }
 };
+function generatePaymentID() {
+  return Math.random().toString(36).substring(2, 10).toUpperCase();
+};
+function calculateDueDate(due) {
+  const now = new Date();
+  now.setMonth(now.getMonth() + due); // Cộng thêm số tháng hạn vào tháng hiện tại
+  return now;
+}
 
 //[POST] /payments/api/v1/delete
 module.exports.deleteFee = async (req,res) => {

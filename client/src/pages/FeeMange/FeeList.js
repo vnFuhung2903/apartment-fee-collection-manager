@@ -114,7 +114,7 @@ function FeeList() {
                     <td>{index + 1}</td>
                     <td>{fee.name}</td>
                     <td>{fee.amount.toLocaleString("vi-VN")} VNĐ</td>
-                    <td>{formattedDueDate}</td>
+                    <td>{fee.due} Tháng</td>
                     <td>{fee.status}</td>
                     <td>
                       <EditFee item={fee} onReload={handleReload}/>

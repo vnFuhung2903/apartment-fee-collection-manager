@@ -7,9 +7,9 @@ export const setTotalPayments = (totalPayments) => ({
 
 export const fetchTotalPayments = () => {
   return (dispatch) => {
-    axios.get("http://localhost:8386/payments/api/v1/totalPayment")
+    axios.get("http://localhost:8386/payments/api/v1/payments")
       .then((response) => {
-        dispatch(setTotalPayments(response.data.data)); // Dữ liệu từ response.data.data
+        dispatch(setTotalPayments(response.data)); // Dữ liệu từ response.data
       });
   };
 };

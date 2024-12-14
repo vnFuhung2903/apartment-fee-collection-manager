@@ -18,15 +18,18 @@ function FeeMange(){
   //Dữ liệu để lọc
   const householdName = [
     { value: "", label: "None" },
-    ...totalPayment.map((Tpayment) => ({
-      value: Tpayment.headName,
-      label: Tpayment.headName,
+    ...[...new Set(totalPayment.map(Tpayment => Tpayment.householdHead))].map(householdHead => ({
+      value: householdHead,
+      label: householdHead,
     })),
   ];
+  
   const paymentName = [
     { value: "", label: "None" },
-    { value: "Phí chung cư", label: "Phí chung cư" },
-    { value: "Phí dịch vụ", label: "Phí dịch vụ" },
+    ...[...new Set(totalPayment.map(Tpayment => Tpayment.feeName))].map(feeName => ({
+      value: feeName,
+      label: feeName,
+    })),
   ]
 
   //Modal cập nhật
@@ -159,25 +162,22 @@ function FeeMange(){
                 <td>Tên hộ dân cư</td>
                 <td>Tên khoản thu</td>
                 <td>Số tiền cần thu</td>
-                <td>Số tiền đã thu</td>
                 <td>Cập nhật</td>
               </tr>
             </thead>
             <tbody>
-              {filteredPayments.map((Tpayment,index) => (
+            {filteredPayments.map((Tpayment, index) => (
                 <tr key={index}>
-                  <td>#ABCD12345</td>
-                  <td>31/10/2024</td>
-                  <td>{Tpayment.headName}</td>
-                  <td>Phí chung cư</td>
-                  <td> {Number(Tpayment.totalAmount).toLocaleString("vi-VN")} VNĐ</td>
-                  <td>{Number(Tpayment.payed).toLocaleString("vi-VN")} VNĐ</td>
+                  <td>{Tpayment.payment_id}</td> {/* Hiển thị payment_id */}
+                  <td>{dayjs(Tpayment.payment_date).format('DD/MM/YYYY')}</td> {/* Định dạng ngày nộp */}
+                  <td>{Tpayment.householdHead}</td>
+                  <td>{Tpayment.feeName}</td> {/* Hiển thị tên khoản thu */}
+                  <td>{Number(Tpayment.amount).toLocaleString("vi-VN")} VNĐ</td> {/* Định dạng số tiền */}
                   <td>
                     <button className="btn-details" onClick={() => showModal(Tpayment)}>Cập nhật</button>
                     <Modal
                       title="Chỉnh sửa thông tin"
                       open={isModalVisible}
-                      //onOk={handleOk}
                       onCancel={handleCancel}
                       okText="Lưu"
                       cancelText="Hủy"
@@ -186,14 +186,13 @@ function FeeMange(){
                         {...formItemLayout}
                         layout="horizontal"
                         name="create-fee"
-                        //onFinish={handleSubmit}
                         initialValues={{
-                          id: "#ABCD12345",
-                          due: dayjs('2024-10-31'),
-                          householdName: selectedPayment ? selectedPayment.headName : '',
-                          paymentName: selectedPayment ? "Phí chung cư" : '',
-                          needPay: selectedPayment ? selectedPayment.totalAmount : 0,
-                          payed: selectedPayment ? selectedPayment.payed : 0,
+                          id: Tpayment.payment_id,  // Sử dụng payment_id từ dữ liệu
+                          due: dayjs(Tpayment.payment_date),  // Đặt ngày nộp là ngày thanh toán
+                          householdName: Tpayment.householdHead,  // Tên chủ hộ
+                          paymentName: Tpayment.feeName,  // Tên khoản thu
+                          needPay: Tpayment.amount,  // Số tiền cần thu
+                          payed: Tpayment.status === "Đã thanh toán" ? Tpayment.amount : 0,  // Kiểm tra trạng thái để điền số tiền đã thu
                         }}
                       >
                         <Form.Item label="ID hoá đơn" name="id">
@@ -223,11 +222,12 @@ function FeeMange(){
                             parser={(value) => value.replace(/\D/g, '')}
                           /> 
                         </Form.Item>
-                        </Form>
+                      </Form>
                     </Modal>
                   </td>
                 </tr>
               ))}
+
             </tbody>
           </table>
         </div>
