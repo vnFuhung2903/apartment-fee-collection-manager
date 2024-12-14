@@ -12,7 +12,7 @@ const allReducers = combineReducers({
   feeDetailReducer,
   householdDetailReducer,
   feeManageReducer,
-  chartReducer
+  chartReducer,
   //Thêm nhiều reducer ở đây
 })
 

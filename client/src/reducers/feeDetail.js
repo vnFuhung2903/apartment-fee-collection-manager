@@ -1,5 +1,6 @@
 const initialState = {
   fees: [],
+  sortedFees: null,
 };
 
 const feeDetailReducer = (state = initialState, action) => {
