@@ -3,42 +3,39 @@ import { Card, Descriptions, Table ,Button, Modal, Form, Input, message } from "
 import { Space } from 'antd';
 import { EditOutlined ,DeleteOutlined } from '@ant-design/icons';
 
-
-
-
 const HouseholdInfo = () => {
   // Dữ liệu mẫu
 
-  // const residents = [
-  //   {
-  //     key: "1",
-  //     name: "Nguyễn Văn A",
-  //     age: 45,
-  //     relationship: "Chủ hộ",
-  //     phone: "0987654321",
-  //   },
-  //   {
-  //     key: "2",
-  //     name: "Nguyễn Thị B",
-  //     age: 43,
-  //     relationship: "Vợ",
-  //     phone: "0981234567",
-  //   },
-  //   {
-  //     key: "3",
-  //     name: "Nguyễn Văn C",
-  //     age: 20,
-  //     relationship: "Con trai",
-  //     phone: "0976543210",
-  //   },
-  //   {
-  //     key: "4",
-  //     name: "Nguyễn Thị D",
-  //     age: 18,
-  //     relationship: "Con gái",
-  //     phone: "0976123456",
-  //   },
-  // ];
+  const residents = [
+    {
+      key: "1",
+      name: "Nguyễn Văn A",
+      age: 45,
+      relationship: "Chủ hộ",
+      phone: "0987654321",
+    },
+    {
+      key: "2",
+      name: "Nguyễn Thị B",
+      age: 43,
+      relationship: "Vợ",
+      phone: "0981234567",
+    },
+    {
+      key: "3",
+      name: "Nguyễn Văn C",
+      age: 20,
+      relationship: "Con trai",
+      phone: "0976543210",
+    },
+    {
+      key: "4",
+      name: "Nguyễn Thị D",
+      age: 18,
+      relationship: "Con gái",
+      phone: "0976123456",
+    },
+  ];
 
   // Cột của bảng danh sách cư dân
   const columns = [
