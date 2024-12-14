@@ -135,13 +135,13 @@ h2 {
   -o-transform: translate(-50%, -50%);
   -ms-transform: translate(-50%, -50%); }
 
-.form-title {
-  margin-bottom: 33px; 
+.password-form-title {
+  margin-bottom: 5px; 
   font-family: Calibri;
 }
 
 .password-input-field > input {
-  width: 100%;
+  width: 500px;
   display: block;
   border: 1px solid #999;
   padding: 10px 10px;
@@ -278,12 +278,16 @@ input[type=checkbox]:not(old):checked + label > span:before {
   font-size: 18px; }
 
 .password-content {
-  padding-top: 67px;
-  padding-bottom: 87px; }
+  padding-top: 2%;
+  padding-bottom: 2%; 
+  justify-content: center;
+}
 
 .password-form {
-  margin-right: 90px;
-  margin-left: 80px; }
+  margin-right: 5px;
+  margin-left: 5px; 
+  width: max-content;
+}
 
 .password-require > p{
   font-weight: 500;
