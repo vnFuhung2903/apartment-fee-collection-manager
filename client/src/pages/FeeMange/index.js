@@ -12,10 +12,11 @@ function FeeMange(){
 
   const dispatch = useDispatch();
   const totalPayment = useSelector((state) => state.feeManageReducer.totalPayments);
+  const [reload, setReload] = useState(false);
 
   useEffect(() => {
     dispatch(fetchTotalPayments());
-  }, [dispatch]);
+  }, [dispatch, reload]);
 
   //Dữ liệu để lọc
   const householdName = [
@@ -38,6 +39,7 @@ function FeeMange(){
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [checkedPayments, setCheckedPayments] = useState([]);
   const [transactionID, setTransactionID] = useState("");
+  const [transactionTime, setTransactionTime] = useState(dayjs());
   const [filters, setFilters] = useState({
     paymentName: null, 
     householdName: null, 
@@ -84,8 +86,10 @@ function FeeMange(){
       const hash = now.toString(36);
       return hash.slice(-8); // Lấy 8 ký tự cuối
     };
-    setTransactionID(generateTransactionID());
-    console.log(transactionID);
+    const transactionTime = dayjs().format('DD/MM/YYYY HH:mm:ss');
+    const transactionID = generateTransactionID();
+    setTransactionID(transactionID);
+    setTransactionTime(transactionTime);
   };
 
   // Hàm đóng Modal
@@ -114,6 +118,7 @@ function FeeMange(){
       // Kiểm tra phản hồi từ API
       if (response.status === 200) {
         message.success(response.data.message); // Hiển thị thông báo thành công
+        await setReload(!reload);
         await fetchTotalPayments();
         handleCancel(); // Đóng modal
         // Reset danh sách các hóa đơn đã được check
@@ -217,6 +222,7 @@ function FeeMange(){
                       className='checkbox-btn'
                       checked={checkedPayments.includes(Tpayment.payment_id)} 
                       onChange={() => handleCheck(Tpayment.payment_id)}
+                      disabled={Tpayment.status === "Đã thanh toán"}
                     />
                   </td>
                 </tr>

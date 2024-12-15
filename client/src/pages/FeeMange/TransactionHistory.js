@@ -44,18 +44,6 @@ function TransactionHistory(){
     return 0; // Giữ nguyên thứ tự nếu đều giống nhau
   });
 
-  const formatDate = (date) => {
-    const options = {
-      hour: "2-digit",
-      minute: "2-digit",
-      day: "2-digit",
-      month: "2-digit",
-      year: "numeric",
-      hour12: false,
-    };
-    return new Intl.DateTimeFormat("vi-VN", options).format(new Date(date));
-  };
-
   return(
     <>
       <div className="details__fee">
@@ -93,19 +81,8 @@ function TransactionHistory(){
                   <td>{fee.bill_id}</td>
                   <td>{fee.payment_id}</td>
                   <td>{fee.feeName}</td>
-                  <td>{formatDate(fee.payment_date)}</td>
+                  <td>{fee.bill_time}</td>
                   <td>+{fee.amount.toLocaleString("vi-VN")} VNĐ</td>
-                  {/* <td>
-                      {fee.payment_date ? new Date(fee.payment_date).toLocaleDateString('vi-VN') : 'Chưa có ngày'}                                     
-                  </td>
-                  <td>
-                      {fee.payment_date && new Date(fee.payment_date) <= new Date() ? 'Đến hạn thanh toán' : 'Chưa đến hạn thanh toán'}
-                  </td>
-                  <td>
-                      <span className={fee.status === 'Đã thanh toán' ? 'status-paid' : 'status-unpaid'}>
-                      {fee.status === 'Đã thanh toán' ? 'Đã thanh toán' : 'Chưa thanh toán'}
-                      </span>
-                  </td> */}
                 </tr>
               ))}
             </tbody>
