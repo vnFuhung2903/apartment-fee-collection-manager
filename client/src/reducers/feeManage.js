@@ -9,11 +9,6 @@ const feeManageReducer = (state = initialState, action) => {
         ...state,
         totalPayments: action.payload, // Cập nhật totalPayments
       };
-      case "SET_TOTAL_PAYMENT":
-        return {
-          ...state,
-          totalPayment: action.payload, // Cập nhật totalPayment
-        };
     default:
       return state;
   }

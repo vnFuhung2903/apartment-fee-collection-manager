@@ -4,6 +4,7 @@ import page1Reducer from "./page1";
 import feeDetailReducer from "./feeDetail";
 import householdDetailReducer from "./feeDetail2"
 import feeManageReducer from "./feeManage";
+import feeManageReducer1 from "./feeManage";
 import chartReducer from "./chart";
 
 const allReducers = combineReducers({
@@ -12,6 +13,7 @@ const allReducers = combineReducers({
   feeDetailReducer,
   householdDetailReducer,
   feeManageReducer,
+  feeManageReducer1,
   chartReducer,
   //Thêm nhiều reducer ở đây
 })
