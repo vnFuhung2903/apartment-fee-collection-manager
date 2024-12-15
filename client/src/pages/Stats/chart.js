@@ -7,7 +7,7 @@ import { fetchPayments, fetchTotalPayment } from "../../actions";
 function Chart() {
   const dispatch = useDispatch();
   const payments = useSelector((state) => state.chartReducer.payments);
-  const totalPaymentData = useSelector((state) => state.feeManageReducer.totalPayment)
+  const totalPaymentData = useSelector((state) => state.feeManageReducer1.totalPayment) || []
 
   const r = 30;
 
@@ -18,7 +18,6 @@ function Chart() {
     ) || 0;
 
   const payment = totalPaymentData.reduce((sum, item) => sum + item.payed, 0) || 0;
-
   const total = totalPaymentData.reduce((sum, item) => sum + item.totalAmount, 0) || 0;
 
   useEffect(() => {

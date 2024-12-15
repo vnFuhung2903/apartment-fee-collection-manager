@@ -4,6 +4,10 @@ export const setTotalPayments = (totalPayments) => ({
   type: "SET_TOTAL_PAYMENTS",
   payload: totalPayments
 });
+export const setTotalPayment = (totalPayment) => ({
+  type: "SET_TOTAL_PAYMENT",
+  payload: totalPayment
+});
 
 export const fetchTotalPayments = () => {
   return (dispatch) => {
@@ -13,11 +17,6 @@ export const fetchTotalPayments = () => {
       });
   };
 };
-
-export const setTotalPayment = (totalPayment) => ({
-  type: "SET_TOTAL_PAYMENT",
-  payload: totalPayment
-});
 
 export const fetchTotalPayment = () => {
   return (dispatch) => {
