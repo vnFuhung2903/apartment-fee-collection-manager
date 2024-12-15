@@ -12,7 +12,7 @@ function Chart() {
 
   const payFull = totalPaymentData.reduce(
       (payFull, item) =>
-        item.payed === item.totalAmount ? payFull + 1 : payFull,
+        (item.totalAmount-item.payed) === item.totalAmount ? payFull + 1 : payFull,
       0
     ) || 0;
 

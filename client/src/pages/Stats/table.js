@@ -34,8 +34,8 @@ function Table(){
                           <tr key={index}>
                             <td>{item.headName}</td>
                             <td>{item.totalAmount.toLocaleString("vi-VN")} VNĐ</td>
-                            <td>{item.payed.toLocaleString("vi-VN")} VNĐ</td>
-                            <td>{Math.floor((item.payed / item.totalAmount) * 100)}%</td>
+                            <td>{(item.totalAmount-item.payed).toLocaleString("vi-VN")} VNĐ</td>
+                            <td>{Math.floor(((item.totalAmount-item.payed) / item.totalAmount) * 100)}%</td>
                             <td>
                               <Link to={`/detail/${item.household_id || ""}`} className="primary">Chi tiết</Link>
                             </td>
