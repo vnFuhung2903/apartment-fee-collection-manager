@@ -8,7 +8,16 @@ function Table(){
   const dispatch = useDispatch();
   const totalPaymentData = useSelector((state) => state.feeManageReducer1.totalPayment)|| [];
   const [showAll, setShowAll] = useState(false);
-  const visibleData = totalPaymentData;
+  //const visibleData = totalPaymentData;
+  //Dữ liệu mẫu
+  const visibleData = [
+    {
+      household_id: '673373aee33e5402b19092e1',
+      headName: 'Trương Quốc Huy',
+      totalAmount: 100000,
+      payed: 70000
+    }
+  ]
 
   useEffect(() => {
     dispatch(fetchTotalPayment());
