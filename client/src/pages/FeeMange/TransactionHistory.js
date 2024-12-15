@@ -90,7 +90,7 @@ function TransactionHistory(){
             <tbody>
               {sortedFees.map((fee, index) => (
                 <tr key={index}>
-                  <td>#ABCD12345</td>
+                  <td>{fee.payment_id}</td>
                   <td>#EFGH12345</td>
                   <td>{fee.feeName}</td>
                   <td>{formatDate(fee.payment_date)}</td>

@@ -101,14 +101,13 @@ function FeeList() {
                 <td>STT</td>
                 <td>Loại phí</td>
                 <td>Giá/đơn vị</td>
-                <td>Hạn nộp</td>
+                <td>Thời hạn</td>
                 <td>Bắt buộc</td>
                 <td></td>
               </tr>
             </thead>
             <tbody>
               {fees.map((fee, index) => {
-                const formattedDueDate = fee.due ? new Date(fee.due).toLocaleDateString("vi-VN") : "Không xác định";
                 return (
                   <tr key={index + 1}>
                     <td>{index + 1}</td>

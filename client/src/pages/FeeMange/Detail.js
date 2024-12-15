@@ -44,10 +44,6 @@ function Detail(){
     }
     return 0; // Giữ nguyên thứ tự nếu đều giống nhau
   });
-
-  //Dữ liệu status mẫu
-  const statuses = ['Chưa thanh toán', 'Thanh toán 1 phần'];
-  const randomStatus = statuses[Math.floor(Math.random() * statuses.length)];
     
   return (
     <>
@@ -87,7 +83,7 @@ function Detail(){
                 <tr key={index}>
                   <td>{fee.feeName}</td>
                   <td>1</td>
-                  <td> 50.000 / {fee.amount.toLocaleString("vi-VN")} VNĐ</td>
+                  <td> {fee.amount.toLocaleString("vi-VN")} VNĐ</td>
                   <td>
                     {fee.payment_date ? new Date(fee.payment_date).toLocaleDateString('vi-VN') : 'Chưa có ngày'}                                     
                   </td>
@@ -95,8 +91,8 @@ function Detail(){
                     {fee.payment_date && new Date(fee.payment_date) <= new Date() ? 'Đến hạn thanh toán' : 'Chưa đến hạn thanh toán'}
                   </td>
                   <td>
-                      <span className={fee.status === 'Đã thanh toán' ? 'status-paid' : (randomStatus === 'Thanh toán 1 phần' ? 'partially-paid' : 'status-unpaid')}>
-                        {fee.status === 'Đã thanh toán' ? 'Đã thanh toán' : (randomStatus === 'Thanh toán 1 phần' ? 'Thanh toán 1 phần' : 'Chưa thanh toán')}
+                      <span className={fee.status === 'Đã thanh toán' ? 'status-paid' : 'status-unpaid'}>
+                        {fee.status === 'Đã thanh toán' ? 'Đã thanh toán' : 'Chưa thanh toán'}
                       </span>
                   </td>
                 </tr>

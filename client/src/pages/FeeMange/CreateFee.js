@@ -141,11 +141,11 @@ function CreateFee(props) {
           </Form.Item>
 
           <Form.Item
-            label="Hạn nộp"
+            label="Thời hạn (tháng)"
             name="deadline"
             rules={[{ required: true, message: "Bắt buộc!" }]}
           >
-            <DatePicker />
+            <InputNumber />
           </Form.Item>
 
           <Form.Item
