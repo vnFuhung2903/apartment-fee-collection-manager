@@ -1,3 +1,5 @@
+import { message } from "antd";
+
 export const changePassword = (oldPassword, newPassword, navigate) => {
   return async (dispatch) => {
     dispatch({ type: "CHANGE_PASSWORD_REQUEST" });
@@ -17,14 +19,17 @@ export const changePassword = (oldPassword, newPassword, navigate) => {
 
       if (data.message === "Password updated") {
         dispatch({ type: "CHANGE_PASSWORD_SUCCESS", payload: data });
-        navigate("/dashboard");
+        message.success("Đổi mật khẩu thành công!");
+        setTimeout(() => {
+          navigate("/dashboard");
+        }, 1000);
       } else {
         dispatch({ type: "CHANGE_PASSWORD_FAILURE", error: data.message });
-        alert(data.message);
+        message.error(data.message);
       }
     } catch (error) {
       dispatch({ type: "CHANGE_PASSWORD_FAILURE", error: "Có lỗi xảy ra khi thay đổi mật khẩu" });
-      alert("Có lỗi xảy ra khi thay đổi mật khẩu");
+      message.error("Có lỗi xảy ra khi thay đổi mật khẩu");
     }
   };
 };

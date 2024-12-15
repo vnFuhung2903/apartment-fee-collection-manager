@@ -5,6 +5,7 @@ import { FcOk } from "react-icons/fc";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { changePassword } from "../../actions";
+import { message } from "antd";
 
 function Password(){
   const [oldPassword, setOldPassword] = useState("");
@@ -73,7 +74,7 @@ function Password(){
     if (check) {
       dispatch(changePassword(oldPassword, newPassword, navigate));
     } else {
-      alert("Chưa thoả mãn yêu cầu");
+      message.error("Chưa thoả mãn yêu cầu!");
     }
   };
 
