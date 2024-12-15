@@ -5,6 +5,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchTotalPayments } from "../../actions/feeManage";
 import { Form, Select, Col, Row, DatePicker, Modal, Input, Checkbox, InputNumber } from 'antd';
 import dayjs from 'dayjs';
+import axios from "axios";
+import { message } from "antd";
 
 function FeeMange(){
 
@@ -101,9 +103,28 @@ function FeeMange(){
     0
   ) || 0;
 
-  const handlePayment = () => {
-    // Reset danh sách các hóa đơn đã được check
-    setCheckedPayments([]); 
+  const handlePayment = async () => {
+    try {
+      // Gửi danh sách payment_id đến API
+      const response = await axios.post("http://localhost:8386/payments/api/v1/changes", {
+        payment_ids: selectedPayments.map((payment) => payment.payment_id),
+        bill_id:transactionID,
+      });
+  
+      // Kiểm tra phản hồi từ API
+      if (response.status === 200) {
+        message.success(response.data.message); // Hiển thị thông báo thành công
+        await fetchTotalPayments();
+        handleCancel(); // Đóng modal
+        // Reset danh sách các hóa đơn đã được check
+        setCheckedPayments([]); 
+      } else {
+        message.error("Có lỗi xảy ra khi thanh toán hóa đơn.");
+      }
+    } catch (error) {
+      console.error("Error while updating payments:", error);
+      message.error("Lỗi máy chủ. Vui lòng thử lại sau.");
+    }
   };
 
   return (

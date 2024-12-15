@@ -115,7 +115,7 @@ module.exports.addPayment = async (req, res) => {
 //[POST] /payments/api/v1/change
 module.exports.changePayment = async (req,res) => {
   try {
-    const { payment_id } = req.body;
+    const { payment_id,bill_id } = req.body;
     const payment = await Payment.findOne({ payment_id });
 
     if (!payment) {
@@ -140,7 +140,7 @@ module.exports.changePayment = async (req,res) => {
 
 //[POST] /payments/api/v1/changes
 module.exports.changePayments = async (req,res) => {
-  const { payment_ids } = req.body; // Gửi danh sách payment_id qua body
+  const { payment_ids,bill_id } = req.body; // Gửi danh sách payment_id qua body
   try {
     // Kiểm tra nếu không có payment_ids
     if (!payment_ids || !Array.isArray(payment_ids) || payment_ids.length === 0) {
@@ -150,7 +150,7 @@ module.exports.changePayments = async (req,res) => {
     // Cập nhật nhiều thanh toán
     const updatedPayments = await Payment.updateMany(
       { payment_id: { $in: payment_ids }, status: 'Chưa thanh toán' },  // Tìm các payment chưa thanh toán
-      { $set: { status: 'Đã thanh toán' } }
+      { $set: { status: 'Đã thanh toán', bill_id:bill_id } }
     );
 
     if (updatedPayments.nModified === 0) {
