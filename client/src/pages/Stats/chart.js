@@ -7,8 +7,7 @@ import { fetchPayments, fetchTotalPayment } from "../../actions";
 function Chart() {
   const dispatch = useDispatch();
   const payments = useSelector((state) => state.chartReducer.payments);
-  const totalPaymentData = useSelector((state) => state.feeManageReducer1.totalPayment) || []
-
+  const totalPaymentData = useSelector((state) => state.feeManageReducer1.totalPayment || []);
   const r = 30;
 
   const payFull = totalPaymentData.reduce(
@@ -42,7 +41,9 @@ function Chart() {
       window.removeEventListener("resize", syncHeight);
     };
   }, []);
-
+  // if (!totalPaymentData.length) {
+  //   return <p>Loading...</p>;
+  // }
   return (
     <>
       {/* Insights Part */}

@@ -6,7 +6,7 @@ import { fetchTotalPayment} from "../../actions"
 
 function Table(){
   const dispatch = useDispatch();
-  const totalPaymentData = useSelector((state) => state.feeManageReducer1.totalPayment)|| [];
+  const totalPaymentData = useSelector((state) => state.feeManageReducer1.totalPayment) || [];
   const [showAll, setShowAll] = useState(false);
   const visibleData = totalPaymentData;
 
