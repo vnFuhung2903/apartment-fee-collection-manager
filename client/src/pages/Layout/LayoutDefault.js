@@ -89,12 +89,12 @@ function LayoutDefault(){
                 </li>
 
                 <li>
-                    <div onClick={logout}>
+                    <a onClick={logout}>
                         <span className="icon">
                             <ion-icon name="log-out-outline"></ion-icon>
                         </span>
                         <span className="title">Đăng xuất</span>
-                    </div>
+                    </a>
                 </li>
               </ul>
             </div>

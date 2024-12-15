@@ -6,9 +6,8 @@ import { useParams } from 'react-router-dom';
 import { fetchFees,fetchHouseholdDetail } from "../../actions";
 import { DatePicker, Form } from 'antd';
 import dayjs from 'dayjs';
-import { HistoryOutlined } from "@ant-design/icons";
 
-function Detail(){
+function TransactionHistory(){
   const dispatch = useDispatch();
   const { household_id } = useParams();
   const fees = useSelector(state => state.feeDetailReducer.fees);
@@ -44,57 +43,69 @@ function Detail(){
     }
     return 0; // Giữ nguyên thứ tự nếu đều giống nhau
   });
-    
-  return (
+
+  const formatDate = (date) => {
+    const options = {
+      hour: "2-digit",
+      minute: "2-digit",
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+      hour12: false,
+    };
+    return new Intl.DateTimeFormat("vi-VN", options).format(new Date(date));
+  };
+
+  return(
     <>
       <div className="details__fee">
         <div className="recentCt">
           <div className="cardHeader">
-              <h2>Chi tiết hoá đơn của hộ: {households[0]?.head || "Loading...."}</h2>
+              <h2>Lịch sử giao dịch</h2>
               <div className="filter-month">
                 <Form.Item label="Thời gian:">
                 <DatePicker 
                   picker="month" 
                   value={selectedMonth} 
-                  onChange={(date) => setSelectedMonth(date || dayjs())} 
+                  onChange={(date) => setSelectedMonth(date)} 
                   format="MM/YYYY"
                 />
                 </Form.Item>
               </div>
               <div className="all-button">
-                <Link to="/transactionHis" className="btn"><HistoryOutlined /></Link>
-                <Link to="/stats" className="btn">Quay lại</Link>
+                <Link to="/detail/:household_id" className="btn">Quay lại</Link>
               </div>
           </div>
 
           <table>
             <thead>
               <tr>
-                <td>Loại phí</td>
-                <td>Số đơn vị</td>
+                <td>ID giao dịch</td>
+                <td>ID hoá đơn</td>
+                <td>Tên khoản phí</td>
+                <td>Thời gian</td>
                 <td>Số tiền</td>
-                <td>Hạn nộp</td>
-                <td>Tình trạng</td>
-                <td>Trạng thái</td>
               </tr>
             </thead>
             <tbody>
               {sortedFees.map((fee, index) => (
                 <tr key={index}>
+                  <td>{fee.bill_id}</td>
+                  <td>{fee.payment_id}</td>
                   <td>{fee.feeName}</td>
-                  <td>1</td>
-                  <td> {fee.amount.toLocaleString("vi-VN")} VNĐ</td>
-                  <td>
-                    {fee.payment_date ? new Date(fee.payment_date).toLocaleDateString('vi-VN') : 'Chưa có ngày'}                                     
+                  <td>{formatDate(fee.payment_date)}</td>
+                  <td>+{fee.amount.toLocaleString("vi-VN")} VNĐ</td>
+                  {/* <td>
+                      {fee.payment_date ? new Date(fee.payment_date).toLocaleDateString('vi-VN') : 'Chưa có ngày'}                                     
                   </td>
                   <td>
-                    {fee.payment_date && new Date(fee.payment_date) <= new Date() ? 'Đến hạn thanh toán' : 'Chưa đến hạn thanh toán'}
+                      {fee.payment_date && new Date(fee.payment_date) <= new Date() ? 'Đến hạn thanh toán' : 'Chưa đến hạn thanh toán'}
                   </td>
                   <td>
                       <span className={fee.status === 'Đã thanh toán' ? 'status-paid' : 'status-unpaid'}>
-                        {fee.status === 'Đã thanh toán' ? 'Đã thanh toán' : 'Chưa thanh toán'}
+                      {fee.status === 'Đã thanh toán' ? 'Đã thanh toán' : 'Chưa thanh toán'}
                       </span>
-                  </td>
+                  </td> */}
                 </tr>
               ))}
             </tbody>
@@ -104,4 +115,5 @@ function Detail(){
     </>
   )
 }
-export default Detail
+
+export default TransactionHistory

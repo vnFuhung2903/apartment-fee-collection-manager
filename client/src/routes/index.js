@@ -11,6 +11,7 @@ import LogIn from "../pages/LogIn/LogIn";
 import Password from "../pages/Password";
 import Stats from "../pages/Stats";
 import HouseholdInfo from "../pages/DashBoard/HouseholdInfo";
+import TransactionHistory from "../pages/FeeMange/TransactionHistory";
 
 export const routes = [
   // {
@@ -54,12 +55,8 @@ export const routes = [
         element: <FeeList/>
       },
       {
-        path: "fee_create",
-        element: <CreateFee/>
-      },
-      {
-        path: "edit_fee",
-        element: <EditFee/>
+        path: "transactionHis",
+        element: <TransactionHistory/>
       },
       {
         path: "detail/:household_id",

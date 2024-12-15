@@ -12,12 +12,12 @@ export const setHouseholdDetail = (households) => ({
 export const fetchFees = (household_id) => {
   return (dispatch) => {
     axios.get(`http://localhost:8386/payments/api/v1/payments?household_id=${household_id}`)  
-          .then(response => {
-            setFees(dispatch(setFees(response.data)));
-          })
-          .catch(error => {
-            console.error("Error fetching fees data:", error);
-          });
+      .then(response => {
+        setFees(dispatch(setFees(response.data)));
+      })
+      .catch(error => {
+        console.error("Error fetching fees data:", error);
+      });
   };
 };
 

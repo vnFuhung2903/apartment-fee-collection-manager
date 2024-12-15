@@ -84,7 +84,7 @@ function Password(){
           <div className="password-container">
             <div className="password-content">
               <div className="password-form">
-                  <h2 className="form-title">Đổi mật khẩu</h2>
+                  <h2 className="password-form-title">Đổi mật khẩu</h2>
                     <form onSubmit={handleSubmit}>
                       <div className="form-group">
                         <div className="password-input-field old-password">

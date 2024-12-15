@@ -1,11 +1,25 @@
-import { Input, Form, Button, InputNumber, Select, DatePicker, notification } from "antd";
+import { Input, Form, Button, InputNumber, Select, DatePicker, notification, Modal } from "antd";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useState, useEffect } from "react";
 
-function CreateFee() {
+function CreateFee(props) {
+  const { onReload } = props;
   const [households, setHouseholdsOptions] = useState([]);
   const [loadingHouseholds, setLoadingHouseholds] = useState(true);
+
+  //Modal cập nhật
+  const [isModalVisible, setIsModalVisible] = useState(false);
+
+  // Hàm mở Modal
+  const showModal = () => {
+    setIsModalVisible(true);
+  };
+
+  // Hàm đóng Modal
+  const handleCancel = () => {
+    setIsModalVisible(false);
+  };
 
   useEffect(() => {
     const fetchHouseholds = async () => {
@@ -83,6 +97,7 @@ function CreateFee() {
       );
 
       if (response.status === 201) {
+        await onReload();
         openNotification("success", "Thành công", "Thêm mới thành công!");
         navigate("/fee_list");
       } else {
@@ -95,82 +110,80 @@ function CreateFee() {
 
   return (
     <>
-      <div className="details__fee">
-        <div className="recentCt">
-          <div className="cardHeader">
-            <h2>Thêm loại phí</h2>
-            <Link to="/fee_list" className="btn">
-              Quay lại
-            </Link>
-          </div>
-          <Form layout="vertical" name="create-fee" onFinish={handleSubmit}>
-            <Form.Item
-              label="Tên loại phí"
-              name="feeName"
-              rules={[{ required: true, message: "Bắt buộc!" }]}
-            >
-              <Input />
-            </Form.Item>
+      <button className="btn" onClick={() => showModal()}>Thêm loại phí</button>
+      <Modal
+        title="Chỉnh sửa thông tin"
+        open={isModalVisible}
+        //onOk={handleOk}
+        onCancel={handleCancel}
+        okText="Tạo mới"
+        cancelText="Huỷ"
+      >
+        <Form layout="horizontal" name="create-fee" onFinish={handleSubmit}>
+          <Form.Item
+            label="Tên loại phí"
+            name="feeName"
+            rules={[{ required: true, message: "Bắt buộc!" }]}
+          >
+            <Input />
+          </Form.Item>
 
-            <Form.Item
-              label="Giá/đơn vị"
-              name="price"
-              rules={[{ required: true, message: "Bắt buộc!" }]}
-            >
-              <InputNumber />
-            </Form.Item>
+          <Form.Item
+            label="Giá/đơn vị"
+            name="price"
+            rules={[{ required: true, message: "Bắt buộc!" }]}
+          >
+            <InputNumber 
+              formatter={(value) => `${Number(value).toLocaleString("vi-VN")}`} 
+              parser={(value) => value.replace(/\D/g, '')}
+              style={{ width: "auto", maxWidth: '100%' }}
+            />
+          </Form.Item>
 
-            <Form.Item
-              label="Hạn nộp"
-              name="deadline"
-              rules={[{ required: true, message: "Bắt buộc!" }]}
-            >
-              <DatePicker />
-            </Form.Item>
+          <Form.Item
+            label="Thời hạn (tháng)"
+            name="deadline"
+            rules={[{ required: true, message: "Bắt buộc!" }]}
+          >
+            <InputNumber />
+          </Form.Item>
 
-            <Form.Item
-              label="Trạng thái"
-              name="status"
-              rules={[{ required: true, message: "Bắt buộc!" }]}
-            >
-              <Select placeholder="Chọn trạng thái" onChange={handleStatusChange}>
-                <Select.Option value="required">Bắt buộc</Select.Option>
-                <Select.Option value="not_required">Không bắt buộc</Select.Option>
+          <Form.Item
+            label="Trạng thái"
+            name="status"
+            rules={[{ required: true, message: "Bắt buộc!" }]}
+          >
+            <Select placeholder="Chọn trạng thái" onChange={handleStatusChange}>
+              <Select.Option value="required">Bắt buộc</Select.Option>
+              <Select.Option value="not_required">Không bắt buộc</Select.Option>
+            </Select>
+          </Form.Item>
+
+          <Form.Item
+            label="Hộ gia đình"
+            name="households"
+            rules={!isMandatory ? [{ required: true }] : []}
+          >
+            {loadingHouseholds ? (
+              <p>Đang tải danh sách hộ gia đình...</p>
+            ) : (
+              <Select
+                {...sharedProps}
+                placeholder={isMandatory ? "Tất cả hộ gia đình" : "Chọn hộ gia đình"}
+                disabled={isMandatory}
+                value={checkedList}
+                onChange={handleChange}
+              >
+                {households.map((option) => (
+                  <Select.Option key={option.value} value={option.id}>
+                    {option.label}
+                  </Select.Option>
+                ))}
               </Select>
-            </Form.Item>
-
-            <Form.Item
-              label="Hộ gia đình"
-              name="households"
-              rules={!isMandatory ? [{ required: true }] : []}
-            >
-              {loadingHouseholds ? (
-                <p>Đang tải danh sách hộ gia đình...</p>
-              ) : (
-                <Select
-                  {...sharedProps}
-                  placeholder={isMandatory ? "Tất cả hộ gia đình" : "Chọn hộ gia đình"}
-                  disabled={isMandatory}
-                  value={checkedList}
-                  onChange={handleChange}
-                >
-                  {households.map((option) => (
-                    <Select.Option key={option.value} value={option.id}>
-                      {option.label}
-                    </Select.Option>
-                  ))}
-                </Select>
-              )}
-            </Form.Item>
-
-            <Form.Item>
-              <Button type="primary" htmlType="submit">
-                Tạo mới
-              </Button>
-            </Form.Item>
-          </Form>
-        </div>
-      </div>
+            )}
+          </Form.Item>
+        </Form>
+      </Modal>
     </>
   );
 }

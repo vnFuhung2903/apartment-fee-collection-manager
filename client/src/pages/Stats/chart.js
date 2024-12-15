@@ -1,13 +1,13 @@
 import "./stats.scss";
 import profile from "./images/profile-1.jpg";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchPayments, fetchTotalPayments } from "../../actions";
+import { fetchPayments, fetchTotalPayment } from "../../actions";
 
 function Chart() {
   const dispatch = useDispatch();
-  const { payments, totalPaymentData } = useSelector((state) => state.chartReducer);
-
+  const payments = useSelector((state) => state.chartReducer.payments);
+  const totalPaymentData = useSelector((state) => state.feeManageReducer1.totalPayment || []);
   const r = 30;
 
   const payFull = totalPaymentData.reduce(
@@ -17,14 +17,33 @@ function Chart() {
     ) || 0;
 
   const payment = totalPaymentData.reduce((sum, item) => sum + item.payed, 0) || 0;
-
   const total = totalPaymentData.reduce((sum, item) => sum + item.totalAmount, 0) || 0;
 
   useEffect(() => {
     dispatch(fetchPayments());
-    dispatch(fetchTotalPayments());
+    dispatch(fetchTotalPayment());
   }, [dispatch]);
 
+  const mainRef = useRef(null);
+  const recentUpdatesRef = useRef(null);
+
+  const syncHeight = () => {
+    if (mainRef.current && recentUpdatesRef.current) {
+      recentUpdatesRef.current.style.height = `${mainRef.current.offsetHeight}px`;
+    }
+  };
+
+  useEffect(() => {
+    syncHeight();
+    window.addEventListener("resize", syncHeight);
+    // Cleanup để tránh rò rỉ sự kiện
+    return () => {
+      window.removeEventListener("resize", syncHeight);
+    };
+  }, []);
+  // if (!totalPaymentData.length) {
+  //   return <p>Loading...</p>;
+  // }
   return (
     <>
       {/* Insights Part */}
@@ -32,7 +51,7 @@ function Chart() {
         <main>
           <h2>Biểu đồ</h2>
           <div className="insights">
-            <div div className="pay-full">
+            <div div className="pay-full" ref={mainRef}>
               <span className="material-symbols-sharp">trending_up</span>
               <div className="middle">
                 <div className="left">
@@ -99,8 +118,8 @@ function Chart() {
         start right main 
       ----------------------> */}
         <div className="right">
-          <div className="recent_updates">
-            <h2>Cập nhật gần đây</h2>
+          <h2>Cập nhật gần đây</h2>
+          <div className="recent_updates" ref={recentUpdatesRef}>
             <div className="updates">
               {payments.map((payment, index) => (
                 <div className="update" key={index}>

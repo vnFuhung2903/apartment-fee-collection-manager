@@ -3,6 +3,8 @@ const express = require('express');
 const cors = require('cors');
 const methodOverride = require('method-override');
 const bodyParser = require('body-parser');
+const cron = require("node-cron");
+const { autoGeneratePayments } = require("./controllers/payment.controller");
 //Setup database
 const database = require("./config/database.config.js")
 database.connect();
@@ -20,6 +22,10 @@ app.use(cors({
     credentials: true
   }));
   
+// Cron job chạy vào ngày 1 mỗi tháng lúc 0h
+cron.schedule("0 0 1 * *", () => {
+  autoGeneratePayments();
+});
 
 routeApi(app);
 
