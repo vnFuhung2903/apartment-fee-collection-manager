@@ -56,7 +56,7 @@ function Detail(){
                 <DatePicker 
                   picker="month" 
                   value={selectedMonth} 
-                  onChange={(date) => setSelectedMonth(date)} 
+                  onChange={(date) => setSelectedMonth(date || dayjs())} 
                   format="MM/YYYY"
                 />
                 </Form.Item>

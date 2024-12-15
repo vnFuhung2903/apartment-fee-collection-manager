@@ -90,8 +90,8 @@ function TransactionHistory(){
             <tbody>
               {sortedFees.map((fee, index) => (
                 <tr key={index}>
+                  <td>{fee.bill_id}</td>
                   <td>{fee.payment_id}</td>
-                  <td>#EFGH12345</td>
                   <td>{fee.feeName}</td>
                   <td>{formatDate(fee.payment_date)}</td>
                   <td>+{fee.amount.toLocaleString("vi-VN")} VNĐ</td>
