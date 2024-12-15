@@ -113,6 +113,7 @@ function FeeMange(){
       const response = await axios.post("http://localhost:8386/payments/api/v1/changes", {
         payment_ids: selectedPayments.map((payment) => payment.payment_id),
         bill_id:transactionID,
+        bill_time: dayjs().toISOString(),
       });
   
       // Kiểm tra phản hồi từ API
