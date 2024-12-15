@@ -3,7 +3,7 @@ import {useState, useEffect} from "react"
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from 'react-router-dom';
-import { fetchFees,fetchHouseholdDetail } from "../../actions";
+import { fetchDoneFees,fetchHouseholdDetail } from "../../actions";
 import { DatePicker, Form } from 'antd';
 import dayjs from 'dayjs';
 
@@ -16,7 +16,7 @@ function TransactionHistory(){
   const [selectedMonth, setSelectedMonth] = useState(dayjs());  // Mặc định là tháng hiện tại
   useEffect(() => {
     Promise.all([
-      dispatch(fetchFees(household_id)),      // Gọi API fetchFees
+      dispatch(fetchDoneFees(household_id)),      // Gọi API fetchFees
       dispatch(fetchHouseholdDetail(household_id)) // Gọi API fetchHouseholdDetails
     ])
     .catch((error) => {
@@ -81,7 +81,7 @@ function TransactionHistory(){
                   <td>{fee.bill_id}</td>
                   <td>{fee.payment_id}</td>
                   <td>{fee.feeName}</td>
-                  <td>{fee.bill_time}</td>
+                  <td>{dayjs(fee.bill_time).format("DD/MM/YYYY HH:mm:ss")}</td>
                   <td>+{fee.amount.toLocaleString("vi-VN")} VNĐ</td>
                 </tr>
               ))}

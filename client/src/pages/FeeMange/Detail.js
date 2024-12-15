@@ -62,7 +62,7 @@ function Detail(){
                 </Form.Item>
               </div>
               <div className="all-button">
-                <Link to="/transactionHis" className="btn"><HistoryOutlined /></Link>
+                <Link to={`/transactionHis/${household_id}`} className="btn"><HistoryOutlined /></Link>
                 <Link to="/stats" className="btn">Quay lại</Link>
               </div>
           </div>
