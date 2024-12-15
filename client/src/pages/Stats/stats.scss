@@ -184,7 +184,7 @@ main .insights .progress{
 main .insights svg{
   height: 150px;
   width: 150px;
-  position: absolute;
+  position: relative;
   top: 0;
 }
 
@@ -198,13 +198,14 @@ main .insights svg circle{
 
 main .insights .progress .number{
   position: absolute;
-  top: 5%;
-  left: 5%;
+  top: 50%;
+  left: 50%;
   height: 100%;
   width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
+  transform: translate(-39%, -45%);
 }
 
 /* recent order */
