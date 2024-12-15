@@ -16,7 +16,7 @@ function Chart() {
       0
     ) || 0;
 
-  const payment = totalPaymentData.reduce((sum, item) => sum + item.payed, 0) || 0;
+  const payment = totalPaymentData.reduce((sum, item) => sum + (item.totalAmount-item.payed), 0) || 0;
   const total = totalPaymentData.reduce((sum, item) => sum + item.totalAmount, 0) || 0;
 
   useEffect(() => {
