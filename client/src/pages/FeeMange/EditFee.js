@@ -172,8 +172,8 @@ function EditFee(props) {
               style={{ width: "auto", maxWidth: '100%' }}
             />
           </Form.Item>
-          <Form.Item label="Hạn nộp" name="due" rules={[{ required: true, message: "Bắt buộc!" }]}>
-            <DatePicker />
+          <Form.Item label="Thời hạn (tháng)" name="due" rules={[{ required: true, message: "Bắt buộc!" }]}>
+            <InputNumber />
           </Form.Item>
           <Form.Item label="Trạng thái" name="status">
             <Select placeholder="Chọn trạng thái" onChange={handleStatusChange}>

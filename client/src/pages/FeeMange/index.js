@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { Link, useLocation, useNavigate } from "react-router-dom"
+import { Link } from "react-router-dom"
 import "./style.css"
 import { useDispatch, useSelector } from "react-redux";
 import { fetchTotalPayments } from "../../actions/feeManage";
-import { Form, Select, Col, Row, DatePicker, Modal, Input, InputNumber } from 'antd';
+import { Form, Select, Col, Row, DatePicker, Modal, Input, Checkbox, InputNumber } from 'antd';
 import dayjs from 'dayjs';
 
 function FeeMange(){
@@ -34,7 +34,8 @@ function FeeMange(){
 
   //Modal cập nhật
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [selectedPayment, setSelectedPayment] = useState(null);
+  const [checkedPayments, setCheckedPayments] = useState([]);
+  const [transactionID, setTransactionID] = useState("");
   const [filters, setFilters] = useState({
     paymentName: null, 
     householdName: null, 
@@ -43,15 +44,11 @@ function FeeMange(){
   });
   const filteredPayments = useMemo(() => {
     return totalPayment.filter((payment) => {
-      // Lọc theo tên khoản thu
-      // if (filters.paymentName && payment.paymentName !== filters.paymentName) {
-      //   return false;
-      // }
-      if (filters.paymentName && filters.paymentName !== "Phí chung cư") {
+      if (filters.paymentName && filters.paymentName !== payment.feeName) {
         return false;
       }
       // Lọc theo tên chủ hộ
-      if (filters.householdName && payment.headName !== filters.householdName) {
+      if (filters.householdName && filters.householdName !== payment.householdHead) {
         return false;
       }
       // Lọc theo ngày
@@ -66,12 +63,27 @@ function FeeMange(){
     });
   }, [totalPayment, filters]);
 
+  const handleCheck = (paymentId) => {
+    setCheckedPayments((prev) => {
+      if (prev.includes(paymentId)) {
+        return prev.filter((id) => id !== paymentId);
+      } else {
+        return [...prev, paymentId];
+      }
+    });
+  };
 
   // Hàm mở Modal
-  const showModal = (Tpayment) => {
+  const showModal = () => {
     setIsModalVisible(true);
-    setSelectedPayment(Tpayment);
-    //console.log(Tpayment);
+    //Tạo ID giao dịch
+    const generateTransactionID = () => {
+      const now = new Date().getTime();
+      const hash = now.toString(36);
+      return hash.slice(-8); // Lấy 8 ký tự cuối
+    };
+    setTransactionID(generateTransactionID());
+    console.log(transactionID);
   };
 
   // Hàm đóng Modal
@@ -79,15 +91,19 @@ function FeeMange(){
     setIsModalVisible(false);
   };
 
-  const formItemLayout = {
-    labelCol: {
-      xs: { span: 24 },
-      sm: { span: 6 },
-    },
-    wrapperCol: {
-      xs: { span: 24 },
-      sm: { span: 14 },
-    },
+  const selectedPayments = useMemo(() => {
+    return totalPayment.filter(payment => checkedPayments.includes(payment.payment_id));
+  }, [totalPayment, checkedPayments]);
+
+  const totalAmount = selectedPayments.reduce(
+    (sum, item) =>
+      sum += item.amount,
+    0
+  ) || 0;
+
+  const handlePayment = () => {
+    // Reset danh sách các hóa đơn đã được check
+    setCheckedPayments([]); 
   };
 
   return (
@@ -154,7 +170,7 @@ function FeeMange(){
             </Form>
           </div>
 
-          <table>
+          <table className='overall'>
             <thead>
               <tr>
                 <td>ID hoá đơn</td>
@@ -163,7 +179,7 @@ function FeeMange(){
                 <td>Tên khoản thu</td>
                 <td>Số tiền cần thu</td>
                 <td>Trạng thái</td>
-                <td>Cập nhật</td>
+                <td><button className="btn-details" onClick={showModal}>Cập nhật</button></td>
               </tr>
             </thead>
             <tbody>
@@ -176,62 +192,84 @@ function FeeMange(){
                   <td>{Number(Tpayment.amount).toLocaleString("vi-VN")} VNĐ</td> {/* Định dạng số tiền */}
                   <td>{Tpayment.status}</td> {/* Hiển thị tên khoản thu */}
                   <td>
-                    <button className="btn-details" onClick={() => showModal(Tpayment)}>Cập nhật</button>
-                    <Modal
-                      title="Chỉnh sửa thông tin"
-                      open={isModalVisible}
-                      onCancel={handleCancel}
-                      okText="Lưu"
-                      cancelText="Hủy"
-                    >
-                      <Form
-                        {...formItemLayout}
-                        layout="horizontal"
-                        name="create-fee"
-                        initialValues={{
-                          id: Tpayment.payment_id,  // Sử dụng payment_id từ dữ liệu
-                          due: dayjs(Tpayment.payment_date),  // Đặt ngày nộp là ngày thanh toán
-                          householdName: Tpayment.householdHead,  // Tên chủ hộ
-                          paymentName: Tpayment.feeName,  // Tên khoản thu
-                          needPay: Tpayment.amount,  // Số tiền cần thu
-                          payed: Tpayment.status === "Đã thanh toán" ? Tpayment.amount : 0,  // Kiểm tra trạng thái để điền số tiền đã thu
-                        }}
-                      >
-                        <Form.Item label="ID hoá đơn" name="id">
-                          <Input disabled/>
-                        </Form.Item>
-                        <Form.Item label="Ngày nộp" name="due">
-                          <DatePicker />
-                        </Form.Item>
-                        <Form.Item label="Tên chủ hộ" name="householdName">
-                          <Input disabled/>
-                        </Form.Item>
-                        <Form.Item label="Tên khoản thu" name="paymentName">
-                          <Input disabled />
-                        </Form.Item>
-                        <Form.Item label="Số tiền cần thu" name="needPay">
-                          <InputNumber 
-                            disabled
-                            style={{ width: '100%' }}
-                            formatter={(value) => `${Number(value).toLocaleString("vi-VN")}`} 
-                            parser={(value) => value.replace(/\D/g, '')}
-                          />
-                        </Form.Item>
-                        <Form.Item label="Số tiền đã thu" name="payed">
-                          <InputNumber 
-                            style={{ width: '100%' }}
-                            formatter={(value) => `${Number(value).toLocaleString("vi-VN")}`} 
-                            parser={(value) => value.replace(/\D/g, '')}
-                          /> 
-                        </Form.Item>
-                      </Form>
-                    </Modal>
+                    <Checkbox 
+                      className='checkbox-btn'
+                      checked={checkedPayments.includes(Tpayment.payment_id)} 
+                      onChange={() => handleCheck(Tpayment.payment_id)}
+                    />
                   </td>
                 </tr>
               ))}
-
             </tbody>
           </table>
+
+          <Modal
+            title={`Thanh toán hoá đơn cho hộ: `}
+            open={isModalVisible}
+            onCancel={handleCancel}
+            okText="Thanh toán"
+            cancelText="Hủy"
+            onOk={handlePayment}
+          >
+            <Form layout="horizontal">
+              <Form.Item label="ID giao dịch">
+                <Input value={transactionID} readOnly />
+              </Form.Item>
+              <hr/>
+              <table className="payment">
+                <thead>
+                  <td>ID hoá đơn</td>
+                  <td>Loại phí</td>
+                  <td>Giá (VNĐ)</td>
+                  <td>Hạn nộp</td>
+                </thead>
+                <tbody>
+                  {selectedPayments.map((Tpayment, index) => (
+                    <tr key={index}>
+                      <td>{Tpayment.payment_id}</td>
+                      <td>{Tpayment.feeName}</td> 
+                      <td>{Number(Tpayment.amount).toLocaleString('vi-VN')}</td>
+                      <td>{dayjs(Tpayment.payment_date).format('DD/MM/YYYY')}</td>
+                  </tr>
+                  ))}
+                  </tbody>
+              </table>
+              <hr/>
+              <Form.Item>
+                <Row
+                  gutter={{
+                    xs: 8,
+                    sm: 16,
+                    md: 24,
+                    lg: 32,
+                  }}
+                >
+                  <Col className="gutter-row" span={12}>
+                    <Form.Item label="Ngày thanh toán">
+                      <Input value={dayjs().format('DD/MM/YYYY')} readOnly/>
+                    </Form.Item>
+                  </Col>
+                  <Col className="gutter-row" span={12}>
+                    <Form.Item 
+                      label="Tổng (VNĐ):" 
+                      labelCol={{ span: 16 }}
+                      wrapperCol={{ span: 8 }} 
+                      labelAlign='right'
+                      textAlign='right'
+                    >
+                      <InputNumber 
+                        value={totalAmount} 
+                        readOnly
+                        formatter={(value) => `${Number(value).toLocaleString("vi-VN")}`} 
+                        parser={(value) => value.replace(/\D/g, '')}
+                      />
+                    </Form.Item>
+                  </Col>
+                </Row>
+              </Form.Item>
+            </Form>
+          </Modal>
+
         </div>
     </div>
     </>
