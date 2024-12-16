@@ -1,81 +1,21 @@
-import { useState } from 'react';  
+import { useState, useEffect } from 'react';  
 import { Card, Descriptions, Table ,Button, Modal, Form, Input, message } from "antd";
-import { Space } from 'antd';
-import { EditOutlined ,DeleteOutlined } from '@ant-design/icons';
+import { EditOutlined ,DeleteOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
+import { Space , Tag} from 'antd';
+import DescriptionPerson from './DescriptionPerson';
+import "./style.css"
+import ModalEdit from './ModalEdit';
+
+
 
 const HouseholdInfo = () => {
-  // Dữ liệu mẫu
-
-  const residents = [
-    {
-      key: "1",
-      name: "Nguyễn Văn A",
-      age: 45,
-      relationship: "Chủ hộ",
-      phone: "0987654321",
-    },
-    {
-      key: "2",
-      name: "Nguyễn Thị B",
-      age: 43,
-      relationship: "Vợ",
-      phone: "0981234567",
-    },
-    {
-      key: "3",
-      name: "Nguyễn Văn C",
-      age: 20,
-      relationship: "Con trai",
-      phone: "0976543210",
-    },
-    {
-      key: "4",
-      name: "Nguyễn Thị D",
-      age: 18,
-      relationship: "Con gái",
-      phone: "0976123456",
-    },
-  ];
-
-  // Cột của bảng danh sách cư dân
-  const columns = [
-    {
-      title: "Họ và tên",
-      dataIndex: "name",
-      key: "name",
-    },
-    {
-      title: "Tuổi",
-      dataIndex: "age",
-      key: "age",
-    },
-    {
-      title: "Quan hệ",
-      dataIndex: "relationship",
-      key: "relationship",
-    },
-    {
-      title: "Số điện thoại",
-      dataIndex: "phone",
-      key: "phone",
-    },
-    {
-      title:"Mở rộng",
-      key: "expand",
-      render: (_, record) => (
-      <Space size="middle">
-        <Button onClick={showModal}><EditOutlined /></Button>
-        <Button><DeleteOutlined /></Button>
-      </Space>
-      ),
-    },
-  ];
+  const [isModalEdit, setModalEdit] = useState(false)
 
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [form] = Form.useForm();
   const [editedOwnerInfo, setEditedOwnerInfo] = useState({
     name: "Nguyễn Văn A",
-    floornumber: "10",
+    floornumber: "2",
     apartmentNumber: "202",
     phone: "0987654321",
     cic: "123456789012",
@@ -85,35 +25,187 @@ const HouseholdInfo = () => {
     occupation: "Kỹ sư",
     hometown: "Hà Nội",
     ethnic: "Kinh",
-    status: "Thường trú"
+    status: "Thường trú",
+    movingIn: "2020-10-20"
   });
 
-  // Hàm mở Modal
-  const showModal = () => {
-    form.setFieldsValue(editedOwnerInfo); 
-    setIsModalVisible(true);
+
+  {/*=========================Xử lí bảng thông tin người ở trong căn hộ =======================>*/}
+     
+  const columns = [
+    {
+      title: "Họ và tên",
+      dataIndex: "name",
+    },
+    {
+      title: "Ngày sinh",
+      dataIndex: "dob",
+    },
+    {
+      title: "Quan hệ",
+      dataIndex: "relation_to_owner",
+      filters: [],
+    },
+    {
+      title: "Số điện thoại",
+      dataIndex: "phone",
+    },
+    {
+      title: "Trạng Thái",
+      dataIndex: "status",
+      render: (status) => {
+        let color = status === "Thường trú" ? "orange" : " red";
+        return <Tag color={color}>{status}</Tag>;
+      },
+    },
+    {
+      title: "Mở rộng",
+      key: "action",
+      sorter: true,
+      render: () => (
+        <Space size="middle">
+          <Button color="default" icon={<EditOutlined />} onClick={setIsModalVisible(true)} />
+        </Space>
+      ),
+    },
+  ];
+
+  const residents = [
+    {
+      key: "1",
+      name: "Nguyễn Văn A",
+      phone: "0987654321",
+      cic: "123456789012",
+      dob: "1979-05-12",
+      relationship: "Chủ nhà",
+      nationality: "Việt Nam",
+      gender: "Nam",
+      occupation: "Kỹ sư",
+      hometown: "Hà Nội",
+      ethnic: "Kinh",
+      status: "Thường trú",
+    },
+    {
+      key: "2",
+      name: "Nguyễn Thị B",
+      phone: "0981234567",
+      cic: "123456789013",
+      dob: "1981-03-25",
+      relationship: "Vợ",
+      nationality: "Việt Nam",
+      gender: "Nữ",
+      occupation: "Giáo viên",
+      hometown: "Hải Phòng",
+      ethnic: "Kinh",
+      status: "Thường trú",
+    },
+    {
+      key: "3",
+      name: "Nguyễn Văn C",
+      phone: "0976543210",
+      cic: "123456789014",
+      dob: "2004-07-10",
+      relationship: "Con trai",
+      nationality: "Việt Nam",
+      gender: "Nam",
+      occupation: "Sinh viên",
+      hometown: "Hà Nội",
+      ethnic: "Kinh",
+      status: "Thường trú",
+    },
+    {
+      key: "4",
+      name: "Nguyễn Thị D",
+      phone: "0976123456",
+      cic: "123456789015",
+      dob: "2006-01-15",
+      relationship: "Con gái",
+      nationality: "Việt Nam",
+      gender: "Nữ",
+      occupation: "Học sinh",
+      hometown: "Hà Nội",
+      ethnic: "Kinh",
+      status: "Thường trú",
+    },
+  ];
+
+  const [data, setData] = useState(
+    residents.map((record) => {
+      return {
+        key: record.key,
+        name: record.name,
+        dob: record.dob,
+        relation_to_owner: record.relationship,
+        phone: record.phone,
+        status: record.status,
+        description: record,
+      };
+    })
+  );
+
+  const defaultExpandable = {
+    expandedRowRender: (record) => (
+      <DescriptionPerson person={{ ...record.description }} />
+    ),
   };
 
-  // Hàm đóng Modal
-  const handleCancel = () => {
-    setIsModalVisible(false);
+  const [expandable, setExpandable] = useState(defaultExpandable);
+  const [selectedRows, setSelectedRows] = useState([]);
+  const [top, setTop] = useState("none");
+  const [bottom, setBottom] = useState("bottomRight");
+  const [appearDelete, setAppearDelete] = useState(false);
+  const [isDeleted,setIsDeleted] = useState(false);
+
+  useEffect(()=>{
+      if(isDeleted){
+        setData(data.filter((item) => !selectedRows.includes(item)));
+        console.log(data);
+        setIsDeleted(false);
+        setAppearDelete(false);
+      }
+  },[selectedRows,isDeleted]);
+
+  const handleExpandChange = (enable) => {
+    setExpandable(enable ? defaultExpandable : undefined);
+  };
+  const handleRowSelectionChange = (keys, rows) => {
+      setAppearDelete(rows.length === 0 ? false: true);
+      setSelectedRows(rows);
+  }; 
+  const handleDelete = () => {
+      setIsDeleted(true);
   };
 
- 
-  const handleOk = async () => {
-    const values = await form.validateFields();
-    setEditedOwnerInfo(values); 
-    setIsModalVisible(false);
+  const handleConfirm = () => {
+      Modal.confirm({
+          title : "Confirm",
+          icon : <ExclamationCircleOutlined />,
+          content: "Xác nhận xóa?",
+          okText:"Xác nhận",
+          cancelText:"Hủy",
+          centered: true,
+          onOk: handleDelete,
+      });
+  };
+
+  const tableColumns = columns;
+
+  const tableProps = {
+    rowSelection: {
+      onChange: handleRowSelectionChange,
+    },
+    expandable,
   };
 
   return (
+   <> 
     <div style={{ padding: 24 }}>
       {/* Thông tin chủ hộ */}
       <Card
         title="Thông tin chủ hộ"
         bordered={false}
         style={{ marginBottom: 24 }}
-        extra={<Button type="primary" onClick={showModal}>Sửa</Button>}
+        extra={<Button type="primary" onClick={() => {setModalEdit(true)}}>Sửa</Button>}
       >
         <Descriptions column={3}>
           <Descriptions.Item label="Họ và tên">
@@ -154,126 +246,23 @@ const HouseholdInfo = () => {
           </Descriptions.Item>
         </Descriptions>
       </Card>
-
-      {/* Modal chỉnh sửa thông tin */}
-      <Modal
-        title="Chỉnh sửa thông tin"
-        open={isModalVisible}
-        onOk={handleOk}
-        onCancel={handleCancel}
-        okText="Lưu"
-        cancelText="Hủy"
-      >
-        <Form form={form} layout="horizontal" initialValues={editedOwnerInfo}>
-
-          <Form.Item
-            label="Tên"
-            name="name"
-            rules={[{ required: true, message: "Vui lòng nhập tên!" }]}
-          >
-            <Input />
-          </Form.Item>
-
-          <Form.Item
-            label="Số tầng"
-            name="floornumber"
-            rules={[{ required: true }]}
-          >
-            <Input />
-          </Form.Item>
-
-          <Form.Item
-            label="Số căn hộ"
-            name="apartmentNumber"
-            rules={[{ required: true }]}
-          >
-            <Input />
-          </Form.Item>
-
-          <Form.Item
-            label="Số điện thoại"
-            name="phone"
-            rules={[{ required: true, message: "Vui lòng nhập số điện thoại!" }]}
-          >
-            <Input />
-          </Form.Item>
-
-          <Form.Item
-            label="CCCD"
-            name="cic"
-            rules={[{ required: true }]}
-          >
-            <Input />
-          </Form.Item>
-
-          <Form.Item
-            label="Ngày sinh"
-            name="dob"
-            rules={[{ required: true }]}
-          >
-            <Input />
-          </Form.Item>
-
-          <Form.Item
-            label="Quốc tịch"
-            name="nationality"
-            rules={[{ required: true }]}
-          >
-            <Input />
-          </Form.Item>
-
-          <Form.Item
-            label="Giới tính"
-            name="gender"
-            rules={[{ required: true }]}
-          >
-            <Input />
-          </Form.Item>
-
-          <Form.Item
-            label="Nghề Nghiệp"
-            name="occupation"
-            rules={[{ required: true }]}
-          >
-            <Input />
-          </Form.Item>
-
-          <Form.Item
-            label="Quê quán"
-            name="hometown"
-            rules={[{ required: true }]}
-          >
-            <Input />
-          </Form.Item>
-
-          <Form.Item
-            label="Dân tộc"
-            name="ethnic"
-            rules={[{ required: true }]}
-          >
-            <Input />
-          </Form.Item>
-
-          <Form.Item
-            label="Trạng Thái"
-            name="status"
-            rules={[{ required: true }]}
-          >
-            <Input />
-          </Form.Item>
-        </Form>
-      </Modal>
+      
+      {/* Modal sửa thông tin cá nhân */}
+      <ModalEdit isModalEdit={isModalEdit} setModalEdit={setModalEdit} personInfo={editedOwnerInfo} updateInfor={setEditedOwnerInfo} />
 
       {/* Danh sách người ở trong căn hộ */}
-      <Card title="Danh sách người ở trong căn hộ" bordered={false}>
-        <Table
-          dataSource={residents}
-          columns={columns}
-          pagination={false}
-          bordered="Mở rộng"
-        />
+      <Card title="Danh sách người ở trong căn hộ" bordered={false} extra= {appearDelete? <Button onClick={handleConfirm} color="danger" variant="filled">Xóa</Button> : null}>
+      <Table
+        {...tableProps}
+        pagination={{
+          position: [top, bottom],
+        }}
+        columns={tableColumns}
+        dataSource={/*hasData ?*/ data}
+      />
       </Card>
     </div>
+    </>
   );
 };
 

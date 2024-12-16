@@ -12,7 +12,7 @@ const getHouseholds = async (req, res) => {
     }
     let householdsFound = await household.find(conditions);
     let json = [];
-    let status = 'permanent_residence' 
+    let status = 'Thường trú' 
     for(const data of householdsFound) {
       let numbers = [], floors = [];
       const head = await person.findOne({ _id: data.head });
@@ -21,8 +21,8 @@ const getHouseholds = async (req, res) => {
         numbers.push(owned.number);
         floors.push((Number(owned.number) / 100).toFixed(0));
       }
-      if(head.temporary_absence)    status = 'temporary_absence';
-      if(head.temporary_residence)  status = 'temporary_residence';
+      if(head.temporary_absence)    status = 'Tạm vắng';
+      if(head.temporary_residence)  status = 'Tạm trú';
       json.push({id:data._id,head: head.name, contact: data.contact_phone, status: status, floors: floors, numbers: numbers});
     }
     res.status(200).json(json);
