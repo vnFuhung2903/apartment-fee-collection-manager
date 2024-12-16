@@ -3,7 +3,7 @@ import { Card, Descriptions, Table ,Button, Modal, Form, Input, message } from "
 import { EditOutlined ,DeleteOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
 import { Space , Tag} from 'antd';
 import DescriptionPerson from './DescriptionPerson';
-import "./householdinfor.css";
+import "./style.css"
 import ModalEdit from './ModalEdit';
 
 
@@ -15,7 +15,7 @@ const HouseholdInfo = () => {
   const [form] = Form.useForm();
   const [editedOwnerInfo, setEditedOwnerInfo] = useState({
     name: "Nguyễn Văn A",
-    floornumber: "10",
+    floornumber: "2",
     apartmentNumber: "202",
     phone: "0987654321",
     cic: "123456789012",
@@ -26,6 +26,7 @@ const HouseholdInfo = () => {
     hometown: "Hà Nội",
     ethnic: "Kinh",
     status: "Thường trú",
+    movingIn: "2020-10-20"
   });
 
 

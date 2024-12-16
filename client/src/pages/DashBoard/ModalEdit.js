@@ -1,37 +1,26 @@
 import React, { useState } from "react";
-import {
-  Modal,
-  Button,
-  DatePicker,
-  Form,
-  Input,
-  InputNumber,
-  Radio,
-  Select,
-  Flex,
-  Grid,
-  Row,
-  Col
-} from "antd";
+import { Modal,Button,DatePicker,Form,Input,InputNumber,Radio,Select,Flex,Grid,Row,Col} from "antd";
+import "./style.css";
+import moment from 'moment';
 
 function ModalEdit(props){
-   const {  RangePicker } = DatePicker;
     const [form] = Form.useForm();
     const {isModalEdit,setModalEdit,updateInfor,personInfo} = props;
     form.setFieldsValue(personInfo); 
     const handleOk = async () => {
         const values = await form.validateFields();
+        console.log(values);
         updateInfor(values);
         setModalEdit(false);
     }
-
+     
     
     return (
         <Modal
         title="Chỉnh sửa thông tin"
         open={isModalEdit}
-        //onOk={handleOk}
-       // onCancel={()=>{setModalEdit(false)}}
+        onOk={handleOk}
+        onCancel={()=>{setModalEdit(false)}}
         okText="Lưu"
         cancelText="Hủy"
         width={900}
@@ -41,6 +30,7 @@ function ModalEdit(props){
         wrapperCol={{ span: 16 }}
         layout="horizontal"
         style={{ width: 800}}
+        initialValues={{...personInfo,dob: moment(personInfo.dob, "YYYY-MM-DD"),movingIn: moment(personInfo.movingIn, "YYYY-MM-DD")}}
       >
         <Row gutter={24}>
           <Col span={12}>
@@ -112,17 +102,17 @@ function ModalEdit(props){
           </Col>
 
           <Col span={12}>
-            <Form.Item label="Trạng thái">
-              <Radio.Group style={{ display: 'flex', gap: '16px' }}>
+            <Form.Item label="Trạng thái" name="status">
+              <Radio.Group>
                 <Radio value="Thường trú" >Thường trú</Radio>
-                <Radio value="Tạm trú" style={{position:"absolute",right:10}}>Tạm trú</Radio>
+                <Radio value="Tạm trú">Tạm trú</Radio>
               </Radio.Group>
             </Form.Item>
           </Col>
 
           <Col span={12}>
-            <Form.Item label="Thời gian">
-              <RangePicker />
+            <Form.Item label="Thời gian đến" name="movingIn">
+              <DatePicker />
             </Form.Item>
           </Col>
         </Row>
