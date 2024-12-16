@@ -9,10 +9,10 @@ export const changePassword = (oldPassword, newPassword, navigate) => {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          userId: localStorage.getItem("user"),
           oldPassword: oldPassword,
           newPassword: newPassword
-        })
+        }),
+        credentials: "include"
       });
 
       const data = await response.json();

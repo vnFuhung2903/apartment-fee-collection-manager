@@ -14,10 +14,10 @@ import HouseholdInfo from "../pages/DashBoard/HouseholdInfo";
 import TransactionHistory from "../pages/FeeMange/TransactionHistory";
 
 export const routes = [
-  // {
-  //   path: "/",
-  //   element: <LogIn/>,
-  // },
+  {
+    path: "/",
+    element: <LogIn/>,
+  },
   // {
   //   path: "login",
   //   element: <LogIn/>

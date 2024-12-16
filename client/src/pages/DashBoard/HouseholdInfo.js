@@ -64,7 +64,7 @@ const HouseholdInfo = () => {
       key: "expand",
       render: (_, record) => (
       <Space size="middle">
-        <Button><EditOutlined /></Button>
+        <Button onClick={showModal}><EditOutlined /></Button>
         <Button><DeleteOutlined /></Button>
       </Space>
       ),
