@@ -92,7 +92,7 @@ function EditFee(props) {
         payload.amount = values.amount;
       }
       if (values.due) {
-        payload.due = values.due.format("YYYY-MM-DD");
+        payload.due = values.due;
       }
       if (values.status) {
         payload.status = values.status === "required" ? "Bắt buộc" : "Không bắt buộc";
@@ -114,6 +114,7 @@ function EditFee(props) {
         setTimeout(() => {
           navigate("/fee_list");
         }, 2000);
+        setIsModalVisible(false);
       } else {
         openNotification("error", "Thất bại", "Cập nhật thất bại!");
       }
