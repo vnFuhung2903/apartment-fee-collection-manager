@@ -194,7 +194,13 @@ function Register(){
                     </div>
                     <div className="input-fields">
                         <label htmlFor="relationToOwner">Quan hệ với chủ hộ</label>
-                        <input id="relationToOwner" name="relationToOwner" type="text" placeholder="" onChange={handleHouseholdChange} required />
+                        <select id="relationToOwner" name="relationToOwner" onChange={handlePersonalChange}>
+                            <option value="Chủ nhà">Chủ nhà</option>
+                            <option value="Con cái">Con cái</option>
+                            <option value="Vợ chồng">Vợ chồng</option>
+                            <option value="Bố mẹ">Bố mẹ</option>
+                            <option value="Họ hàng">Họ hàng</option>
+                        </select>
                     </div> 
                     <div className="input-fields">
                         <label htmlFor="">Trạng thái</label>

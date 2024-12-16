@@ -4,10 +4,12 @@ import { EditOutlined ,DeleteOutlined, ExclamationCircleOutlined } from '@ant-de
 import { Space , Tag} from 'antd';
 import DescriptionPerson from './DescriptionPerson';
 import "./householdinfor.css";
+import ModalEdit from './ModalEdit';
 
 
 
 const HouseholdInfo = () => {
+  const [isModalEdit, setModalEdit] = useState(false)
 
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [form] = Form.useForm();
@@ -23,26 +25,8 @@ const HouseholdInfo = () => {
     occupation: "Kỹ sư",
     hometown: "Hà Nội",
     ethnic: "Kinh",
-    status: "Thường trú"
+    status: "Thường trú",
   });
-
-  // Hàm mở Modal
-  const showModal = () => {
-    form.setFieldsValue(editedOwnerInfo); 
-    setIsModalVisible(true);
-  };
-
-  // Hàm đóng Modal
-  const handleCancel = () => {
-    setIsModalVisible(false);
-  };
-
- 
-  const handleOk = async () => {
-    const values = await form.validateFields();
-    setEditedOwnerInfo(values); 
-    setIsModalVisible(false);
-  };
 
 
   {/*=========================Xử lí bảng thông tin người ở trong căn hộ =======================>*/}
@@ -79,7 +63,7 @@ const HouseholdInfo = () => {
       sorter: true,
       render: () => (
         <Space size="middle">
-          <Button color="default" icon={<EditOutlined />} onClick={showModal} />
+          <Button color="default" icon={<EditOutlined />} onClick={setIsModalVisible(true)} />
         </Space>
       ),
     },
@@ -220,7 +204,7 @@ const HouseholdInfo = () => {
         title="Thông tin chủ hộ"
         bordered={false}
         style={{ marginBottom: 24 }}
-        extra={<Button type="primary" onClick={showModal}>Sửa</Button>}
+        extra={<Button type="primary" onClick={() => {setModalEdit(true)}}>Sửa</Button>}
       >
         <Descriptions column={3}>
           <Descriptions.Item label="Họ và tên">
@@ -261,115 +245,9 @@ const HouseholdInfo = () => {
           </Descriptions.Item>
         </Descriptions>
       </Card>
-
-
-      {/* Modal chỉnh sửa thông tin */}
-      <Modal
-        title="Chỉnh sửa thông tin"
-        open={isModalVisible}
-        onOk={handleOk}
-        onCancel={handleCancel}
-        okText="Lưu"
-        cancelText="Hủy"
-      >
-        <Form form={form} layout="horizontal" initialValues={editedOwnerInfo}>
-          <Form.Item
-            label="Tên"
-            name="name"
-            rules={[{ required: true, message: "Vui lòng nhập tên!" }]}
-          >
-            <Input />
-          </Form.Item>
-
-          <Form.Item
-            label="Số tầng"
-            name="floornumber"
-            rules={[{ required: true }]}
-          >
-            <Input />
-          </Form.Item>
-
-          <Form.Item
-            label="Số căn hộ"
-            name="apartmentNumber"
-            rules={[{ required: true }]}
-          >
-            <Input />
-          </Form.Item>
-
-          <Form.Item
-            label="Số điện thoại"
-            name="phone"
-            rules={[{ required: true, message: "Vui lòng nhập số điện thoại!" }]}
-          >
-            <Input />
-          </Form.Item>
-
-          <Form.Item
-            label="CCCD"
-            name="cic"
-            rules={[{ required: true }]}
-          >
-            <Input />
-          </Form.Item>
-
-          <Form.Item
-            label="Ngày sinh"
-            name="dob"
-            rules={[{ required: true }]}
-          >
-            <Input />
-          </Form.Item>
-
-          <Form.Item
-            label="Quốc tịch"
-            name="nationality"
-            rules={[{ required: true }]}
-          >
-            <Input />
-          </Form.Item>
-
-          <Form.Item
-            label="Giới tính"
-            name="gender"
-            rules={[{ required: true }]}
-          >
-            <Input />
-          </Form.Item>
-
-          <Form.Item
-            label="Nghề Nghiệp"
-            name="occupation"
-            rules={[{ required: true }]}
-          >
-            <Input />
-          </Form.Item>
-
-          <Form.Item
-            label="Quê quán"
-            name="hometown"
-            rules={[{ required: true }]}
-          >
-            <Input />
-          </Form.Item>
-
-          <Form.Item
-            label="Dân tộc"
-            name="ethnic"
-            rules={[{ required: true }]}
-          >
-            <Input />
-          </Form.Item>
-
-          <Form.Item
-            label="Trạng Thái"
-            name="status"
-            rules={[{ required: true }]}
-          >
-            <Input />
-          </Form.Item>
-        </Form>
-      </Modal>
+      
+      {/* Modal sửa thông tin cá nhân */}
+      <ModalEdit isModalEdit={isModalEdit} setModalEdit={setModalEdit} personInfo={editedOwnerInfo} updateInfor={setEditedOwnerInfo} />
 
       {/* Danh sách người ở trong căn hộ */}
       <Card title="Danh sách người ở trong căn hộ" bordered={false} extra= {appearDelete? <Button onClick={handleConfirm} color="danger" variant="filled">Xóa</Button> : null}>

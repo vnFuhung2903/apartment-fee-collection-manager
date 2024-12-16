@@ -1,6 +1,6 @@
 import DashBoard from "../pages/DashBoard";
 import Page2 from "../pages/DashBoard/Page2";
-import Register from "../pages/DashBoard/createHousehold";
+import Register from "../pages/DashBoard/Register";
 import FeeMange from "../pages/FeeMange";
 import CreateFee from "../pages/FeeMange/CreateFee";
 import Detail from "../pages/FeeMange/Detail";
