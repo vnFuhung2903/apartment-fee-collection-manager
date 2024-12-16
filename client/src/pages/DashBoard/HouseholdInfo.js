@@ -3,7 +3,7 @@ import { Card, Descriptions, Button, Modal,Table } from "antd";
 import { Space , Tag} from 'antd';
 import { EditOutlined,ExclamationCircleOutlined} from '@ant-design/icons';
 import DescriptionPerson from './DescriptionPerson';
-import "./householdinfor.css";
+import "./style.css"
 import ModalEdit from './ModalEdit';
 
 
@@ -12,7 +12,7 @@ const HouseholdInfo = () => {
   const [isModalEdit, setModalEdit] = useState(false)
   const [editedOwnerInfo, setEditedOwnerInfo] = useState({
     name: "Nguyễn Văn A",
-    floornumber: "10",
+    floornumber: "2",
     apartmentNumber: "202",
     phone: "0987654321",
     cic: "123456789012",
@@ -23,6 +23,7 @@ const HouseholdInfo = () => {
     hometown: "Hà Nội",
     ethnic: "Kinh",
     status: "Thường trú",
+    movingIn: "2020-10-20"
   });
 
 

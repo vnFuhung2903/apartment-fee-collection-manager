@@ -168,6 +168,7 @@ function Page1(){
         <div className="recentCustomers">
         <div className="cardHeader">
             <h2>Recent Customers</h2>
+            <Link to="/view_all" className="btn">Mở rộng</Link>
         </div>
 
         <table>
