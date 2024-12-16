@@ -77,11 +77,11 @@ function CreateFee(props) {
       const payload = {
         name: values.feeName,
         amount: values.price,
-        due: values.deadline ? values.deadline.format("YYYY-MM-DD") : null,
+        due: values.deadline ? values.deadline : null,
         status: values.status === "required" ? "Bắt buộc" : "Không bắt buộc",
         households: values.status === "required" ? "Tất cả" : values.households,
       };
-
+      
       if (!payload.name || !payload.amount || !payload.due) {
         openNotification("error", "Thất bại", "Vui lòng điền đủ thông tin bắt buộc!");
         return;
@@ -100,6 +100,7 @@ function CreateFee(props) {
         await onReload();
         openNotification("success", "Thành công", "Thêm mới thành công!");
         navigate("/fee_list");
+        setIsModalVisible(false);
       } else {
         openNotification("error", "Thất bại", "Thêm mới thất bại!");
       }
@@ -116,8 +117,9 @@ function CreateFee(props) {
         open={isModalVisible}
         //onOk={handleOk}
         onCancel={handleCancel}
-        okText="Tạo mới"
-        cancelText="Huỷ"
+        // okText="Tạo mới"
+        // cancelText="Huỷ"
+        footer={null} 
       >
         <Form layout="horizontal" name="create-fee" onFinish={handleSubmit}>
           <Form.Item
@@ -181,6 +183,16 @@ function CreateFee(props) {
                 ))}
               </Select>
             )}
+          </Form.Item>
+          <Form.Item>
+            <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+              <Button onClick={handleCancel} style={{ marginRight: 8 }}>
+                Hủy
+              </Button>
+              <Button type="primary" htmlType="submit">
+                Tạo mới
+              </Button>
+            </div>
           </Form.Item>
         </Form>
       </Modal>
