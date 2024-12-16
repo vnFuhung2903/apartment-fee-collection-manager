@@ -55,7 +55,7 @@ export const routes = [
         element: <FeeList/>
       },
       {
-        path: "transactionHis",
+        path: "transactionHis/:household_id",
         element: <TransactionHistory/>
       },
       {

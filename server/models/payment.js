@@ -6,7 +6,8 @@ const paymentSchema = new mongoose.Schema({
   bill_id: { type: String, required: true, minlength: 8, maxlength: 8 },
   household_id: { type: String, required: true },
   amount: { type: Number, required: true },  
-  payment_date: { type: Date, required: true },  
+  payment_date: { type: Date, required: true },
+  bill_time: { type: Date },  
   status: { type: String, required: true }  
 });
 
