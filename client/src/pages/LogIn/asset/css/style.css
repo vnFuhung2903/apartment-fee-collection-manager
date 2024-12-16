@@ -335,6 +335,9 @@ label.valid {
     /* right: 0; */
     font-size: 16px;
     color: green; }
+.nabel{
+  position: absolute!important;
+}
 
 .label-agree-term {
   position: relative;

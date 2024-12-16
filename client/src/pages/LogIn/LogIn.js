@@ -47,11 +47,11 @@ function LogIn() {
                   <h2 className="form-title">Đăng nhập</h2>
                   <form onSubmit={handleSubmit} className="register-form" id="login-form">
                       <div className="form-group">
-                          <label htmlFor="your_name"><i className="zmdi zmdi-account material-icons-name"></i></label>
+                          <label htmlFor="your_name" className="nabel"><i className="zmdi zmdi-account material-icons-name"></i></label>
                           <input type="text" name="your_name" id="your_name" placeholder="Email" onChange={e => setName(e.target.value)}/>
                       </div>
                       <div className="form-group">
-                          <label htmlFor="your_pass"><i className="zmdi zmdi-lock"></i></label>
+                          <label htmlFor="your_pass" className="nabel"><i className="zmdi zmdi-lock"></i></label>
                           <input type="password" name="your_pass" id="your_pass" placeholder="Mật khẩu" onChange={e => setPassword(e.target.value)}/>
                       </div>
                       <div className="form-group">
