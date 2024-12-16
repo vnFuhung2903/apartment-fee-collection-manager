@@ -114,9 +114,11 @@ function LayoutDefault(){
                     </label>
                 </div>
 
-                <div className="layout-default__main--user">
-                    <img src={customer01} alt="" />
-                </div>
+                <Link to="/profile">
+                    <div className="layout-default__main--user">
+                        <img src={customer01} alt=""/>
+                    </div>
+                </Link>
             </div>
             <Outlet/>
         </div>
