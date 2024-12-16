@@ -8,13 +8,11 @@ function getCookie(name) {
 }
 
 export const checkAuth = () => {
-    return () => {
-      try { 
-        const storedToken = getCookie("token");
-        return !storedToken;
-      } catch (error) {
-        return true;
-      }
-    };
+    try { 
+      const storedToken = getCookie("token");
+      return !storedToken;
+    } catch (error) {
+      return true;
+    }
   };
   

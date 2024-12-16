@@ -1,3 +1,4 @@
+import { checkAuth } from "../../actions";
 import "./asset/css/material-design-iconic-font.min.css"
 import "./asset/css/style.css"
 import signInImg from "./asset/images/signin-image.jpg"
@@ -15,12 +16,14 @@ function LogIn() {
     fetch("http://localhost:8386/auth/api/v1/login", {
       method: "POST",
       headers: {"Content-Type": "application/json"},
-      body: JSON.stringify({username: name, password: password, remember: remember})
+      body: JSON.stringify({username: name, password: password, remember: remember}),
+      credentials: "include"
     })
     .then((res) => {
         return res.json();
     })
     .then(data => {
+      console.log(data);
       if (data.message === "Login success") {
         navigate("/dashboard");
       }

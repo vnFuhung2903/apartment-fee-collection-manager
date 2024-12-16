@@ -3,6 +3,7 @@ const express = require('express');
 const cors = require('cors');
 const methodOverride = require('method-override');
 const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
 const cron = require("node-cron");
 const { autoGeneratePayments } = require("./controllers/payment.controller");
 //Setup database
@@ -13,7 +14,8 @@ const routeApi = require("./routes/index.route.js");
 const app = express();
 app.use(express.json());
 app.use(methodOverride('_method'));
-app.use(bodyParser.urlencoded({ extended: false }))
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(cookieParser());
 
 const port = process.env.PORT;
 app.use(cors({
