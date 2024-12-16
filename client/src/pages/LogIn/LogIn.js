@@ -2,7 +2,7 @@ import "./asset/css/material-design-iconic-font.min.css"
 import "./asset/css/style.css"
 import signInImg from "./asset/images/signin-image.jpg"
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 function LogIn() {
   const [name, setName] = useState("");
@@ -22,7 +22,6 @@ function LogIn() {
     })
     .then(data => {
       if (data.message === "Login success") {
-        localStorage.setItem("user", data.token)
         navigate("/dashboard");
       }
       else{
@@ -39,26 +38,25 @@ function LogIn() {
             <div className="signin-content">
               <div className="signin-image">
                   <figure><img src={signInImg} alt="sign in" /></figure>
-                  <Link to="/" className="signup-image-link">Create an account</Link>
               </div>
 
               <div className="signin-form">
-                  <h2 className="form-title">Sign in</h2>
+                  <h2 className="form-title">Đăng nhập</h2>
                   <form onSubmit={handleSubmit} className="register-form" id="login-form">
                       <div className="form-group">
                           <label htmlFor="your_name"><i className="zmdi zmdi-account material-icons-name"></i></label>
-                          <input type="text" name="your_name" id="your_name" placeholder="Your Email" onChange={e => setName(e.target.value)}/>
+                          <input type="text" name="your_name" id="your_name" placeholder="Email" onChange={e => setName(e.target.value)}/>
                       </div>
                       <div className="form-group">
                           <label htmlFor="your_pass"><i className="zmdi zmdi-lock"></i></label>
-                          <input type="password" name="your_pass" id="your_pass" placeholder="Password" onChange={e => setPassword(e.target.value)}/>
+                          <input type="password" name="your_pass" id="your_pass" placeholder="Mật khẩu" onChange={e => setPassword(e.target.value)}/>
                       </div>
                       <div className="form-group">
                           <input type="checkbox" name="remember-me" id="remember-me" className="agree-term" onChange={e => setRemeber(e.target.checked)}/>
-                          <label htmlFor="remember-me" className="label-agree-term"><span><span></span></span>Remember me</label>
+                          <label htmlFor="remember-me" className="label-agree-term"><span><span></span></span>Ghi nhớ</label>
                       </div>
                       <div className="form-group form-button">
-                          <input type="submit" name="signin" id="signin" className="form-submit" value="Log in"/>
+                          <input type="submit" name="signin" id="signin" className="form-submit" value="Đăng nhập"/>
                       </div>
                   </form>
                   {/* <div className="social-login">

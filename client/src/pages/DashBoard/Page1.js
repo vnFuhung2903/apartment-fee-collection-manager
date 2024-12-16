@@ -1,46 +1,25 @@
 import "./style.css"
 import customer01 from "../Layout/assets/imgs/customer01.jpg"
-import { Link , useNavigate } from "react-router-dom"
-import { useEffect, useState } from "react"
+import { Link } from "react-router-dom"
+import { useEffect } from "react"
+import { useSelector, useDispatch } from "react-redux";
+import { fetchDashboardData, fetchHouseholds } from "../../actions";
 
 function Page1(){
-    const [households, setHouseholds] = useState([]);
-    const [recentCustomers, setRecentCustomers] = useState([]);
-    const [numApartment, setNumApartment] = useState(0);
-    const [numPerson, setNumPerson] = useState(0);
-    const [numTemporary, setNumTemporary] = useState(0);
-    const [numAbsence, setNumAbsence] = useState(0);
-
-        useEffect(() => {
-        fetch("http://localhost:8386/household/api/v1/all", {
-            method: "GET",
-            headers: {"Content-Type": "application/json"}
-        })
-        .then(res => {
-            if(res.status === 200)
-                return res.json();
-        })
-        .then(data => {
-            setHouseholds(data);
-        });
-
-        fetch("http://localhost:8386/api/v1/dashboard", {
-            method: "GET",
-            headers: {"Content-Type": "application/json"}
-        })
-        .then(res => {
-            if(res.status === 200)
-                return res.json();
-        })
-        .then(data => {
-            setNumApartment(data.numApartment);
-            setNumPerson(data.numPerson);
-            setNumTemporary(data.numTemporary);
-            setNumAbsence(data.numAbsence);
-            setRecentCustomers(data.recentCustomers);
-        });
-    }, [])
-
+    const dispatch = useDispatch();
+    const {
+        households,
+        recentCustomers,
+        numApartment,
+        numPerson,
+        numTemporary,
+        numAbsence,
+    } = useSelector((state) => state.page1Reducer);
+  
+    useEffect(() => {
+        dispatch(fetchHouseholds());
+        dispatch(fetchDashboardData());
+    }, [dispatch]);
 
     return (
     <>

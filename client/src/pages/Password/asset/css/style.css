@@ -80,7 +80,8 @@ h2 {
 
 .password-main {
   background: #f8f8f8;
-  padding: 20px 0; }
+  padding: 20px 0; 
+}
 
 .clear {
   clear: both; }
@@ -135,7 +136,9 @@ h2 {
   -ms-transform: translate(-50%, -50%); }
 
 .form-title {
-  margin-bottom: 33px; }
+  margin-bottom: 33px; 
+  font-family: Calibri;
+}
 
 .password-input-field > input {
   width: 100%;
@@ -232,6 +235,10 @@ input[type=checkbox]:not(old):checked + label > span:before {
   font-weight: bold;
 }
 
+.password-input-field{
+  padding-bottom: 10px;
+}
+
 .password-input-field.old-password{
   padding-bottom: 30px;
 }
@@ -254,11 +261,17 @@ input[type=checkbox]:not(old):checked + label > span:before {
   -o-transform: translateY(-50%);
   -ms-transform: translateY(-50%);
   color: #222; 
-  font-weight: 500;
+  font-weight: 600;
+  font-family: Calibri;
 }
 
 .password-require{
   padding-bottom: 10px;
+}
+
+.password-require > label{
+  font-family: Calibri;
+  font-weight: 600;
 }
 
 .material-icons-name {

@@ -1,7 +1,7 @@
 import { useRoutes } from 'react-router-dom'
 import { routes } from '../../routes/index';
 
-function AllRounter(){
+function AllRouter(){
   const elements = useRoutes(routes);
   return (
     <>
@@ -10,4 +10,4 @@ function AllRounter(){
   )
 }
 
-export default AllRounter;
+export default AllRouter;

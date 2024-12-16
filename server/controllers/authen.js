@@ -14,8 +14,8 @@ const signIn = async (req, res) => {
       if (!validate) {
         return res.status(400).json({ message: "Wrong password" });
       } else {
-        // if(remember) res.cookie("token", userFound, { maxAge: 365 * 24 * 60 * 60 * 1000 / 2, httpOnly: true, secure: true, signed: true,sameSite: "none" });
-        // else res.cookie("token", userFound, { maxAge: 2 * 60 * 60 * 1000, httpOnly: true, secure: true, signed: true, sameSite: "none" });
+        if(remember) res.cookie("token", userFound, { maxAge: 365 * 24 * 60 * 60 * 1000, httpOnly: false, secure: false, signed: true, sameSite: "none"});
+        else res.cookie("token", userFound, { maxAge: 12 * 60 * 60 * 1000, httpOnly: false, secure: false, signed: true, sameSite: "none" });
         return res.status(200).json({ message: "Login success", token: userFound._id });
       }
     }

@@ -5,7 +5,12 @@ const apartment = require('../models/apartment.js');
 
 const getHouseholds = async (req, res) => {
   try {
-    let householdsFound = await household.find();
+    const {id} = req.query;
+    const conditions = {};
+    if (id) {
+      conditions._id = id;
+    }
+    let householdsFound = await household.find(conditions);
     let json = [];
     let status = 'permanent_residence' 
     for(const data of householdsFound) {
@@ -18,7 +23,7 @@ const getHouseholds = async (req, res) => {
       }
       if(head.temporary_absence)    status = 'temporary_absence';
       if(head.temporary_residence)  status = 'temporary_residence';
-      json.push({head: head.name, contact: data.contact_phone, status: status, floors: floors, numbers: numbers});
+      json.push({id:data._id,head: head.name, contact: data.contact_phone, status: status, floors: floors, numbers: numbers});
     }
     res.status(200).json(json);
   } catch (error) {

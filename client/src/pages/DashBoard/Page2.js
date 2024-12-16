@@ -1,21 +1,16 @@
 import { Link } from "react-router-dom"
-import { useEffect, useState } from "react"
+import { useEffect } from "react"
+import { useSelector, useDispatch } from "react-redux";
+import { fetchDashboardData, fetchHouseholds } from "../../actions";
 
 function Page2(){
-    const [households, setHouseholds] = useState([]);
+    const dispatch = useDispatch();
+    const households = useSelector((state) => state.page1Reducer.households);
+  
     useEffect(() => {
-        fetch("http://localhost:8386/household/api/v1/all", {
-            method: "GET",
-            headers: {"Content-Type": "application/json"}
-        })
-        .then(res => {
-            if(res.status === 200)
-                return res.json();
-        })
-        .then(data => {
-            setHouseholds(data)
-        })
-    }, [])
+        dispatch(fetchHouseholds());
+        dispatch(fetchDashboardData());
+    }, [dispatch]);
 
     return (
     <>
