@@ -12,16 +12,17 @@ import Password from "../pages/Password";
 import Stats from "../pages/Stats";
 import HouseholdInfo from "../pages/DashBoard/HouseholdInfo";
 import TransactionHistory from "../pages/FeeMange/TransactionHistory";
+import { Navigate } from "react-router-dom";
 
 export const routes = [
   {
     path: "/",
-    element: <LogIn/>,
+    element: <Navigate to='dashboard' replace/>,
   },
-  // {
-  //   path: "login",
-  //   element: <LogIn/>
-  // },
+  {
+    path: "login",
+    element: <LogIn/>
+  },
   {
     path: "/",
     element: <LayoutDefault/>,

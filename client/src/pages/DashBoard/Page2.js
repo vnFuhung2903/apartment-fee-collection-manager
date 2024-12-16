@@ -17,7 +17,7 @@ function Page2(){
         <div  className="details page2">
             <div className="recentCt page2">
                 <div className="cardHeader">
-                    <h2>Quản lí dân cư</h2>
+                    <h2>Quản lý dân cư</h2>
                     <Link to="/register_resident" className="btn">Thêm hộ dân</Link>
                 </div>
 

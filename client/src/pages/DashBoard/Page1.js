@@ -75,8 +75,8 @@ function Page1(){
     <div className="details">
         <div className="recentCt">
         <div className="cardHeader">
-             <h2>Quản lí căn hộ</h2>
-             <Link to="/register_resident" className="btn">Thêm hộ dân</Link>
+             <h2>Quản lý cư trú</h2>
+             <Link to="/register_resident" className="btn">Đăng kí</Link>
          </div>
              <table>
                   <thead>

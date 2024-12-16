@@ -24,7 +24,9 @@ function Register(){
         hometown: "",
         ethnic: "",
         phone: "",
-        status: "Thường trú"
+        status: "Thường trú",
+        start:"",
+        end:""
     })
 
     const [householdInfor, setHouseholdInfor] = useState({
@@ -95,6 +97,10 @@ function Register(){
 
     const availableFloors = [...new Set(remains.map(item => item.floor))];
     const availableRooms = remains.filter(item => item.floor === parseInt(householdInfor.floor, 10));
+    const [status,setStatus] = useState("Thường trú");
+    useEffect(()=>{
+        setStatus(personalInfor.status);
+    },[personalInfor])
 
 
     return(
@@ -102,11 +108,11 @@ function Register(){
     <div className = "details">
         <div className = "recentCt page2">
         <div className="cardHeader">
-            <h2>Đăng kí</h2>
+            <h2>Đăng kí cư dân</h2>
         </div>
         <form onSubmit={handleSubmit}>
             <div className="form first">
-                <span id = "title">Thông tin chủ hộ</span>
+                <span id = "title">Thông tin cá nhân</span>
                 
                 <div className="fields">
                     <div className="input-fields">
@@ -186,16 +192,24 @@ function Register(){
                              ))}
                           </select>
                     </div>
-                    {/* <div className="input-fields">
-                        <label htmlFor="">Số tầng</label>
-                        <input id="floorNumber" name="floor" type="number" placeholder="" onChange={handleHouseholdChange} required />
-                    </div> */}
+                    <div className="input-fields">
+                        <label htmlFor="relationToOwner">Quan hệ với chủ hộ</label>
+                        <input id="relationToOwner" name="relationToOwner" type="text" placeholder="" onChange={handleHouseholdChange} required />
+                    </div> 
                     <div className="input-fields">
                         <label htmlFor="">Trạng thái</label>
                         <select id="residenceType" name="status" onChange={handlePersonalChange}>
-                            <option value="permanent_residence">Thường trú</option>
-                            <option value="temporary_residence">Tạm trú</option>
+                            <option value="Thường trú">Thường trú</option>
+                            <option value="Tạm trú">Tạm trú</option>
                         </select>
+                    </div>
+                    <div className="input-fields">
+                        <label htmlFor="">Từ ngày</label>
+                        <input id="start" name="start" type="date" placeholder="Ngày bắt đầu tạm trú" onChange={handlePersonalChange} disabled={status === "Thường trú"} required/>
+                    </div>
+                    <div className="input-fields">
+                        <label htmlFor="">Đến ngày</label>
+                        <input id="end" name="end" type="date" placeholder="Ngày kết thúc tạm trú" onChange={handlePersonalChange} disabled={status === "Thường trú"} required/>
                     </div>
                 </div>
             </div>
