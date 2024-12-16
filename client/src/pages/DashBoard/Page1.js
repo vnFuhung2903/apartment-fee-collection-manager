@@ -1,9 +1,10 @@
 import "./style.css"
 import customer01 from "../Layout/assets/imgs/customer01.jpg"
 import { Link } from "react-router-dom"
-import { useEffect } from "react"
+import  React,{ useEffect,useMemo, useState } from "react"
 import { useSelector, useDispatch } from "react-redux";
 import { fetchDashboardData, fetchHouseholds } from "../../actions";
+import { Form,Select,Row,Col} from "antd";
 
 function Page1(){
     const dispatch = useDispatch();
@@ -20,6 +21,44 @@ function Page1(){
         dispatch(fetchHouseholds());
         dispatch(fetchDashboardData());
     }, [dispatch]);
+    const ownerNames = [
+        {value: "",label: "None"},
+        ...[...new Set(households.map(household => household.head))].map(ownerName => ({
+            value:ownerName,
+            label:ownerName,
+        })),
+    ];
+    const floorNumbers = [
+        {value: "",label: "None"},
+        ...[...new Set(
+            households.reduce((floors, household) => [...floors, ...household.floors], []))].map(floorNumber => ({
+            value:floorNumber,
+            label:floorNumber,
+        })),
+    ];
+    const roomNumbers = [
+        {value: "",label: "None"},
+        ...[...new Set(households.reduce((rooms, household) => [...rooms, ...household.numbers], []))].map(roomNumber => ({
+            value:roomNumber,
+            label:roomNumber,
+        })),
+    ];
+    const [filters,setFilters] = useState({
+        ownerName: null,
+        roomNumber:null,
+        floorNumber:null
+    });
+    const filteredHousehold = useMemo(() => {
+            return households.filter((household) => {
+                if(filters.ownerName && filters.ownerName !== household.head)
+                    return false;
+                if(filters.floorNumber && !household.floors.includes(filters.floorNumber))
+                    return false;
+                if(filters.roomNumber &&  !household.numbers.includes(filters.roomNumber))
+                    return false;
+                return true;
+            });
+        },[households,filters]);
 
     return (
     <>
@@ -75,13 +114,59 @@ function Page1(){
     <div className="details">
         <div className="recentCt">
         <div className="cardHeader">
-             <h2>Quản lí cư trú</h2>
+             <h2>Quản lí hộ dân</h2>
              <Link to="/register_resident" className="btn">Đăng kí</Link>
          </div>
+         <div className="household">
+                    <Form
+                        layout="horizontal"
+                    >
+                        <Row
+                            gutter={{
+                            xs: 8,
+                            sm: 16,
+                            md: 24,
+                            lg: 32,
+                        }}
+                        >
+                            <Col className="gutter-row" span={10}>
+                                <Form.Item label="Tên chủ hộ">
+                                    <Select
+                                        showSearch
+                                        placeholder="Điền họ tên" 
+                                        filterOption={(input, option) => 
+                                        (option.label).includes(input)
+                                        }
+                                        options={ownerNames}
+                                        onChange={(value) => setFilters((prev) => ({ ...prev, ownerName: value }))}
+                                    ></Select>
+                                </Form.Item>
+                            </Col>
+                            <Col className="gutter-row" span={6}>
+                                <Form.Item label="Tầng">
+                                <Select 
+                                  placeholder="Chọn tầng" 
+                                  options={floorNumbers}
+                                  onChange={(value) => setFilters((prev) => ({ ...prev, floorNumber: value }))}
+                                ></Select>
+                                </Form.Item>
+                            </Col>
+                            <Col className="gutter-row" span={6}>
+                                <Form.Item label="Số căn hộ">
+                                <Select 
+                                  placeholder="Chọn số căn hộ" 
+                                  options={roomNumbers}
+                                  onChange={(value) => setFilters((prev) => ({ ...prev, roomNumber: value }))}
+                                ></Select>
+                                </Form.Item>
+                            </Col>
+                        </Row>
+                     </Form>
+          </div>
              <table>
                   <thead>
                        <tr>
-                         <td>Tên chủ căn hộ</td>
+                         <td>Tên chủ hộ</td>
                            <td>Liên hệ</td>
                            <td>Tầng</td>
                            <td>Số căn hộ</td>
@@ -91,7 +176,7 @@ function Page1(){
                   </thead>
 
                   <tbody>
-                      { households.map(household =>
+                      { filteredHousehold.map(household =>
                          <tr>
                             <td> { household.head } </td>
                             <td> { household.contact } </td>
@@ -105,69 +190,13 @@ function Page1(){
                             <td><span className="status"><Link to="/household_infor"  onClick={() => {localStorage.setItem("id",household.numbers);}}>Mở rộng</Link></span></td>
                          </tr>
                       )}
-                                { 
-                                /*
-                                <tr>
-                                    <td>Dell Laptop</td>
-                                    <td>0192361309</td>
-                                    <td>9</td>
-                                    <td>902</td>
-                                    <td>
-                                    <span className="permanent_residence-status">
-                                    permanent_residence
-                                     </span> 
-                                    </td>
-                                    <td><span className="status"><Link to="/household_infor">Mở rộng</Link></span></td>
-                                </tr>
-                                
-                                <tr>
-                                    <td>Apple Watch</td>
-                                    <td>5</td>
-                                    <td>502</td>
-                                    <td><span className="status">Mở rộng</span></td>
-                                </tr>
-
-                                <tr>
-                                    <td>Addidas Shoes</td>
-                                    <td>3</td>
-                                    <td>305</td>
-                                    <td><span className="status">Mở rộng</span></td>
-                                </tr>
-
-                                <tr>
-                                    <td>Star Refrigerator</td>
-                                    <td>6</td>
-                                    <td>607</td>
-                                    <td><span className="status">Mở rộng</span></td>
-                                </tr>
-
-                                <tr>
-                                    <td>Dell Laptop</td>
-                                    <td>3</td>
-                                    <td>308</td>
-                                    <td><span className="status">Mở rộng</span></td>
-                                </tr>
-
-                                <tr>
-                                    <td>Apple Watch</td>
-                                    <td>6</td>
-                                    <td>605</td>
-                                    <td><span className="status">Mở rộng</span></td>
-                                </tr>
-
-                                <tr>
-                                    <td>Addidas Shoes</td>
-                                    <td>4</td>
-                                    <td>405</td>
-                                    <td><span className="status">Mở rộng</span></td>
-                                </tr> */}
                     </tbody>
                </table>
         </div>
 
         <div className="recentCustomers">
         <div className="cardHeader">
-            <h2>Recent Customers</h2>
+            <h2>Danh sách dân cư</h2>
             <Link to="/view_all" className="btn">Mở rộng</Link>
         </div>
 
@@ -182,78 +211,6 @@ function Page1(){
                     </td>
                 </tr>
             )}
-
-            {/* <tr>
-                <td width="60px">
-                    <div className="imgBx"><img src={customer01} alt=""/></div>
-                </td>
-                <td>
-                    <h4>David <br/> <span>Italy</span></h4>
-                </td>
-            </tr>
-
-            <tr>
-                <td width="60px">
-                    <div className="imgBx"><img src={customer01} alt=""/></div>
-                </td>
-                <td>
-                    <h4>Amit <br/> <span>India</span></h4>
-                </td>
-            </tr>
-
-            <tr>
-                <td width="60px">
-                    <div className="imgBx"><img src={customer01} alt=""/></div>
-                </td>
-                <td>
-                    <h4>David <br/> <span>Italy</span></h4>
-                </td>
-            </tr>
-
-            <tr>
-                <td width="60px">
-                    <div className="imgBx"><img src={customer01} alt=""/></div>
-                </td>
-                <td>
-                    <h4>Amit <br/> <span>India</span></h4>
-                </td>
-            </tr>
-
-            <tr>
-                <td width="60px">
-                    <div className="imgBx"><img src={customer01} alt=""/></div>
-                </td>
-                <td>
-                    <h4>David <br/> <span>Italy</span></h4>
-                </td>
-            </tr>
-
-            <tr>
-                <td width="60px">
-                    <div className="imgBx"><img src={customer01} alt=""/></div>
-                </td>
-                <td>
-                    <h4>Amit <br/> <span>India</span></h4>
-                </td>
-            </tr>
-
-            <tr>
-                <td width="60px">
-                    <div className="imgBx"><img src={customer01} alt=""/></div>
-                </td>
-                <td>
-                    <h4>David <br/> <span>Italy</span></h4>
-                </td>
-            </tr>
-
-            <tr>
-                <td width="60px">
-                    <div className="imgBx"><img src={customer01} alt=""/></div>
-                </td>
-                <td>
-                    <h4>Amit <br/> <span>India</span></h4>
-                </td>
-            </tr> */}
         </table>
         </div>
     </div>

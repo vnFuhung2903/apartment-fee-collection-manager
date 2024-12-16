@@ -5,6 +5,7 @@ import { EditOutlined,ExclamationCircleOutlined} from '@ant-design/icons';
 import DescriptionPerson from './DescriptionPerson';
 import "./style.css"
 import ModalEdit from './ModalEdit';
+import dayjs from "dayjs";
 
 
 
@@ -16,6 +17,7 @@ const HouseholdInfo = () => {
     apartmentNumber: "202",
     phone: "0987654321",
     cic: "123456789012",
+    relationship: "Chủ nhà",
     dob: "1979-05-12",
     nationality: "Việt Nam",
     gender: "Nam",
@@ -23,11 +25,12 @@ const HouseholdInfo = () => {
     hometown: "Hà Nội",
     ethnic: "Kinh",
     status: "Thường trú",
-    movingIn: "2020-10-20"
+    movingIn: "2020-10-20",
+    movingOut:""
   });
 
 
-  {/*=========================Xử lí bảng thông tin người ở trong căn hộ =======================>*/}
+  /*=========================Xử lí bảng thông tin người ở trong căn hộ =======================>*/
      
   const columns = [
     {
@@ -58,29 +61,36 @@ const HouseholdInfo = () => {
     {
       title: "Mở rộng",
       key: "action",
-      sorter: true,
-      render: () => (
+      render: (_,record) => (
         <Space size="middle">
-          <Button color="default" icon={<EditOutlined />} />
+          <Button color="default" icon={<EditOutlined />} onClick={() => {
+            setModalEditFam(true);
+            setSelectedPerson(record.description);
+          }}/>
         </Space>
       ),
     },
   ];
 
-  const residents = [
+  const [residents,setResidents] = useState([
     {
       key: "1",
-      name: "Nguyễn Văn A",
+      name: "Nguyễn Văn Ă",
       phone: "0987654321",
       cic: "123456789012",
       dob: "1979-05-12",
-      relationship: "Chủ nhà",
+      gender: "Nam",
+      relationship: "Bố mẹ",
       nationality: "Việt Nam",
       gender: "Nam",
       occupation: "Kỹ sư",
       hometown: "Hà Nội",
       ethnic: "Kinh",
       status: "Thường trú",
+      movingIn: "2020-10-20",
+      movingOut:"",
+      floornumber: "2",
+      apartmentNumber: "202",
     },
     {
       key: "2",
@@ -88,13 +98,18 @@ const HouseholdInfo = () => {
       phone: "0981234567",
       cic: "123456789013",
       dob: "1981-03-25",
-      relationship: "Vợ",
+      gender: "Nữ",
+      relationship: "Vợ chồng",
       nationality: "Việt Nam",
       gender: "Nữ",
       occupation: "Giáo viên",
       hometown: "Hải Phòng",
       ethnic: "Kinh",
       status: "Thường trú",
+      movingIn: "2020-10-20",
+      movingOut:"",
+      floornumber: "2",
+      apartmentNumber: "202",
     },
     {
       key: "3",
@@ -102,13 +117,18 @@ const HouseholdInfo = () => {
       phone: "0976543210",
       cic: "123456789014",
       dob: "2004-07-10",
-      relationship: "Con trai",
+      gender: "Nam",
+      relationship: "Con cái",
       nationality: "Việt Nam",
       gender: "Nam",
       occupation: "Sinh viên",
       hometown: "Hà Nội",
       ethnic: "Kinh",
       status: "Thường trú",
+      movingIn: "2020-10-20",
+      movingOut:"",
+      floornumber: "2",
+      apartmentNumber: "202",
     },
     {
       key: "4",
@@ -116,15 +136,20 @@ const HouseholdInfo = () => {
       phone: "0976123456",
       cic: "123456789015",
       dob: "2006-01-15",
-      relationship: "Con gái",
+      gender: "Nữ",
+      relationship: "Con cái",
       nationality: "Việt Nam",
       gender: "Nữ",
       occupation: "Học sinh",
       hometown: "Hà Nội",
       ethnic: "Kinh",
       status: "Thường trú",
+      movingIn: "2020-10-20",
+      movingOut:"",
+      floornumber: "2",
+      apartmentNumber: "202",
     },
-  ];
+  ]);
 
   const [data, setData] = useState(
     residents.map((record) => {
@@ -140,34 +165,57 @@ const HouseholdInfo = () => {
     })
   );
 
-  const defaultExpandable = {
-    expandedRowRender: (record) => (
-      <DescriptionPerson person={{ ...record.description }} />
-    ),
-  };
-
-  const [expandable, setExpandable] = useState(defaultExpandable);
   const [selectedRows, setSelectedRows] = useState([]);
-  const [top, setTop] = useState("none");
-  const [bottom, setBottom] = useState("bottomRight");
+  const top = "none";
+  const bottom = "bottomRight";
   const [appearDelete, setAppearDelete] = useState(false);
   const [isDeleted,setIsDeleted] = useState(false);
+  const [selectedPerson,setSelectedPerson] = useState(null);
+  const [isModalEditFam,setModalEditFam] = useState(false);
 
+  const updateResidentInfo = (updatedInfo) => {
+    const updatedResidents = residents.map((item) =>
+      item.key === updatedInfo.key ? {...updatedInfo } : item
+    );
+    setResidents(updatedResidents);
+    setData(updatedResidents.map((record) => {
+      return {
+        key: record.key,
+        name: record.name,
+        dob: record.dob,
+        relation_to_owner: record.relationship,
+        phone: record.phone,
+        status: record.status,
+        description: record,
+      };
+    }));
+    setModalEditFam(false);
+  };
+
+   // xử lí xóa
   useEffect(()=>{
       if(isDeleted){
-        setData(data.filter((item) => !selectedRows.includes(item)));
-        console.log(data);
+        const updatedResidents = residents.filter((item) => !selectedRows.includes(item.key));
+        setResidents(updatedResidents);
+        setData(updatedResidents.map((record) => {
+          return {
+            key: record.key,
+            name: record.name,
+            dob: record.dob,
+            relation_to_owner: record.relationship,
+            phone: record.phone,
+            status: record.status,
+            description: record,
+          };  
+    }));
         setIsDeleted(false);
         setAppearDelete(false);
       }
   },[selectedRows,isDeleted]);
 
-  const handleExpandChange = (enable) => {
-    setExpandable(enable ? defaultExpandable : undefined);
-  };
-  const handleRowSelectionChange = (keys, rows) => {
-      setAppearDelete(rows.length === 0 ? false: true);
-      setSelectedRows(rows);
+  const handleRowSelectionChange = (keys) => {
+      setAppearDelete(keys.length === 0 ? false: true);
+      setSelectedRows(keys);
   }; 
   const handleDelete = () => {
       setIsDeleted(true);
@@ -191,18 +239,19 @@ const HouseholdInfo = () => {
     rowSelection: {
       onChange: handleRowSelectionChange,
     },
-    expandable,
   };
 
   return (
    <> 
-    <div style={{ padding: 24 }}>
+    <div className='description-container'>
       {/* Thông tin chủ hộ */}
       <Card
         title="Thông tin chủ hộ"
         bordered={false}
         style={{ marginBottom: 24 }}
-        extra={<Button type="primary" onClick={() => {setModalEdit(true)}}>Sửa</Button>}
+        extra={<Button type="primary" onClick={() => {setModalEdit(true);
+          setSelectedPerson(editedOwnerInfo);
+        }}>Sửa</Button>}
       >
         <Descriptions column={3}>
           <Descriptions.Item label="Họ và tên">
@@ -221,7 +270,7 @@ const HouseholdInfo = () => {
             {editedOwnerInfo.cic}
           </Descriptions.Item>
           <Descriptions.Item label="Ngày sinh">
-            {editedOwnerInfo.dob}
+          {dayjs(editedOwnerInfo.dob).format("YYYY-MM-DD")}
           </Descriptions.Item>
           <Descriptions.Item label="Quốc tịch">
             {editedOwnerInfo.nationality}
@@ -241,11 +290,16 @@ const HouseholdInfo = () => {
           <Descriptions.Item label="Trạng Thái">
             {editedOwnerInfo.status}
           </Descriptions.Item>
+          <Descriptions.Item label="Thời gian đến">
+          {dayjs(editedOwnerInfo.movingIn).format("YYYY-MM-DD")}
+          </Descriptions.Item>
+          {editedOwnerInfo.movingOut && <Descriptions.Item label="Thời gian đi">{dayjs(editedOwnerInfo.movingOut).format("YYYY-MM-DD")}</Descriptions.Item>}
         </Descriptions>
       </Card>
       
       {/* Modal sửa thông tin cá nhân */}
       <ModalEdit isModalEdit={isModalEdit} setModalEdit={setModalEdit} personInfo={editedOwnerInfo} updateInfor={setEditedOwnerInfo} />
+      <ModalEdit isModalEdit={isModalEditFam} setModalEdit={setModalEditFam} personInfo={selectedPerson || {}} updateInfor={updateResidentInfo} />
 
       {/* Danh sách người ở trong căn hộ */}
       <Card title="Danh sách người ở trong căn hộ" bordered={false} extra= {appearDelete? <Button onClick={handleConfirm} color="danger" variant="filled">Xóa</Button> : null}>
@@ -254,12 +308,15 @@ const HouseholdInfo = () => {
         pagination={{
           position: [top, bottom],
         }}
+        expandable={{
+          expandedRowRender: (record) => <DescriptionPerson person={record.description} />,
+        }}  
         columns={tableColumns}
         dataSource={/*hasData ?*/ data}
       />
       </Card>
     </div>
-    </>
+  </>
   );
 };
 
