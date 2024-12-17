@@ -50,8 +50,9 @@ const HouseholdInfo = () => {
   }
 
   const handleMember = (member) => {
+    console.log(member);
     return {
-      key:member.id,
+      key:member._id,
       name: member.name,
       dob: (new Date(member.dob)).toLocaleDateString('vi-VN'),
       relation_to_head:member.relation_to_head,
@@ -125,6 +126,7 @@ const HouseholdInfo = () => {
 
    // xử lí xóa
   useEffect(()=>{
+      console.log(selectedRows);
       if(isDeleted) {
         setData(prev => prev.filter((item) => !selectedRows.includes(item)));
         setIsDeleted(false);
