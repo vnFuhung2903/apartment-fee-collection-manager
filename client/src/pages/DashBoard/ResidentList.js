@@ -5,7 +5,7 @@ import { fetchDashboardData, fetchHouseholds } from "../../actions";
 import { Form,Select,Row,Col} from "antd";
 import {ExportOutlined } from '@ant-design/icons';
 import "./style.css";
-function Page2(){
+function ResidentList(){
     const residents = [
         {
           id: "1",
@@ -122,7 +122,7 @@ function Page2(){
                 </div>
                 <div className="filter-person">
                     <Form
-                        layout="horizontal"
+                        layout="vertical"
                     >
                         <Row
                             gutter={{
@@ -145,7 +145,7 @@ function Page2(){
                                     ></Select>
                                 </Form.Item>
                             </Col>
-                            <Col className="gutter-row" span={6}>
+                            <Col className="gutter-row" span={8}>
                                 <Form.Item label="Tầng">
                                 <Select 
                                   placeholder="Chọn tầng" 
@@ -154,7 +154,7 @@ function Page2(){
                                 ></Select>
                                 </Form.Item>
                             </Col>
-                            <Col className="gutter-row" span={6}>
+                            <Col className="gutter-row" span={8}>
                                 <Form.Item label="Số căn hộ">
                                 <Select 
                                   placeholder="Chọn số căn hộ" 
@@ -200,4 +200,4 @@ function Page2(){
     )
 }
 
-export default Page2
+export default ResidentList;

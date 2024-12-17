@@ -18,20 +18,21 @@ function Register(){
         name: "",
         cic: "",
         dob: "",
-        nationality: "",
+        nation: "",
         occupation: "",
         gender: "Nam",
         hometown: "",
         ethnic: "",
         phone: "",
         status: "Thường trú",
-        start:"",
-        end:""
+        movingIn:"",
+        endTemporary:""
     })
 
     const [householdInfor, setHouseholdInfor] = useState({
-    number: "",
-    floor: ""
+        number: "",
+        floor: "",
+        relationToOwner: ""
     });
 
     useEffect(() => {
@@ -78,11 +79,12 @@ function Register(){
         .then((res) => {
             return res.json();
         })
-        .then(data => {
-            fetch("http://localhost:8386/household/api/v1/create", {
+        .then(id => {
+            const url = householdInfor.relationToOwner === "Chủ hộ" ? "http://localhost:8386/household/api/v1/create" : "http://localhost:8386/household/api/v1/addMember"
+            fetch(url, {
                 method: "POST",
                 headers: {"Content-Type": "application/json"},
-                body: JSON.stringify({ headId: data, apartmentNumber: householdInfor.number, contact: personalInfor.phone })
+                body: JSON.stringify({ ...householdInfor, id, contact: personalInfor.phone })
             })
             .then(res => {
                 return res.json()
@@ -129,7 +131,7 @@ function Register(){
                     </div>
                     <div className="input-fields">
                         <label htmlFor="">Quốc tịch</label>
-                        <input id="nationality" name="nationality" type="text" placeholder="" onChange={handlePersonalChange} required /> 
+                        <input id="nation" name="nation" type="text" placeholder="" onChange={handlePersonalChange} required /> 
                     </div>
                     <div className="input-fields">
                         <label htmlFor="">Nghề nghiệp</label>
@@ -194,7 +196,7 @@ function Register(){
                     </div>
                     <div className="input-fields">
                         <label htmlFor="relationToOwner">Quan hệ với chủ hộ</label>
-                        <select id="relationToOwner" name="relationToOwner" onChange={handlePersonalChange}>
+                        <select id="relationToOwner" name="relationToOwner" onChange={handleHouseholdChange}>
                             <option value="Chủ nhà">Chủ nhà</option>
                             <option value="Con cái">Con cái</option>
                             <option value="Vợ chồng">Vợ chồng</option>
@@ -208,15 +210,16 @@ function Register(){
                         <select id="residenceType" name="status" onChange={handlePersonalChange}>
                             <option value="Thường trú">Thường trú</option>
                             <option value="Tạm trú">Tạm trú</option>
+                            <option value="Tạm vắng">Tạm vắng</option>
                         </select>
                     </div>
                     <div className="input-fields">
                         <label htmlFor="">Từ ngày</label>
-                        <input id="start" name="start" type="date" placeholder="Ngày bắt đầu tạm trú" onChange={handlePersonalChange} disabled={status === "Thường trú"} required/>
+                        <input id="movingIn" name="movingIn" type="date" placeholder="Ngày bắt đầu tạm trú" onChange={handlePersonalChange} disabled={status === "Thường trú"} required/>
                     </div>
                     <div className="input-fields">
                         <label htmlFor="">Đến ngày</label>
-                        <input id="end" name="end" type="date" placeholder="Ngày kết thúc tạm trú" onChange={handlePersonalChange} disabled={status === "Thường trú"} required/>
+                        <input id="endTemporary" name="endTemporary" type="date" placeholder="Ngày kết thúc tạm trú" onChange={handlePersonalChange} disabled={status === "Thường trú"} required/>
                     </div>
                 </div>
             </div>

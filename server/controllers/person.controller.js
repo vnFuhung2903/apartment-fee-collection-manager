@@ -1,4 +1,6 @@
 const person = require('../models/person.js');
+const apartment = require('../models/apartment.js');
+const household = require('../models/household.js');
 const mongoose = require('mongoose');
 
 
@@ -33,8 +35,16 @@ const editPerson = async (req, res) => {
     if(!personFound)
       return res.status(402).json({ message: "User found" })
 
-    personFound = {...reqPerson};
+    personFound = new person(reqPerson);
     await personFound.save();
+
+    householdFound = await household.findOne({ _id: reqPerson.householdId });
+    const apartmentFound = await apartment.findOne({ number: reqPerson.numbers })
+
+    // WARNING: only 1 apartment case
+    householdFound.apartments = [apartmentFound._id];
+
+    await householdFound.save();
     res.status(200).json({ message: "Success", person: personFound._id });
   } catch (error) {
     res.status(500).json(error);
