@@ -59,7 +59,7 @@
 .details .recentCt {
   position: relative;
   display: grid;
-  grid-template-rows: 10% auto;
+  grid-template-rows: 10% 10% auto;
   min-height: max-content;
   background: var(--white);
   padding: 20px;
@@ -102,6 +102,7 @@
   border-collapse: collapse;
   margin-top: 10px;
   overflow: visible;
+  height: fit-content;
 }
 .details table thead td {
   font-weight: 600;
@@ -243,4 +244,61 @@ label.ant-radio-wrapper{
 }
 :where(.css-dev-only-do-not-override-1x0dypw).ant-radio-wrapper {
   display: inline !important;
+}
+.description-container{
+  grid-template-columns: 1fr;
+  padding: 0px 150px;
+}
+:where(.css-dev-only-do-not-override-1x0dypw).ant-card:not(.ant-card-bordered) {
+  box-shadow: 0 7px 25px rgba(0, 0, 0, 0.08);
+}
+.filter-person{
+  min-height: fit-content;
+  padding: 10px 0;
+}
+.ant-select-multiple .ant-select-selection-item{
+  height: auto;
+}
+
+.ant-select-selection-item{
+  padding: 1px;
+}
+
+.gutter-row{
+  display: flex;
+  flex-direction: column;
+}
+
+.ant-picker{
+  padding: 0px 11px;
+  width: 90%;
+}
+
+label{
+  position: relative!important;
+}
+.ant-form {
+ min-height: fit-content;
+ padding: 10px;
+}
+.ant-row {
+  justify-content: space-between;
+}
+:where(.css-dev-only-do-not-override-1x0dypw).ant-form-vertical .ant-form-item:not(.ant-form-item-horizontal) .ant-form-item-label, :where(.css-dev-only-do-not-override-1x0dypw).ant-form-vertical .ant-form-item:not(.ant-form-item-horizontal) .ant-col-24.ant-form-item-label, :where(.css-dev-only-do-not-override-1x0dypw).ant-form-vertical .ant-form-item:not(.ant-form-item-horizontal) .ant-col-xl-24.ant-form-item-label {
+    padding: 0;
+}
+.household{
+  height: fit-content;
+}
+:where(.css-dev-only-do-not-override-1x0dypw).ant-form-item .ant-form-item-control-input {
+  width: fit-content;
+}
+.ant-form {
+  min-height: fit-content;
+  padding: 10px;
+  width: 100% !important;
+}
+
+:where(.css-dev-only-do-not-override-1x0dypw).ant-form-item .ant-form-item-control-input-content {
+  min-width: 150px !important;
 }
