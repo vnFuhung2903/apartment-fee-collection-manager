@@ -13,6 +13,7 @@ import Stats from "../pages/Stats";
 import HouseholdInfo from "../pages/DashBoard/HouseholdInfo";
 import TransactionHistory from "../pages/FeeMange/TransactionHistory";
 import { Navigate } from "react-router-dom";
+import ProfilePage from "../pages/ProfilePage";
 
 export const routes = [
   {
@@ -66,6 +67,10 @@ export const routes = [
       {
         path: "password",
         element: <Password/>
+      },
+      {
+        path: "profile",
+        element: <ProfilePage/>
       }
     ]
   }
