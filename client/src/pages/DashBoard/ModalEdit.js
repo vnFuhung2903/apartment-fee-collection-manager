@@ -13,9 +13,9 @@ function ModalEdit(props){
       if (personInfo) {
         form.setFieldsValue({
           ...personInfo,
-          dob: personInfo.dob ? moment(personInfo.dob, "YYYY-MM-DD") : null,
-          movingIn: personInfo.movingIn ? moment(personInfo.movingIn, "YYYY-MM-DD") : null,
-          movingOut: personInfo.movingOut ?  moment(personInfo.movingOut, "YYYY-MM-DD") :null,
+          dob: personInfo.dob ? (new Date(personInfo.dob)).toLocaleDateString('vi-VN') : null,
+          movingIn: personInfo.movingIn ? (new Date(personInfo.movingIn)).toLocaleDateString('vi-VN') : null,
+          movingOut: personInfo.movingOut ? (new Date(personInfo.movingOut)).toLocaleDateString('vi-VN') :null,
         });
       }
     }, [personInfo, form]);
@@ -113,23 +113,20 @@ function ModalEdit(props){
           </Col>
 
           <Col span={10}>
-            <Form.Item label="Dân tộc" name="ethnic">
+            <Form.Item label="Dân tộc" name="ethnicity">
               <Input />
             </Form.Item>
           </Col>
-
-          <Col span={12}>
+          {isOwner && <Col span={12}>
             <Form.Item label="Số tầng" name="floors">
               <InputNumber />
             </Form.Item>
-          </Col>
-
-          <Col span={10}>
+          </Col>}
+          {isOwner && <Col span={10}>
             <Form.Item label="Số căn hộ" name="numbers">
               <InputNumber />
             </Form.Item>
-          </Col>
-
+          </Col>}
           <Col span={12}>
             <Form.Item label="Trạng thái" name="status">
               <Radio.Group onChange={handleChangeStatus}>
