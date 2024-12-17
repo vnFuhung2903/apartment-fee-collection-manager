@@ -1,6 +1,6 @@
 const person = require('../models/person.js');
-const apartment = require('../models/apartment.js');
 const household = require('../models/household.js');
+const apartment = require('../models/apartment.js');
 const mongoose = require('mongoose');
 
 
@@ -97,9 +97,69 @@ const getFilterdList = async (req, res) => {
     }
   };
 
+const getPersonAll = async (req, res) => {
+  try {
+    const result = await person.aggregate([
+      {
+        $lookup: {
+          from: 'household', 
+          let: { personId: '$_id' },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $or: [
+                    { $in: ['$$personId', '$members.member_id'] },
+                    { $in: [{ $toString: '$$personId' }, '$members.member_id'] }
+                  ]
+                }
+              }
+            }
+          ],
+          as: 'household'
+        }
+      },
+      {
+        $unwind: {
+          path: '$household',
+          preserveNullAndEmptyArrays: true
+        }
+      },
+      {
+        $lookup: {
+          from: 'apartment', 
+          localField: 'household.apartments',
+          foreignField: '_id',
+          as: 'apartments'
+        }
+      },
+      {
+        $addFields: {
+          apartmentNumber: { 
+            $ifNull: [{ $arrayElemAt: ['$apartments.Number', 0] }, null] 
+          }
+        }
+      },
+      {
+        $project: {
+          household: 0,
+          apartments: 0,
+          __v: 0 
+        }
+      }
+    ]);
+    res.status(200).json(result);
+  } catch (error) {
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+
 module.exports = {
   createPerson,
   editPerson,
   deletePerson,
-  getPersonDetail
+  getPersonDetail,
+  getPersonAll,
+  getFilterdList
 };

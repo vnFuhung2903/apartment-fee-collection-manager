@@ -5,8 +5,22 @@ import { fetchDashboardData, fetchHouseholds } from "../../actions";
 import { Form,Select,Row,Col} from "antd";
 import {ExportOutlined } from '@ant-design/icons';
 import "./style.css";
+import axios from "axios";
 function ResidentList(){
-    const residents = [
+    const [residents, setResidents] = useState([]);
+    useEffect(() => {
+        const fetchResidents = async () => {
+            try {
+                const response = await axios.get("http://localhost:8386/person/api/v1/all"); 
+                setResidents(response.data);
+            } catch (error) {
+                console.error("Error fetching residents data:", error);
+            }
+        };
+
+        fetchResidents();
+    }, [])
+    const residents1 = [
         {
           id: "1",
           name: "Nguyễn Văn A",
@@ -182,10 +196,10 @@ function ResidentList(){
 
                     <tbody>
                         { filteredPeople.map(resident => 
-                            <tr key={resident.id}>
-                                <td>{resident.id}</td>
+                            <tr key={resident._id}>
+                                <td>{resident._id}</td>
                                 <td> { resident.name } </td>
-                                <td> { resident.phone } </td>
+                                <td> { resident.contact_phone } </td>
                                 <td> { resident.floornumber } </td>
                                 <td> { resident.apartmentNumber } </td>
                                 <td> { resident.status } </td>
