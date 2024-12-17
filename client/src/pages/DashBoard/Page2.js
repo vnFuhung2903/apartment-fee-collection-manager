@@ -1,8 +1,10 @@
 import { Link } from "react-router-dom"
-import { useEffect } from "react"
+import React,{ useEffect,useMemo, useState } from "react"
 import { useSelector, useDispatch } from "react-redux";
 import { fetchDashboardData, fetchHouseholds } from "../../actions";
-
+import { Form,Select,Row,Col} from "antd";
+import {ExportOutlined } from '@ant-design/icons';
+import "./style.css";
 function Page2(){
     const residents = [
         {
@@ -70,22 +72,108 @@ function Page2(){
           status: "Thường trú",
         },
       ];
+    //Dữ liệu để lọc
+    const personNames = [
+        {value: "",label: "None"},
+        ...[...new Set(residents.map(resident => resident.name))].map(personName => ({
+            value:personName,
+            label:personName,
+        })),
+    ];
+    const floorNumbers = [
+        {value: "",label: "None"},
+        ...[...new Set(residents.map(resident => resident.floornumber))].map(floorNumber => ({
+            value:floorNumber,
+            label:floorNumber,
+        })),
+    ];
+    const roomNumbers = [
+        {value: "",label: "None"},
+        ...[...new Set(residents.map(resident => resident.apartmentNumber))].map(roomNumber => ({
+            value:roomNumber,
+            label:roomNumber,
+        })),
+    ];
+    const [filters,setFilters] = useState({
+        personName: null,
+        roomNumber:null,
+        floorNumber:null
+    });
+
+    const filteredPeople = useMemo(() => {
+        return residents.filter((resident) => {
+            if(filters.personName && filters.personName !== resident.name)
+                return false;
+            if(filters.floorNumber && filters.floorNumber !== resident.floornumber)
+                return false;
+            if(filters.roomNumber && filters.roomNumber !== resident.apartmentNumber)
+                return false;
+            return true;
+        });
+    },[residents,filters]);
 
     return (
     <>
         <div  className="details page2">
             <div className="recentCt page2">
                 <div className="cardHeader">
-                    <h2>Quản lí dân cư</h2>
+                    <h2>Danh sách dân cư</h2>
                     <Link to="/register_resident" className="btn">Đăng kí</Link>
                 </div>
+                <div className="filter-person">
+                    <Form
+                        layout="horizontal"
+                    >
+                        <Row
+                            gutter={{
+                            xs: 8,
+                            sm: 16,
+                            md: 24,
+                            lg: 32,
+                        }}
+                        >
+                            <Col className="gutter-row" span={8}>
+                                <Form.Item label="Họ và tên">
+                                    <Select
+                                        showSearch
+                                        placeholder="Điền họ tên" 
+                                        filterOption={(input, option) => 
+                                        (option.label).includes(input)
+                                        }
+                                        options={personNames}
+                                        onChange={(value) => setFilters((prev) => ({ ...prev, personName: value }))}
+                                    ></Select>
+                                </Form.Item>
+                            </Col>
+                            <Col className="gutter-row" span={6}>
+                                <Form.Item label="Tầng">
+                                <Select 
+                                  placeholder="Chọn tầng" 
+                                  options={floorNumbers}
+                                  onChange={(value) => setFilters((prev) => ({ ...prev, floorNumber: value }))}
+                                ></Select>
+                                </Form.Item>
+                            </Col>
+                            <Col className="gutter-row" span={6}>
+                                <Form.Item label="Số căn hộ">
+                                <Select 
+                                  placeholder="Chọn số căn hộ" 
+                                  options={roomNumbers}
+                                  onChange={(value) => setFilters((prev) => ({ ...prev, roomNumber: value }))}
+                                ></Select>
+                                </Form.Item>
+                            </Col>
+                        </Row>
+                     </Form>
+          </div>
 
                 <table>
                     <thead>
                         <tr>
-                            <td>Tên chủ căn hộ</td>
-                            <td>Liên hệ</td>
-                            <td>Tầng</td>
+                            <td>ID</td>
+                            <td>Họ tên</td>
+                            <td>Số Điện Thoại</td>
+                            <td>Số tầng</td>
                             <td>Số căn hộ</td>
                             <td>Trạng thái</td>
                             <td>Chi tiết</td>
@@ -93,71 +181,17 @@ function Page2(){
                     </thead>
 
                     <tbody>
-                    { residents.map(resident => 
-                        <tr id={resident.id}>
-                            <td> { resident.name } </td>
-                            <td> { resident.phone } </td>
-                            <td> { resident.floornumber } </td>
-                            <td> { resident.apartmentNumber } </td>
-                            <td> { resident.status } </td>
-                            <td><span className="status">Mở rộng</span></td>
-                        </tr>
-                    )}
-                        {/* <tr>
-                            <td>Star Refrigerator</td>
-                            <td>8</td>
-                            <td>808</td>
-                            <td><span className="status">Mở rộng</span></td>
-                        </tr>
-
-                        <tr>
-                            <td>Dell Laptop</td>
-                            <td>9</td>
-                            <td>902</td>
-                            <td><span className="status">Mở rộng</span></td>
-                        </tr>
-
-                        <tr>
-                            <td>Apple Watch</td>
-                            <td>5</td>
-                            <td>502</td>
-                            <td><span className="status">Mở rộng</span></td>
-                        </tr>
-
-                        <tr>
-                            <td>Addidas Shoes</td>
-                            <td>3</td>
-                            <td>305</td>
-                            <td><span className="status">Mở rộng</span></td>
-                        </tr>
-
-                        <tr>
-                            <td>Star Refrigerator</td>
-                            <td>6</td>
-                            <td>607</td>
-                            <td><span className="status">Mở rộng</span></td>
-                        </tr>
-
-                        <tr>
-                            <td>Dell Laptop</td>
-                            <td>3</td>
-                            <td>308</td>
-                            <td><span className="status">Mở rộng</span></td>
-                        </tr>
-
-                        <tr>
-                            <td>Apple Watch</td>
-                            <td>6</td>
-                            <td>605</td>
-                            <td><span className="status">Mở rộng</span></td>
-                        </tr>
-
-                        <tr>
-                            <td>Addidas Shoes</td>
-                            <td>4</td>
-                            <td>405</td>
-                            <td><span className="status">Mở rộng</span></td>
-                        </tr> */}
+                        { filteredPeople.map(resident => 
+                            <tr key={resident.id}>
+                                <td>{resident.id}</td>
+                                <td> { resident.name } </td>
+                                <td> { resident.phone } </td>
+                                <td> { resident.floornumber } </td>
+                                <td> { resident.apartmentNumber } </td>
+                                <td> { resident.status } </td>
+                                <td><span className="status"><Link to="/household_infor"><ExportOutlined /></Link></span></td>
+                            </tr>
+                        )}
                     </tbody>
                 </table>
             </div>

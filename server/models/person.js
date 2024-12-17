@@ -10,6 +10,7 @@ const personSchema = new mongoose.Schema({
     nation: String,
     hometown: String,
     movingIn: Date,
+    endTemporary: Date,
     contact_phone: String,
     occupation: String
 })
