@@ -1,16 +1,31 @@
-import { Input, Form, Button, InputNumber, Select, DatePicker, notification } from "antd";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Input, Form, Button, InputNumber, Select, DatePicker, notification, Modal } from "antd";
+import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import dayjs from "dayjs";
 import axios from "axios";
 
-function EditFee() {
-  const { state } = useLocation();
+function EditFee(props) {
+  const { item, onReload } = props;
   const navigate = useNavigate();
-  const fee = state ? state.fee : null;
+  const [fee, setFee] = useState(null);
 
   const [householdsOptions, setHouseholdsOptions] = useState([]);
   const [loadingHouseholds, setLoadingHouseholds] = useState(true);
+
+  //Modal cập nhật
+  const [isModalVisible, setIsModalVisible] = useState(false);
+
+  // Hàm mở Modal
+  const showModal = (item) => {
+    setIsModalVisible(true);
+    setFee(item);
+    //console.log(item);
+  };
+
+  // Hàm đóng Modal
+  const handleCancel = () => {
+    setIsModalVisible(false);
+  };
 
   useEffect(() => {
     const fetchHouseholds = async () => {
@@ -77,7 +92,7 @@ function EditFee() {
         payload.amount = values.amount;
       }
       if (values.due) {
-        payload.due = values.due.format("YYYY-MM-DD");
+        payload.due = values.due;
       }
       if (values.status) {
         payload.status = values.status === "required" ? "Bắt buộc" : "Không bắt buộc";
@@ -92,11 +107,14 @@ function EditFee() {
         },
       });
 
+      onReload();
+
       if (response.status === 200) {
         openNotification("success", "Thành công", "Cập nhật thành công!");
         setTimeout(() => {
           navigate("/fee_list");
         }, 2000);
+        setIsModalVisible(false);
       } else {
         openNotification("error", "Thất bại", "Cập nhật thất bại!");
       }
@@ -120,77 +138,80 @@ function EditFee() {
 
   return (
     <>
-      <div className="details__fee">
-        <div className="recentCt">
-          <div className="cardHeader">
-            <h2>{fee ? "Cập nhật loại phí" : "Thêm loại phí"}</h2>
-            <Link to="/fee_list" className="btn">
-              Quay lại
-            </Link>
-          </div>
-          <Form
-            {...formItemLayout}
-            layout="vertical"
-            name="create-fee"
-            onFinish={handleSubmit}
-            initialValues={{
-              id: fee ? fee._id : undefined,
-              STT: undefined,
-              name: fee ? fee.name : "",
-              amount: fee ? fee.amount : undefined,
-              due: fee ? dayjs(fee.due) : undefined,
-              status: fee ? (fee.status ? "Bắt buộc" : "Không bắt buộc") : "",
-            }}
+      <button className="btn-details" onClick={() => showModal(item)}>Cập nhật</button>
+      <Modal
+        title="Chỉnh sửa thông tin"
+        open={isModalVisible}
+        //onOk={handleOk}
+        onCancel={handleCancel}
+        footer={null}
+      >
+        <Form
+          {...formItemLayout}
+          layout="horizontal"
+          name="create-fee"
+          onFinish={handleSubmit}
+          initialValues={{
+            id: fee ? fee._id : undefined,
+            STT: undefined,
+            name: fee ? fee.name : "",
+            amount: fee ? fee.amount : undefined,
+            due: fee ? fee.due : undefined,
+            status: fee ? (fee.status ? "Bắt buộc" : "Không bắt buộc") : "",
+          }}
+        >
+          <Form.Item name="id" style={{ display: "none" }}>
+            <Input />
+          </Form.Item>
+          <Form.Item label="Tên loại phí" name="name" rules={[{ required: true, message: "Bắt buộc!" }]}>
+            <Input />
+          </Form.Item>
+          <Form.Item label="Giá/đơn vị" name="amount" rules={[{ required: true, message: "Bắt buộc!" }]}>
+            <InputNumber 
+              formatter={(value) => `${Number(value).toLocaleString("vi-VN")}`} 
+              parser={(value) => value.replace(/\D/g, '')}
+              style={{ width: "auto", maxWidth: '100%' }}
+            />
+          </Form.Item>
+          <Form.Item label="Thời hạn (tháng)" name="due" rules={[{ required: true, message: "Bắt buộc!" }]}>
+            <InputNumber />
+          </Form.Item>
+          <Form.Item label="Trạng thái" name="status">
+            <Select placeholder="Chọn trạng thái" onChange={handleStatusChange}>
+              <Option value="required">Bắt buộc</Option>
+              <Option value="unrequired">Không bắt buộc</Option>
+            </Select>
+          </Form.Item>
+          <Form.Item
+            label="Hộ gia đình"
+            name="households"
+            rules={!isMandatory ? [{ required: true }] : []}
           >
-            <Form.Item name="id" style={{ display: "none" }}>
-              <Input />
-            </Form.Item>
-            <Form.Item label="Tên loại phí" name="name">
-              <Input />
-            </Form.Item>
-            <Form.Item label="Giá/đơn vị" name="amount">
-              <InputNumber />
-            </Form.Item>
-            <Form.Item label="Hạn nộp" name="due">
-              <DatePicker />
-            </Form.Item>
-            <Form.Item label="Trạng thái" name="status">
-              <Select placeholder="Chọn trạng thái" onChange={handleStatusChange}>
-                <Option value="required">Bắt buộc</Option>
-                <Option value="unrequired">Không bắt buộc</Option>
+            {loadingHouseholds ? (
+              <p>Đang tải danh sách hộ gia đình...</p>
+            ) : (
+              <Select
+                {...sharedProps}
+                placeholder={isMandatory ? "Tất cả hộ gia đình" : "Chọn hộ gia đình"}
+                disabled={isMandatory}
+                value={checkedList}
+                onChange={handleChange}
+              >
+                {householdsOptions.map((option) => (
+                  <Select.Option key={option.value} value={option.household_id}>
+                    {option.label}
+                  </Select.Option>
+                ))}
               </Select>
-            </Form.Item>
-            <Form.Item
-              label="Hộ gia đình"
-              name="households"
-              rules={!isMandatory ? [{ required: true }] : []}
-            >
-              {loadingHouseholds ? (
-                <p>Đang tải danh sách hộ gia đình...</p>
-              ) : (
-                <Select
-                  {...sharedProps}
-                  placeholder={isMandatory ? "Tất cả hộ gia đình" : "Chọn hộ gia đình"}
-                  disabled={isMandatory}
-                  value={checkedList}
-                  onChange={handleChange}
-                >
-                  {householdsOptions.map((option) => (
-                    <Select.Option key={option.value} value={option.household_id}>
-                      {option.label}
-                    </Select.Option>
-                  ))}
-                </Select>
-              )}
-            </Form.Item>
-            <Form.Item label={null}>
-              <Button type="primary" htmlType="submit">
-                {fee ? "Cập nhật" : "Tạo mới"}
-              </Button>
-            </Form.Item>
-          </Form>
-        </div>
-      </div>
+            )}
+          </Form.Item>
+          <Form.Item label={null}>
+            <Button type="primary" htmlType="submit" onClick={showModal}>
+              {fee ? "Cập nhật" : "Tạo mới"}
+            </Button>
+          </Form.Item>
+        </Form>
+      </Modal>
     </>
   );
 }

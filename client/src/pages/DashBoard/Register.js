@@ -89,7 +89,7 @@ function Register(){
             })
             .then(data => {
                 if(data.message === 'Success')
-                    navigate("/dashboard");
+                    navigate(`/household_infor/:${data.household}`);
                 else alert(data.message);
             })
         })
@@ -200,6 +200,7 @@ function Register(){
                             <option value="Vợ chồng">Vợ chồng</option>
                             <option value="Bố mẹ">Bố mẹ</option>
                             <option value="Họ hàng">Họ hàng</option>
+                            <option value="Anh em">Anh em</option>
                         </select>
                     </div> 
                     <div className="input-fields">

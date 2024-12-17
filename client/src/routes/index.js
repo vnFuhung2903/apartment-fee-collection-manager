@@ -11,16 +11,18 @@ import LogIn from "../pages/LogIn/LogIn";
 import Password from "../pages/Password";
 import Stats from "../pages/Stats";
 import HouseholdInfo from "../pages/DashBoard/HouseholdInfo";
+import TransactionHistory from "../pages/FeeMange/TransactionHistory";
+import { Navigate } from "react-router-dom";
 
 export const routes = [
-  // {
-  //   path: "/",
-  //   element: <LogIn/>,
-  // },
-  // {
-  //   path: "login",
-  //   element: <LogIn/>
-  // },
+  {
+    path: "/",
+    element: <Navigate to='dashboard' replace/>,
+  },
+  {
+    path: "login",
+    element: <LogIn/>
+  },
   {
     path: "/",
     element: <LayoutDefault/>,
@@ -39,7 +41,7 @@ export const routes = [
       },
       {
         path: "household_infor",
-        element: <HouseholdInfo/>
+        element: <HouseholdInfo />
       },
       {
         path: "stats",
@@ -54,12 +56,8 @@ export const routes = [
         element: <FeeList/>
       },
       {
-        path: "fee_create",
-        element: <CreateFee/>
-      },
-      {
-        path: "edit_fee",
-        element: <EditFee/>
+        path: "transactionHis/:household_id",
+        element: <TransactionHistory/>
       },
       {
         path: "detail/:household_id",

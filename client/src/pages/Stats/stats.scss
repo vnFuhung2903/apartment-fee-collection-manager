@@ -43,9 +43,10 @@
   display: grid;
   width: 96%;
   gap: 1.8rem;
-  grid-template-columns: auto 16rem;
+  grid-template-columns: 75% 25%;
   margin: 0 auto;
-  max-height: 45vh;
+  align-items: start;
+  //max-height: 45vh;
 
   h2{
     font-weight: 600;
@@ -183,7 +184,7 @@ main .insights .progress{
 main .insights svg{
   height: 150px;
   width: 150px;
-  position: absolute;
+  position: relative;
   top: 0;
 }
 
@@ -197,13 +198,14 @@ main .insights svg circle{
 
 main .insights .progress .number{
   position: absolute;
-  top: 5%;
-  left: 5%;
+  top: 50%;
+  left: 50%;
   height: 100%;
   width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
+  transform: translate(-39%, -45%);
 }
 
 /* recent order */
@@ -280,7 +282,7 @@ Right Side
   box-shadow: var(--box-shadow);
   transition: all .3s ease;
   overflow-y: auto;
-  max-height: 71%;
+  //max-height: 71%;
 
   h2{
     padding-left: 5px;

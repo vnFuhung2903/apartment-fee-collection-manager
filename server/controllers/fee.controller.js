@@ -52,9 +52,10 @@ module.exports.addFee = async (req, res) => {
 
     const payments = householdsToAddPayment.map((household) => ({
       fee_id: fee._id,
+      payment_id:generatePaymentID(),
       household_id: household._id,
       amount: fee.amount,
-      payment_date: fee.due,
+      payment_date: calculateDueDate(fee.due),
       status: "Chưa thanh toán",
     }));
     await Payment.insertMany(payments);
@@ -71,25 +72,30 @@ module.exports.changeFee = async (req, res) => {
   try {
     const { id, name, amount, due, status, households, ...otherFields } = req.body;
 
+    // Kiểm tra nếu không có ID
     if (!id) {
       return res.status(400).json({ message: "Thiếu ID của phí cần cập nhật!!!!" });
     }
 
+    // Tìm phí hiện tại theo ID
     const existingFee = await Fee.findById(id);
     if (!existingFee) {
       return res.status(404).json({ message: "Không tìm thấy phí với ID này." });
     }
 
+    // Chuẩn bị các trường cần cập nhật
     const updateFields = { ...otherFields };
     if (name !== undefined) updateFields.name = name;
     if (amount !== undefined) updateFields.amount = amount;
     if (due !== undefined) updateFields.due = due;
     if (status !== undefined) updateFields.status = status;
 
+    // Kiểm tra nếu không có trường nào để cập nhật
     if (Object.keys(updateFields).length === 0) {
       return res.status(400).json({ message: "Không có trường nào để cập nhật!!!" });
     }
 
+    // Cập nhật phí
     const updatedFee = await Fee.findByIdAndUpdate(id, updateFields, { new: true });
 
     // Xử lý logic trạng thái "Bắt buộc" và "Không bắt buộc"
@@ -99,35 +105,110 @@ module.exports.changeFee = async (req, res) => {
         const allHouseholds = await Household.find({}, "_id");
         const existingPayments = await Payment.find({ fee_id: id }, "household_id");
 
+        // Lấy danh sách household chưa có payment
         const existingHouseholdIds = existingPayments.map((payment) => payment.household_id.toString());
         const missingPayments = allHouseholds.filter(
           (household) => !existingHouseholdIds.includes(household._id.toString())
         );
+
+        // Tạo payment mới cho các household thiếu
         const newPayments = missingPayments.map((household) => ({
           fee_id: id,
+          payment_id: generatePaymentID(),
           household_id: household._id,
           amount: updatedFee.amount,
-          payment_date: updatedFee.due,
+          payment_date: calculateDueDate(updatedFee.due),
+          status: "Chưa thanh toán",
+        }));
+
+        // Thêm các payment mới nếu có
+        if (newPayments.length > 0) {
+          await Payment.insertMany(newPayments);
+        }
+      } else if (status === "Không bắt buộc") {
+        // Chuyển từ "Bắt buộc" sang "Không bắt buộc"
+        if (households && households.length > 0) {
+          const householdIdsToApply = households.map((householdId) => householdId.toString());
+
+          // Xóa các payment không nằm trong danh sách households mới
+          await Payment.deleteMany({
+            fee_id: id,
+            household_id: { $nin: householdIdsToApply },
+          });
+
+          // Lấy danh sách các hộ cần thêm payment mới
+          const existingPayments = await Payment.find({ fee_id: id }, "household_id");
+          const existingHouseholdIds = existingPayments.map((payment) => payment.household_id.toString());
+          const missingHouseholds = households.filter(
+            (householdId) => !existingHouseholdIds.includes(householdId.toString())
+          );
+
+          // Thêm các payment mới nếu cần
+          const newPayments = missingHouseholds.map((householdId) => ({
+            fee_id: id,
+            payment_id: generatePaymentID(),
+            household_id: householdId,
+            amount: updatedFee.amount,
+            payment_date: calculateDueDate(updatedFee.due),
+            status: "Chưa thanh toán",
+          }));
+
+          if (newPayments.length > 0) {
+            await Payment.insertMany(newPayments);
+          }
+        } else {
+          // Nếu không có danh sách households, xóa tất cả payments liên quan
+          await Payment.deleteMany({ fee_id: id });
+        }
+      }
+    }
+    if(status == existingFee.status && status ==="Không bắt buộc"){
+      if (households && households.length > 0) {
+        const householdIdsToApply = households.map((householdId) => householdId.toString());
+
+        // Xóa các payment không nằm trong danh sách households mới
+        await Payment.deleteMany({
+          fee_id: id,
+          household_id: { $nin: householdIdsToApply },
+        });
+
+        // Lấy danh sách các hộ cần thêm payment mới
+        const existingPayments = await Payment.find({ fee_id: id }, "household_id");
+        const existingHouseholdIds = existingPayments.map((payment) => payment.household_id.toString());
+        const missingHouseholds = households.filter(
+          (householdId) => !existingHouseholdIds.includes(householdId.toString())
+        );
+
+        // Thêm các payment mới nếu cần
+        const newPayments = missingHouseholds.map((householdId) => ({
+          fee_id: id,
+          payment_id: generatePaymentID(),
+          household_id: householdId,
+          amount: updatedFee.amount,
+          payment_date: calculateDueDate(updatedFee.due),
           status: "Chưa thanh toán",
         }));
 
         if (newPayments.length > 0) {
           await Payment.insertMany(newPayments);
         }
-      } else if (status === "Không bắt buộc" && households) {
-        // Chuyển từ "Bắt buộc" sang "Không bắt buộc"
-        const householdIdsToKeep = households.map((householdId) => householdId.toString());
-        // Xóa các payment không nằm trong danh sách households được gửi
-        await Payment.deleteMany({
-          fee_id: id,
-          household_id: { $nin: householdIdsToKeep },
-        });
+      } else {
+        // Nếu không có danh sách households, xóa tất cả payments liên quan
+        await Payment.deleteMany({ fee_id: id });
       }
     }
+
+    // Cập nhật số tiền cho tất cả các payment nếu amount thay đổi
     if (amount !== undefined && amount !== existingFee.amount) {
       await Payment.updateMany(
         { fee_id: id },
         { $set: { amount: amount } }
+      );
+    }
+    if (due !== undefined && due !== existingFee.due) {
+      await Payment.updateMany(
+        { fee_id: id },
+        { $set: { payment_date: calculateDueDate(updatedFee.due) } }
       );
     }
 
@@ -137,6 +218,15 @@ module.exports.changeFee = async (req, res) => {
     res.status(500).json({ message: "Lỗi khi cập nhật!", error });
   }
 };
+
+function generatePaymentID() {
+  return Math.random().toString(36).substring(2, 10).toUpperCase();
+};
+function calculateDueDate(due) {
+  const now = new Date();
+  now.setMonth(now.getMonth() + due); // Cộng thêm số tháng hạn vào tháng hiện tại
+  return now;
+}
 
 //[POST] /payments/api/v1/delete
 module.exports.deleteFee = async (req,res) => {

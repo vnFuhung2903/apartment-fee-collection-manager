@@ -17,6 +17,9 @@ module.exports.index = async (req, res) => {
     if (req.query.status=='done'){
       filter.status='Đã thanh toán';
     }
+    if (req.query.status=='undone'){
+      filter.status='Chưa thanh toán';
+    }
 
     const sort = {};
     if (req.query.sortKey && req.query.sortValue) {
@@ -96,7 +99,6 @@ module.exports.index = async (req, res) => {
 module.exports.addPayment = async (req, res) => {
   try {
     const { fee_id, household_id, amount, payment_date } = req.body;
-
     const payment = new Payment({
       fee_id: fee_id,
       household_id: household_id,
@@ -116,19 +118,52 @@ module.exports.addPayment = async (req, res) => {
 //[POST] /payments/api/v1/change
 module.exports.changePayment = async (req,res) => {
   try {
-    const { fee_id, household_id, amount } = req.body;
-    await Payment.updateOne(
-      {
-        fee_id:fee_id,
-        household_id:household_id
-      },{
-        amount:amount
-      });
+    const { payment_id,bill_id } = req.body;
+    const payment = await Payment.findOne({ payment_id });
 
-    res.status(201).json({message: "Update Amount Success"});
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Change Amount Error", error });
+    if (!payment) {
+      return res.status(404).json({ message: 'Thanh toán không tồn tại' });
+    }
+
+    // Kiểm tra nếu trạng thái đã là "Đã thanh toán"
+    if (payment.status === 'Đã thanh toán') {
+      return res.status(400).json({ message: 'Thanh toán đã được hoàn tất' });
+    }
+
+    // Cập nhật trạng thái thanh toán
+    payment.status = 'Đã thanh toán';
+    await payment.save();
+
+    res.status(200).json({ message: 'Thanh toán đã được cập nhật thành công', payment });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Lỗi máy chủ' });
+  }
+};
+
+//[POST] /payments/api/v1/changes
+module.exports.changePayments = async (req,res) => {
+  const { payment_ids,bill_id,bill_time } = req.body; // Gửi danh sách payment_id qua body
+  try {
+    // Kiểm tra nếu không có payment_ids
+    if (!payment_ids || !Array.isArray(payment_ids) || payment_ids.length === 0) {
+      return res.status(400).json({ message: 'Danh sách payment_id không hợp lệ' });
+    }
+
+    // Cập nhật nhiều thanh toán
+    const updatedPayments = await Payment.updateMany(
+      { payment_id: { $in: payment_ids }, status: 'Chưa thanh toán' },  // Tìm các payment chưa thanh toán
+      { $set: { status: 'Đã thanh toán', bill_id:bill_id ,bill_time:bill_time} }
+    );
+
+    if (updatedPayments.nModified === 0) {
+      return res.status(404).json({ message: 'Không tìm thấy thanh toán nào cần thay đổi' });
+    }
+
+    res.status(200).json({ message: 'Cập nhật thanh toán thành công', updatedPayments });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Lỗi máy chủ' });
   }
 };
 
@@ -194,3 +229,39 @@ module.exports.totalPayment = async (req,res) => {
     res.status(500).json({ message: "Server Error" });
   }
 };
+
+// Hàm tự động tạo payment mỗi tháng
+const generatePaymentID = () => {
+  return Math.random().toString(36).substring(2, 10).toUpperCase();
+};
+const calulateDueDate = (monthsToAdd) => {
+  const now = new Date();
+  const dueDate = new Date(now);
+
+  dueDate.setMonth(now.getMonth() + monthsToAdd);
+  return dueDate;
+};
+module.exports.autoGeneratePayments = async () => {
+  try {
+    const mandatoryFees = await Fee.find({status:"Bắt buộc"});
+
+    for (const fee of mandatoryFees){
+      const paymentID = generatePaymentID();
+
+      const dueDate = calulateDueDate(fee.due);
+      //Do hàm getMonth() trong Javascript trả về giá trị từ 0-11 nên phải +1
+      const newPayment = new Payment({
+        fee_id: fee.id,
+        household_id: fee.household,
+        amount : fee.amount,
+        payment_date: dueDate,
+        status: "Chưa thanh toán",
+        name: `${fee.name} tháng ${dueDate.getMonth() + 1}/${dueDate.getFullYear()}`,
+        payment_id: paymentID,
+      });
+      await newPayment.save();
+    }
+  } catch (error) {
+    console.error("Lỗi khi tạo payment tự động:", error);
+  }
+}

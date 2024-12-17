@@ -4,7 +4,7 @@ import { Link } from "react-router-dom"
 import  React,{ useEffect,useMemo, useState } from "react"
 import { useSelector, useDispatch } from "react-redux";
 import { fetchDashboardData, fetchHouseholds } from "../../actions";
-import { Form,Select,Row,Col} from "antd";
+import { Tag,Form,Row,Col,Select } from "antd";
 
 function Page1(){
     const dispatch = useDispatch();
@@ -16,7 +16,7 @@ function Page1(){
         numTemporary,
         numAbsence,
     } = useSelector((state) => state.page1Reducer);
-  
+
     useEffect(() => {
         dispatch(fetchHouseholds());
         dispatch(fetchDashboardData());
@@ -114,7 +114,7 @@ function Page1(){
     <div className="details">
         <div className="recentCt">
         <div className="cardHeader">
-             <h2>Quản lí hộ dân</h2>
+             <h2>Quản lý cư trú</h2>
              <Link to="/register_resident" className="btn">Đăng kí</Link>
          </div>
          <div className="household">
@@ -183,11 +183,15 @@ function Page1(){
                             <td> { household.floors } </td>
                             <td> { household.numbers } </td>
                             <td>
-                            <span className={household.status + "-status"}>
-                                    {household.status}
-                                  </span> 
+                                <Tag className="status" color={household.status === "Thường trú" ? "orange" : " red"}>
+                                        {household.status}
+                                </Tag> 
                             </td>
-                            <td><span className="status"><Link to="/household_infor"  onClick={() => {localStorage.setItem("id",household.numbers);}}>Mở rộng</Link></span></td>
+                            <td><span className="status">
+                                <Link to={`/household_infor?household_id=${household.id}`}  onClick={() => {localStorage.setItem("household_id", household._id);}}>
+                                    Mở rộng
+                                </Link>
+                            </span></td>
                          </tr>
                       )}
                     </tbody>

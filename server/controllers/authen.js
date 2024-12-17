@@ -14,8 +14,8 @@ const signIn = async (req, res) => {
       if (!validate) {
         return res.status(400).json({ message: "Wrong password" });
       } else {
-        if(remember) res.cookie("token", userFound, { maxAge: 365 * 24 * 60 * 60 * 1000, httpOnly: false, secure: false, signed: true, sameSite: "none"});
-        else res.cookie("token", userFound, { maxAge: 12 * 60 * 60 * 1000, httpOnly: false, secure: false, signed: true, sameSite: "none" });
+        if(remember) await res.cookie("token", userFound._id.toString(), { maxAge: 365 * 24 * 60 * 60 * 1000, httpOnly: false, samesite: "none" });
+        else await res.cookie("token", userFound._id.toString(), { maxAge: 12 * 60 * 60 * 1000, httpOnly: false, samesite: "none" });        
         return res.status(200).json({ message: "Login success", token: userFound._id });
       }
     }
@@ -49,8 +49,8 @@ const signUp = async (req, res) => {
 
 const changePassword = async (req, res) => {
   try {
-    const { userId, oldPassword, newPassword } = req.body;
-    console.log(userId);
+    const { oldPassword, newPassword } = req.body;
+    const userId = req.cookies.token;
     
     const userFound = await user.findOne({ _id: userId });
     console.log(userFound);

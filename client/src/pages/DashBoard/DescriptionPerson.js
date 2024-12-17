@@ -10,7 +10,7 @@ function DescriptionPerson(props) {
                {person.name}
              </Descriptions.Item>
              <Descriptions.Item label="Số điện thoại">
-               {person.phone}
+               {person.contact_phone}
              </Descriptions.Item>
              <Descriptions.Item label="CCCD">
                {person.cic}
@@ -31,7 +31,7 @@ function DescriptionPerson(props) {
                {person.hometown}
              </Descriptions.Item>
              <Descriptions.Item label="Dân tộc">
-               {person.ethnic}
+               {person.nation}
              </Descriptions.Item>
              <Descriptions.Item label="Trạng Thái">
                {person.status}

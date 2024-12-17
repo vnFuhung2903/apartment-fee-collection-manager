@@ -12,7 +12,7 @@ function LayoutDefault(){
 
     useEffect(() => {
         if(checkAuth())
-            navigate("/");
+            navigate("/login");
     }, [mainRef]);
 
     const handleClick = () => {
@@ -57,7 +57,7 @@ function LayoutDefault(){
                         <span className="icon">
                             <ion-icon name="people-outline"></ion-icon>
                         </span>
-                        <span className="title">Quản lí hộ dân và cư dân</span>
+                        <span className="title">Quản lý căn hộ và cư dân</span>
                     </Link>
                 </li>
 
@@ -89,12 +89,12 @@ function LayoutDefault(){
                 </li>
 
                 <li>
-                    <div onClick={logout}>
+                    <a onClick={logout}>
                         <span className="icon">
                             <ion-icon name="log-out-outline"></ion-icon>
                         </span>
                         <span className="title">Đăng xuất</span>
-                    </div>
+                    </a>
                 </li>
               </ul>
             </div>
