@@ -5,7 +5,7 @@ import moment from "moment";
 
 function ModalEdit(props){
     const [form] = Form.useForm();
-    const {isModalEdit, setModalEdit, updateInfor, personInfo ={} } = props;
+    const {isModalEdit, setModalEdit, updateInfor, personInfo = {} } = props;
     const [isMovingOut, setIsMovingOut] = useState(personInfo?.status === "Thường trú"? false: true);
     const isOwner = personInfo?.relationship === "Chủ Nhà" ? true : false;
    //chỉnh sửa form khi personInfor thay đổi
@@ -113,23 +113,20 @@ function ModalEdit(props){
           </Col>
 
           <Col span={10}>
-            <Form.Item label="Dân tộc" name="ethnic">
+            <Form.Item label="Dân tộc" name="ethnicity">
               <Input />
             </Form.Item>
           </Col>
-
-          <Col span={12}>
+          {isOwner && <Col span={12}>
             <Form.Item label="Số tầng" name="floors">
               <InputNumber />
             </Form.Item>
-          </Col>
-
-          <Col span={10}>
+          </Col>}
+          {isOwner && <Col span={10}>
             <Form.Item label="Số căn hộ" name="numbers">
               <InputNumber />
             </Form.Item>
-          </Col>
-
+          </Col>}
           <Col span={12}>
             <Form.Item label="Trạng thái" name="status">
               <Radio.Group onChange={handleChangeStatus}>

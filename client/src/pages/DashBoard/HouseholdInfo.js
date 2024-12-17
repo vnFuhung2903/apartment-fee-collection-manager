@@ -1,23 +1,19 @@
 import { useState, useEffect } from 'react';  
-import { Card, Descriptions, Table ,Button, Modal, Form, Input, message } from "antd";
+import { Card, Descriptions, Table ,Button, Modal} from "antd";
 import { EditOutlined , ExclamationCircleOutlined } from '@ant-design/icons';
 import { Space , Tag} from 'antd';
 import DescriptionPerson from './DescriptionPerson';
 import "./style.css"
 import ModalEdit from './ModalEdit';
 import { useSearchParams } from 'react-router-dom';
-import dayjs from 'dayjs';
 
 
 const HouseholdInfo = () => {
   const [isModalEdit, setModalEdit] = useState(false)
   const [searchParams] = useSearchParams();
   const householdId = searchParams.get("household_id");
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const [form] = Form.useForm();
   const [data, setData] = useState(null);
   const [editedOwnerInfo, setEditedOwnerInfo] = useState(null);
-  const [residents,setResidents] = useState([]);
 
 
   useEffect(() => {
@@ -32,14 +28,16 @@ const HouseholdInfo = () => {
       if(res.message === "Success") {
         console.log('household', res);
         const household = res.household;
-        setResidents(household.members);
-        setData(handleMembers(household.members));
+        setData(household.members.map(member => handleMember(member)));
         const apartments = handleApartment(household.apartments);
         setEditedOwnerInfo({...household.head, floors: apartments.floors, numbers: apartments.numbers });
       }
       else if(res.message)
         alert(res.message);
     })
+    .catch(error => {
+      console.log(error);
+    });
   }, [householdId]);
 
   const handleApartment = (apartments) => {
@@ -51,16 +49,16 @@ const HouseholdInfo = () => {
     }
   }
 
-  const handleMembers = (members) => {
-    return members.map(member => ({
-      key:member.id,
+  const handleMember = (member) => {
+    return {
+      key: member._id,
       name: member.name,
       dob: (new Date(member.dob)).toLocaleDateString('vi-VN'),
-      relation_to_head:"Họ hàng",
+      relation_to_head:member.relation_to_head,
       contact_phone: member.contact_phone,
-      status: "Thường trú",
+      status: member.status,
       description: member
-    }))
+    };
   }
 
 
@@ -95,7 +93,7 @@ const HouseholdInfo = () => {
     {
       title: "Mở rộng",
       key: "action",
-      render: (_,record) => (
+      render: (record) => (
         <Space size="middle">
           <Button color="default" icon={<EditOutlined />} onClick={() => {
             setModalEditFam(true);
@@ -116,28 +114,20 @@ const HouseholdInfo = () => {
   const [isModalEditFam,setModalEditFam] = useState(false);
 
   const updateResidentInfo = (updatedInfo) => {
-    const updatedResidents = residents.map((item) =>
-      item.id === updatedInfo.id ? {...updatedInfo } : item
-    );
-    setResidents(updatedResidents);
-    setData(updatedResidents.map((record) => {
-      return {
-        key: record.id,
-        name: record.name,
-        dob: record.dob,
-        relation_to_head: record.relation_to_head,
-        contact_phone: record.contact_phone,
-        status: record.status,
-        description: record,
-      };
-    }));
+    setData(prev => {
+      const index = prev.findIndex((item) => item.key === updatedInfo.key);
+      const updatedData = [...prev];
+      updatedData[index] = handleMember(updatedInfo);
+      return updatedData;
+    });
     setModalEditFam(false);
   };
 
    // xử lí xóa
   useEffect(()=>{
-      if(data && isDeleted) {
-        setData(data.filter((item) => !selectedRows.includes(item)));
+      console.log(selectedRows);
+      if(isDeleted) {
+        setData(prev => prev.filter((item) => !selectedRows.includes(item)));
         setIsDeleted(false);
         setAppearDelete(false);
       }
@@ -180,7 +170,7 @@ const HouseholdInfo = () => {
         bordered={false}
         style={{ marginBottom: 24 }}
         extra={<Button type="primary" onClick={() => {setModalEdit(true);
-          setSelectedPerson(editedOwnerInfo);
+          setEditedOwnerInfo(editedOwnerInfo);
         }}>Sửa</Button>}
       >
         <Descriptions column={3}>
@@ -221,11 +211,11 @@ const HouseholdInfo = () => {
             {editedOwnerInfo?.status}
           </Descriptions.Item>
           <Descriptions.Item label="Thời gian đến">
-          {editedOwnerInfo?.movingIn ? dayjs(editedOwnerInfo.movingIn).format("YYYY-MM-DD") : "N/A"}
+          {editedOwnerInfo?.movingIn && (new Date(editedOwnerInfo?.movingIn)).toLocaleDateString('vi-VN') }
           </Descriptions.Item>
-          {editedOwnerInfo?.movingOut && (<Descriptions.Item label="Thời gian đi">{dayjs(editedOwnerInfo.movingOut).format("YYYY-MM-DD")}
+          <Descriptions.Item label="Thời gian đến">
+          {editedOwnerInfo?.movingOut && (new Date(editedOwnerInfo?.movingOut)).toLocaleDateString('vi-VN') }
           </Descriptions.Item>
-)}
         </Descriptions>
       </Card>
       

@@ -1,6 +1,6 @@
 import React from "react";
 import { Descriptions } from "antd";
-import  dayjs  from "dayjs";
+
 
 function DescriptionPerson(props) {
   const { person } = props;
@@ -16,7 +16,7 @@ function DescriptionPerson(props) {
           {person.cic}
         </Descriptions.Item>
         <Descriptions.Item label="Ngày sinh">
-        {dayjs(person.dob).format("YYYY-MM-DD")}
+        {(new Date(person.dob)).toLocaleDateString('vi-VN')}
         </Descriptions.Item>
         <Descriptions.Item label="Quốc tịch">
           {person.nation}
@@ -37,9 +37,9 @@ function DescriptionPerson(props) {
           {person.status}
         </Descriptions.Item>
         <Descriptions.Item label="Thời gian đến">
-        {dayjs(person.movingIn).format("YYYY-MM-DD")}
+        {(new Date(person.movingIn)).toLocaleDateString('vi-VN')}
         </Descriptions.Item>
-        {person.movingOut && <Descriptions.Item label="Thời gian đi">{dayjs(person.movingOut).format("YYYY-MM-DD")}</Descriptions.Item>}
+        {person.movingOut && <Descriptions.Item label="Thời gian đi">{(new Date(person.movingIn)).toLocaleDateString('vi-VN')}</Descriptions.Item>}
     </Descriptions>
   );
 }
