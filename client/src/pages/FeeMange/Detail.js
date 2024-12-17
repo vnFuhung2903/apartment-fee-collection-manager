@@ -3,7 +3,7 @@ import {useState, useEffect} from "react"
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from 'react-router-dom';
-import { fetchFees,fetchHouseholdDetail } from "../../actions";
+import { fetchFees, fetchHouseholdDetail } from "../../actions";
 import { DatePicker, Form } from 'antd';
 import dayjs from 'dayjs';
 import { HistoryOutlined } from "@ant-design/icons";

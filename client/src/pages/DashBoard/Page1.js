@@ -4,6 +4,7 @@ import { Link } from "react-router-dom"
 import { useEffect } from "react"
 import { useSelector, useDispatch } from "react-redux";
 import { fetchDashboardData, fetchHouseholds } from "../../actions";
+import { Tag } from "antd";
 
 function Page1(){
     const dispatch = useDispatch();
@@ -15,7 +16,7 @@ function Page1(){
         numTemporary,
         numAbsence,
     } = useSelector((state) => state.page1Reducer);
-  
+
     useEffect(() => {
         dispatch(fetchHouseholds());
         dispatch(fetchDashboardData());
@@ -98,11 +99,15 @@ function Page1(){
                             <td> { household.floors } </td>
                             <td> { household.numbers } </td>
                             <td>
-                            <span className={household.status + "-status"}>
-                                    {household.status}
-                                  </span> 
+                                <Tag className="status" color={household.status === "Thường trú" ? "orange" : " red"}>
+                                        {household.status}
+                                </Tag> 
                             </td>
-                            <td><span className="status"><Link to="/household_infor"  onClick={() => {localStorage.setItem("id",household.numbers);}}>Mở rộng</Link></span></td>
+                            <td><span className="status">
+                                <Link to={`/household_infor?household_id=${household.id}`}  onClick={() => {localStorage.setItem("household_id", household._id);}}>
+                                    Mở rộng
+                                </Link>
+                            </span></td>
                          </tr>
                       )}
                                 { 
