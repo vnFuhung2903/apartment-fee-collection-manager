@@ -1,5 +1,4 @@
 import DashBoard from "../pages/DashBoard";
-import Page2 from "../pages/DashBoard/Page2";
 import Register from "../pages/DashBoard/Register";
 import FeeMange from "../pages/FeeMange";
 import CreateFee from "../pages/FeeMange/CreateFee";
@@ -13,6 +12,7 @@ import Stats from "../pages/Stats";
 import HouseholdInfo from "../pages/DashBoard/HouseholdInfo";
 import TransactionHistory from "../pages/FeeMange/TransactionHistory";
 import { Navigate } from "react-router-dom";
+import ResidentList from "../pages/DashBoard/ResidentList";
 
 export const routes = [
   {
@@ -33,7 +33,7 @@ export const routes = [
       },
       {
         path: "view_all",
-        element: <Page2/>
+        element: <ResidentList/>
       },
       {
         path: "register_resident",

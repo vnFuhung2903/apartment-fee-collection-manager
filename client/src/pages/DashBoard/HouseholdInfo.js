@@ -14,6 +14,7 @@ const HouseholdInfo = () => {
   const householdId = searchParams.get("household_id");
   const [data, setData] = useState(null);
   const [editedOwnerInfo, setEditedOwnerInfo] = useState(null);
+  const [selectedPerson,setSelectedPerson] = useState(null);
 
 
   useEffect(() => {
@@ -97,8 +98,7 @@ const HouseholdInfo = () => {
       render: (_,record) => (
         <Space size="middle">
           <Button color="default" icon={<EditOutlined />} onClick={() => {
-            setModalEditFam(true);
-            setSelectedPerson(record.description);
+            setSelectedPerson(record.key);
           }} />
         </Space>
       ),
@@ -111,8 +111,6 @@ const HouseholdInfo = () => {
   const bottom = "bottomRight";
   const [appearDelete, setAppearDelete] = useState(false);
   const [isDeleted,setIsDeleted] = useState(false);
-  const [selectedPerson,setSelectedPerson] = useState(null);
-  const [isModalEditFam,setModalEditFam] = useState(false);
 
   const updateResidentInfo = (updatedInfo) => {
     setData(prev => {
@@ -121,12 +119,10 @@ const HouseholdInfo = () => {
       updatedData[index] = handleMember(updatedInfo);
       return updatedData;
     });
-    setModalEditFam(false);
   };
 
    // xử lí xóa
   useEffect(()=>{
-      console.log(selectedRows);
       if(isDeleted) {
         setData(prev => prev.filter((item) => !selectedRows.includes(item)));
         setIsDeleted(false);
@@ -154,13 +150,20 @@ const HouseholdInfo = () => {
       });
   };
 
-
-
   const tableProps = {
     rowSelection: {
       onChange: handleRowSelectionChange,
     }
   };
+  const handleCancelModal2 = () => {
+    setSelectedPerson(null); 
+  };
+  const handleCancelModal1 = () => {
+    setModalEdit(false);
+  };
+  if (!data) {
+    return <div>Đang tải dữ liệu...</div>;
+  }
 
   return (
    <> 
@@ -171,7 +174,6 @@ const HouseholdInfo = () => {
         bordered={false}
         style={{ marginBottom: 24 }}
         extra={<Button type="primary" onClick={() => {setModalEdit(true);
-          setSelectedPerson(editedOwnerInfo);
         }}>Sửa</Button>}
       >
         <Descriptions column={3}>
@@ -214,15 +216,13 @@ const HouseholdInfo = () => {
           <Descriptions.Item label="Thời gian đến">
           {editedOwnerInfo?.movingIn && (new Date(editedOwnerInfo?.movingIn)).toLocaleDateString('vi-VN') }
           </Descriptions.Item>
-          <Descriptions.Item label="Thời gian đến">
-          {editedOwnerInfo?.movingOut && (new Date(editedOwnerInfo?.movingOut)).toLocaleDateString('vi-VN') }
-          </Descriptions.Item>
+          {editedOwnerInfo?.movingOut && <Descriptions.Item label="Thời gian đi">{(new Date(editedOwnerInfo?.movingOut)).toLocaleDateString('vi-VN')}</Descriptions.Item>}
         </Descriptions>
       </Card>
       
       {/* Modal sửa thông tin cá nhân */}
-      <ModalEdit isModalEdit={isModalEdit} setModalEdit={setModalEdit} personInfo={editedOwnerInfo} updateInfor={setEditedOwnerInfo} />
-      <ModalEdit isModalEdit={isModalEditFam} setModalEdit={setModalEditFam} personInfo={selectedPerson || {}} updateInfor={updateResidentInfo} />
+      <ModalEdit isModalEdit={isModalEdit} personInfo={editedOwnerInfo} updateInfor={setEditedOwnerInfo} onCancel={handleCancelModal1}/>
+      {data.map((item) => (<ModalEdit key={item.key} isModalEdit={selectedPerson === item.key} personInfo={item.description} updateInfor={updateResidentInfo} onCancel={handleCancelModal2}/>))}
 
       {/* Danh sách người ở trong căn hộ */}
       <Card title="Danh sách người ở trong căn hộ" bordered={false} extra= {appearDelete? <Button onClick={handleConfirm} color="danger" variant="filled">Xóa</Button> : null}>

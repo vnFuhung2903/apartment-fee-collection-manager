@@ -5,10 +5,9 @@ import moment from "moment";
 
 function ModalEdit(props){
     const [form] = Form.useForm();
-    const {isModalEdit, setModalEdit, updateInfor, personInfo ={} } = props;
+    const {isModalEdit, onCancel, updateInfor, personInfo ={}} = props;
     const [isMovingOut, setIsMovingOut] = useState(personInfo?.status === "Thường trú"? false: true);
     const isOwner = personInfo?.relationship === "Chủ Nhà" ? true : false;
-   //chỉnh sửa form khi personInfor thay đổi
     useEffect(() => {
       if (personInfo) {
         form.setFieldsValue({
@@ -22,7 +21,7 @@ function ModalEdit(props){
     const handleOk = async (e) => {
       const values = await form.validateFields();
       updateInfor(values);
-      setModalEdit(false);
+      onCancel();
       e.preventDefault();
       const res = await fetch("http://localhost:8386/person/api/v1/edit", {
         method: "POST",
@@ -49,7 +48,9 @@ function ModalEdit(props){
         title="Chỉnh sửa thông tin"
         open={isModalEdit}
         onOk={handleOk}
-        onCancel={()=>{setModalEdit(false)}}
+        onCancel={() => {
+          onCancel();
+        }}
         okText="Lưu"
         cancelText="Hủy"
         width={900}

@@ -208,6 +208,7 @@ function Register(){
                         <select id="residenceType" name="status" onChange={handlePersonalChange}>
                             <option value="Thường trú">Thường trú</option>
                             <option value="Tạm trú">Tạm trú</option>
+                            <option value="Tạm vắng">Tạm vắng</option>
                         </select>
                     </div>
                     <div className="input-fields">
