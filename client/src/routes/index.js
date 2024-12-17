@@ -41,7 +41,7 @@ export const routes = [
       },
       {
         path: "household_infor",
-        element: <HouseholdInfo/>
+        element: <HouseholdInfo />
       },
       {
         path: "stats",

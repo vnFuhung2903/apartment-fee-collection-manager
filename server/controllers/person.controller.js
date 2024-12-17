@@ -4,26 +4,17 @@ const mongoose = require('mongoose');
 
 const createPerson = async (req, res) => {
   try {
-    const { name, cic, dob, nationality, occupation, gender, hometown, ethnic, phone, status } = req.body;
-    const personFound = await person.findOne({ cic: cic });
+    const reqPerson = req.body;
+    const personFound = await person.findOne({ cic: reqPerson.cic });
     if(personFound)
-      res.status(200).json(personFound._id);
+      res.status(402).json({ message: "User found" });
     else {
       const newPerson = new person({
-        name: name,
-        cic: cic,
-        gender: gender,
-        dob: dob,
-        status: status,
-        ethnicity: ethnic,
-        nation: nationality,
-        hometown: hometown,
-        contact_phone: phone,
+        ...reqPerson,
         movingIn: Date.now(),
-        occupation: occupation
       });
       await newPerson.save();
-      res.status(200).json(newPerson._id);
+      res.status(200).json({ message: "Success", person: newPerson._id });
     }
   } catch (error) {
     res.status(500).json(error);
@@ -32,27 +23,19 @@ const createPerson = async (req, res) => {
 
 const editPerson = async (req, res) => {
   try {
-    const id = req.params.personId;
-    const { name, gender, dob, status }  = req.params;
+    const { id } = req.query;
+    if (!mongoose.isValidObjectId(id))
+      res.status(400).json({ message: 'Invalid person' });
+
+    const reqPerson = req.body;
     const personFound = await person.findOne({ _id: id });
 
-    if (personFound.name !== name) {
-        personFound.name = name;
-    }
-    
-    if (personFound.gender !== gender) {
-        personFound.gender = gender;
-    }
-    
-    if (personFound.dob !== dob) {
-        personFound.dob = dob;
-    }
+    if(!personFound)
+      return res.status(402).json({ message: "User found" })
 
-    if (personFound.status !== status) {
-        personFound.status = status;
-    }
+    personFound = {...reqPerson};
     await personFound.save();
-    res.status(200).json(personFound);
+    res.status(200).json({ message: "Success", person: personFound._id });
   } catch (error) {
     res.status(500).json(error);
   }
@@ -60,15 +43,16 @@ const editPerson = async (req, res) => {
 
 const deletePerson = async (req, res) => {
   try {
-    const id = req.params.personId;
+    const { id } = req.query;
     if (!mongoose.isValidObjectId(id))
-      res.status(400).json('Invalid person');
+      res.status(400).json({ message: 'Invalid person' });
 
     const personFound = await person.findOne({ _id: id });
-    if(!personFound) res.status(400).json('Invalid person');
+    if(!personFound) 
+      res.status(400).json({ message: 'Invalid person' });
 
     await person.deleteOne({ _id: id });
-    res.status(200).json('Delete complete');
+    res.status(200).json({ message: "Delete complete" });
   } catch (error) {
     res.status(500).json(error);
   }
@@ -76,14 +60,15 @@ const deletePerson = async (req, res) => {
 
 const getPersonDetail = async (req, res) => {
   try {
-    const id = req.params.personId;
+    const { id } = req.query;
     if (!mongoose.isValidObjectId(id))
-      res.status(400).json('Invalid person');
+      res.status(400).json({ message: 'Invalid person' });
 
     const personFound = await person.findOne({_id: id.toString(),});
-    if(!personFound)  res.status(400).json('Invalid person');
+    if(!personFound)  
+      res.status(400).json({ message: 'Invalid person' });
 
-    res.status(200).json(personFound._doc);
+    res.status(200).json({ message: "Success", person: personFound });
   } catch (error) {
     res.status(500).json(error);
   }

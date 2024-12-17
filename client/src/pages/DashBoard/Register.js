@@ -89,7 +89,7 @@ function Register(){
             })
             .then(data => {
                 if(data.message === 'Success')
-                    navigate("/dashboard");
+                    navigate(`/household_infor/:${data.household}`);
                 else alert(data.message);
             })
         })

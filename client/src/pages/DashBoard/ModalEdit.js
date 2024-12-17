@@ -1,20 +1,28 @@
-import React, { useState } from "react";
-import { Modal,Button,DatePicker,Form,Input,InputNumber,Radio,Select,Flex,Grid,Row,Col} from "antd";
+import React from "react";
+import { Modal, DatePicker, Form, Input, InputNumber, Radio, Select, Row, Col } from "antd";
 import "./style.css";
 import moment from 'moment';
 
 function ModalEdit(props){
     const [form] = Form.useForm();
-    const {isModalEdit,setModalEdit,updateInfor,personInfo} = props;
+    const { isModalEdit, setModalEdit, updateInfor, personInfo } = props;
     form.setFieldsValue(personInfo); 
-    const handleOk = async () => {
-        const values = await form.validateFields();
-        console.log(values);
-        updateInfor(values);
-        setModalEdit(false);
+    const handleOk = async (e) => {
+      const values = await form.validateFields();
+      updateInfor(values);
+      setModalEdit(false);
+
+      e.preventDefault();
+      const res = await fetch("http://localhost:8386/person/api/v1/edit", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify(values)
+      });
+      const data = await res.json();
+      if(data.message && data.message !== "Success")
+        alert(data.message);
     }
-     
-    
+
     return (
         <Modal
         title="Chỉnh sửa thông tin"
@@ -30,7 +38,7 @@ function ModalEdit(props){
         wrapperCol={{ span: 16 }}
         layout="horizontal"
         style={{ width: 800}}
-        initialValues={{...personInfo,dob: moment(personInfo.dob, "YYYY-MM-DD"),movingIn: moment(personInfo.movingIn, "YYYY-MM-DD")}}
+        initialValues={{...personInfo, dob: moment(personInfo?.dob, "YYYY-MM-DD"), movingIn: moment(personInfo?.movingIn, "YYYY-MM-DD")}}
       >
         <Row gutter={24}>
           <Col span={12}>
@@ -39,7 +47,7 @@ function ModalEdit(props){
             </Form.Item>
           </Col>
           <Col span={12}>
-            <Form.Item label="SĐT" name="phone">
+            <Form.Item label="SĐT" name="contact_phone">
               <Input />
             </Form.Item>
           </Col>
@@ -72,7 +80,7 @@ function ModalEdit(props){
           </Col>
 
           <Col span={12}>
-            <Form.Item label="Quốc tịch" name="nationality">
+            <Form.Item label="Quốc tịch" name="nation">
               <Input />
             </Form.Item>
           </Col>
@@ -90,13 +98,13 @@ function ModalEdit(props){
           </Col>
 
           <Col span={12}>
-            <Form.Item label="Số tầng" name="floornumber">
+            <Form.Item label="Số tầng" name="floors">
               <InputNumber />
             </Form.Item>
           </Col>
 
           <Col span={12}>
-            <Form.Item label="Số nhà" name="apartmentNumber">
+            <Form.Item label="Số căn hộ" name="numbers">
               <InputNumber />
             </Form.Item>
           </Col>
@@ -106,6 +114,7 @@ function ModalEdit(props){
               <Radio.Group>
                 <Radio value="Thường trú" >Thường trú</Radio>
                 <Radio value="Tạm trú">Tạm trú</Radio>
+                <Radio value="Thường trú" >Tạm vắng</Radio>
               </Radio.Group>
             </Form.Item>
           </Col>

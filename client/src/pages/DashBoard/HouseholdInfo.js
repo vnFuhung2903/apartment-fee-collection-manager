@@ -5,34 +5,63 @@ import { Space , Tag} from 'antd';
 import DescriptionPerson from './DescriptionPerson';
 import "./style.css"
 import ModalEdit from './ModalEdit';
+import { useSearchParams } from 'react-router-dom';
 
 
 
 const HouseholdInfo = () => {
   const [isModalEdit, setModalEdit] = useState(false)
-
+  const [searchParams] = useSearchParams();
+  const householdId = searchParams.get("household_id");
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [form] = Form.useForm();
-  const [editedOwnerInfo, setEditedOwnerInfo] = useState({
-    name: "Nguyễn Văn A",
-    floornumber: "2",
-    apartmentNumber: "202",
-    phone: "0987654321",
-    cic: "123456789012",
-    dob: "1979-05-12",
-    nationality: "Việt Nam",
-    gender: "Nam",
-    occupation: "Kỹ sư",
-    hometown: "Hà Nội",
-    ethnic: "Kinh",
-    status: "Thường trú",
-    movingIn: "2020-10-20"
-  });
+  const [data, setData] = useState(null);
+  const [editedOwnerInfo, setEditedOwnerInfo] = useState(null);
+
+  useEffect(() => {
+    fetch(`http://localhost:8386/household/api/v1/detail?householdId=${householdId}`, {
+      method: "GET",
+      headers: {"Content-Type": "application/json"}
+    })
+    .then((res) => {
+      return res.json();
+    })
+    .then(res => {
+      if(res.message === "Success") {
+        console.log('household', res);
+        const household = res.household;
+        setData(handleMembers(household.members));
+        const apartments = handleApartment(household.apartments);
+        setEditedOwnerInfo({...household.head, floors: apartments.floors, numbers: apartments.numbers });
+      }
+      else if(res.message)
+        alert(res.message);
+    })
+  }, [householdId]);
+
+  const handleApartment = (apartments) => {
+    const numbers = apartments.map(apartment => apartment.number);
+    const floors = apartments.map(apartment => (Number(apartment.number) / 100).toFixed(0));
+    return {
+      floors: floors,
+      numbers: numbers
+    }
+  }
+
+  const handleMembers = (members) => {
+    return members.map(member => ({
+      name: member.name,
+      dob: (new Date(member.dob)).toLocaleDateString('vi-VN'),
+      relation_to_head: member.relation_to_head,
+      contact_phone: member.contact_phone,
+      status: member.status,
+    }))
+  }
 
 
   {/*=========================Xử lí bảng thông tin người ở trong căn hộ =======================>*/}
      
-  const columns = [
+  const tableColumns = [
     {
       title: "Họ và tên",
       dataIndex: "name",
@@ -43,12 +72,12 @@ const HouseholdInfo = () => {
     },
     {
       title: "Quan hệ",
-      dataIndex: "relation_to_owner",
+      dataIndex: "relation_to_head",
       filters: [],
     },
     {
       title: "Số điện thoại",
-      dataIndex: "phone",
+      dataIndex: "contact_phone",
     },
     {
       title: "Trạng Thái",
@@ -70,79 +99,6 @@ const HouseholdInfo = () => {
     },
   ];
 
-  const residents = [
-    {
-      key: "1",
-      name: "Nguyễn Văn A",
-      phone: "0987654321",
-      cic: "123456789012",
-      dob: "1979-05-12",
-      relationship: "Chủ nhà",
-      nationality: "Việt Nam",
-      gender: "Nam",
-      occupation: "Kỹ sư",
-      hometown: "Hà Nội",
-      ethnic: "Kinh",
-      status: "Thường trú",
-    },
-    {
-      key: "2",
-      name: "Nguyễn Thị B",
-      phone: "0981234567",
-      cic: "123456789013",
-      dob: "1981-03-25",
-      relationship: "Vợ",
-      nationality: "Việt Nam",
-      gender: "Nữ",
-      occupation: "Giáo viên",
-      hometown: "Hải Phòng",
-      ethnic: "Kinh",
-      status: "Thường trú",
-    },
-    {
-      key: "3",
-      name: "Nguyễn Văn C",
-      phone: "0976543210",
-      cic: "123456789014",
-      dob: "2004-07-10",
-      relationship: "Con trai",
-      nationality: "Việt Nam",
-      gender: "Nam",
-      occupation: "Sinh viên",
-      hometown: "Hà Nội",
-      ethnic: "Kinh",
-      status: "Thường trú",
-    },
-    {
-      key: "4",
-      name: "Nguyễn Thị D",
-      phone: "0976123456",
-      cic: "123456789015",
-      dob: "2006-01-15",
-      relationship: "Con gái",
-      nationality: "Việt Nam",
-      gender: "Nữ",
-      occupation: "Học sinh",
-      hometown: "Hà Nội",
-      ethnic: "Kinh",
-      status: "Thường trú",
-    },
-  ];
-
-  const [data, setData] = useState(
-    residents.map((record) => {
-      return {
-        key: record.key,
-        name: record.name,
-        dob: record.dob,
-        relation_to_owner: record.relationship,
-        phone: record.phone,
-        status: record.status,
-        description: record,
-      };
-    })
-  );
-
   const defaultExpandable = {
     expandedRowRender: (record) => (
       <DescriptionPerson person={{ ...record.description }} />
@@ -157,9 +113,8 @@ const HouseholdInfo = () => {
   const [isDeleted,setIsDeleted] = useState(false);
 
   useEffect(()=>{
-      if(isDeleted){
+      if(data && isDeleted) {
         setData(data.filter((item) => !selectedRows.includes(item)));
-        console.log(data);
         setIsDeleted(false);
         setAppearDelete(false);
       }
@@ -188,8 +143,6 @@ const HouseholdInfo = () => {
       });
   };
 
-  const tableColumns = columns;
-
   const tableProps = {
     rowSelection: {
       onChange: handleRowSelectionChange,
@@ -209,40 +162,40 @@ const HouseholdInfo = () => {
       >
         <Descriptions column={3}>
           <Descriptions.Item label="Họ và tên">
-            {editedOwnerInfo.name}
+            {editedOwnerInfo?.name}
           </Descriptions.Item>
           <Descriptions.Item label="Số tầng">
-            {editedOwnerInfo.floornumber}
+            {editedOwnerInfo?.floors}
           </Descriptions.Item>
           <Descriptions.Item label="Số căn hộ">
-            {editedOwnerInfo.apartmentNumber}
+            {editedOwnerInfo?.numbers}
           </Descriptions.Item>
           <Descriptions.Item label="Số điện thoại">
-            {editedOwnerInfo.phone}
+            {editedOwnerInfo?.contact_phone}
           </Descriptions.Item>
           <Descriptions.Item label="CCCD">
-            {editedOwnerInfo.cic}
+            {editedOwnerInfo?.cic}
           </Descriptions.Item>
           <Descriptions.Item label="Ngày sinh">
-            {editedOwnerInfo.dob}
+            {(new Date(editedOwnerInfo?.dob)).toLocaleDateString('vi-VN')}
           </Descriptions.Item>
           <Descriptions.Item label="Quốc tịch">
-            {editedOwnerInfo.nationality}
+            {editedOwnerInfo?.nation}
           </Descriptions.Item>
           <Descriptions.Item label="Giới tính">
-            {editedOwnerInfo.gender}
+            {editedOwnerInfo?.gender}
           </Descriptions.Item>
           <Descriptions.Item label="Nghề Nghiệp">
-            {editedOwnerInfo.occupation}
+            {editedOwnerInfo?.occupation}
           </Descriptions.Item>
           <Descriptions.Item label="Quê quán">
-            {editedOwnerInfo.hometown}
+            {editedOwnerInfo?.hometown}
           </Descriptions.Item>
           <Descriptions.Item label="Dân tộc">
-            {editedOwnerInfo.ethnic}
+            {editedOwnerInfo?.ethnicity}
           </Descriptions.Item>
           <Descriptions.Item label="Trạng Thái">
-            {editedOwnerInfo.status}
+            {editedOwnerInfo?.status}
           </Descriptions.Item>
         </Descriptions>
       </Card>
@@ -258,7 +211,7 @@ const HouseholdInfo = () => {
           position: [top, bottom],
         }}
         columns={tableColumns}
-        dataSource={/*hasData ?*/ data}
+        dataSource={data}
       />
       </Card>
     </div>
