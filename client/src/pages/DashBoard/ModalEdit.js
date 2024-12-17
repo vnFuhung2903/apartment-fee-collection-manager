@@ -15,7 +15,7 @@ function ModalEdit(props){
           ...personInfo,
           dob: personInfo.dob ? moment(personInfo.dob, "YYYY-MM-DD") : null,
           movingIn: personInfo.movingIn ? moment(personInfo.movingIn, "YYYY-MM-DD") : null,
-          movingOut: personInfo.movingOut ?  moment(personInfo.movingOut, "YYYY-MM-DD") :null,
+          endTemporary: personInfo.endTemporary ? moment(personInfo.endTemporary, "YYYY-MM-DD") :null,
         });
       }
     }, [personInfo, form]);
@@ -145,7 +145,7 @@ function ModalEdit(props){
             </Form.Item>
           </Col>
           <Col span={12}>
-            <Form.Item label="Thời gian đi" name="movingOut">
+            <Form.Item label="Thời gian đi" name="endTemporary">
               <DatePicker format="YYYY-MM-DD" disabled = {!isMovingOut}/>
             </Form.Item>
           </Col>
