@@ -7,30 +7,33 @@ function ModalEdit(props){
     const [form] = Form.useForm();
     const {isModalEdit, onCancel, updateInfor, personInfo ={}} = props;
     const [isMovingOut, setIsMovingOut] = useState(personInfo?.status === "Thường trú"? false: true);
-    const isOwner = personInfo?.relationship === "Chủ Nhà" ? true : false;
+    const isOwner = !personInfo.relation_to_head ? true : false;
     useEffect(() => {
       if (personInfo) {
         form.setFieldsValue({
           ...personInfo,
-          dob: personInfo.dob ? (new Date(personInfo.dob)).toLocaleDateString('vi-VN') : null,
-          movingIn: personInfo.movingIn ? (new Date(personInfo.movingIn)).toLocaleDateString('vi-VN') : null,
-          movingOut: personInfo.movingOut ? (new Date(personInfo.movingOut)).toLocaleDateString('vi-VN') :null,
+          dob:   moment(personInfo?.dob, "DD-MM-YYYY") ,
+          movingIn: moment(personInfo?.movingIn, "DD-MM-YYYY") ,
+          movingOut: personInfo?.movingOut ? moment(personInfo.movingOut, "DD-MM-YYYY") : null,
         });
       }
     }, [personInfo, form]);
     const handleOk = async (e) => {
       const values = await form.validateFields();
-      updateInfor(values);
+      const updateValues = {...values,
+        _id: personInfo?._id,
+      }
+      updateInfor(updateValues);
       onCancel();
       e.preventDefault();
-      const res = await fetch("http://localhost:8386/person/api/v1/edit", {
-        method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify(values)
-      });
-      const data = await res.json();
-      if(data.message && data.message !== "Success")
-        alert(data.message);
+      // const res = await fetch("http://localhost:8386/person/api/v1/edit", {
+      //   method: "POST",
+      //   headers: {"Content-Type": "application/json"},
+      //   body: JSON.stringify(values)
+      // });
+      // const data = await res.json();
+      // if(data.message && data.message !== "Success")
+      //   alert(data.message);
     }
     const handleChangeStatus = (e) => {
       const {value} = e.target;
@@ -56,11 +59,12 @@ function ModalEdit(props){
         width={900}
         >
        <Form
+        form={form}
         labelCol={{ span: 10 }}
         wrapperCol={{ span: 16 }}
         layout="horizontal"
         style={{ width: 800}}
-        initialValues={{...personInfo, dob: moment(personInfo?.dob, "YYYY-MM-DD"), movingIn: moment(personInfo?.movingIn, "YYYY-MM-DD")}}
+        initialValues={{...personInfo, dob: moment(personInfo?.dob, "DD-MM-YYYY"), movingIn: moment(personInfo?.movingIn, "DD-MM-YYYY")}}
       >
         <Row gutter={24}>
           <Col span={10}>
@@ -114,7 +118,7 @@ function ModalEdit(props){
           </Col>
 
           <Col span={10}>
-            <Form.Item label="Dân tộc" name="ethnicity">
+            <Form.Item label="Dân tộc" name="religion">
               <Input />
             </Form.Item>
           </Col>
@@ -148,7 +152,7 @@ function ModalEdit(props){
             </Form.Item>
           </Col>
           {!isOwner && <Col span={10}>
-            <Form.Item label="Quan hệ" name="relationship">
+            <Form.Item label="Quan hệ" name="relation_to_head">
             <Select>
                 <Select.Option value="Con cái">Con cái</Select.Option>
                 <Select.Option value="Vợ chồng">Vợ chồng</Select.Option>

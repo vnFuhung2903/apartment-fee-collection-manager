@@ -3,7 +3,7 @@ import { Descriptions } from "antd";
 
 
 function DescriptionPerson(props) {
-  const { person } = props;
+  const {person} = props;
   return (
     <Descriptions column={3}>
              <Descriptions.Item label="Họ và tên">
@@ -19,7 +19,7 @@ function DescriptionPerson(props) {
              {(new Date(person.dob)).toLocaleDateString('vi-VN')}
              </Descriptions.Item>
              <Descriptions.Item label="Quốc tịch">
-               {person.nationality}
+               {person.nation}
              </Descriptions.Item>
              <Descriptions.Item label="Giới tính">
                {person.gender}
@@ -31,7 +31,7 @@ function DescriptionPerson(props) {
                {person.hometown}
              </Descriptions.Item>
              <Descriptions.Item label="Dân tộc">
-               {person.nation}
+               {person.religion}
              </Descriptions.Item>
              <Descriptions.Item label="Trạng Thái">
                {person.status}
@@ -39,7 +39,7 @@ function DescriptionPerson(props) {
              <Descriptions.Item label="Thời gian đến">
              {(new Date(person.movingIn)).toLocaleDateString('vi-VN')}
              </Descriptions.Item>
-             {person.movingOut && <Descriptions.Item label="Thời gian đi">{(new Date(person.movingIn)).toLocaleDateString('vi-VN')}</Descriptions.Item>}
+             {person.movingOut  && <Descriptions.Item label="Thời gian đi">{(new Date(person.movingOut)).toLocaleDateString('vi-VN')}</Descriptions.Item> }
     </Descriptions>
   );
 }

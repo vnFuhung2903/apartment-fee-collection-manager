@@ -51,7 +51,6 @@ const HouseholdInfo = () => {
   }
 
   const handleMember = (member) => {
-    console.log(member);
     return {
       key:member._id,
       name: member.name,
@@ -113,10 +112,11 @@ const HouseholdInfo = () => {
   const [isDeleted,setIsDeleted] = useState(false);
 
   const updateResidentInfo = (updatedInfo) => {
+    const value = handleMember(updatedInfo);
     setData(prev => {
-      const index = prev.findIndex((item) => item.key === updatedInfo.key);
+      const index = prev.findIndex((item) => item.key === value.key);
       const updatedData = [...prev];
-      updatedData[index] = handleMember(updatedInfo);
+      updatedData[index] = value;
       return updatedData;
     });
   };
