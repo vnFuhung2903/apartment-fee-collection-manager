@@ -27,8 +27,15 @@ module.exports.index = async (req,res) => {
 
 module.exports.getRemain = async (req, res) => {
     try {
-        const apartments = await apartment.find({ household: "" });
-        res.json(apartments);
+        const apartments = await apartment.find({ household: null });
+        const json = apartments.map(apt => {
+            return {
+                floor: (apt.number / 100).toFixed(0),
+                number: apt.number
+            }
+        });
+        
+        res.status(200).json(json);
     } catch (error) {
         res.status(500).json({ message:"Server Error" });
     }

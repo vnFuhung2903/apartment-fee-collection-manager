@@ -4,16 +4,7 @@ import { useNavigate } from "react-router-dom";
 
 function Register(){
     const navigate = useNavigate();
-    const [remain, setRemain] = useState([]);
-    //test
-     const remains = [
-        { floor: 1, room: 103 },
-        { floor: 1, room: 104 },
-        { floor: 2, room: 201 },
-        { floor: 2, room: 202 },
-        { floor: 3, room: 301 },
-        { floor: 3, room: 302 },
-    ];
+    const [remains, setRemains] = useState([])
     const [personalInfor, setPersonalInfor] = useState({
         name: "",
         cic: "",
@@ -22,8 +13,8 @@ function Register(){
         occupation: "",
         gender: "Nam",
         hometown: "",
-        ethnic: "",
-        phone: "",
+        ethnicity: "",
+        contact_phone: "",
         status: "Thường trú",
         movingIn:"",
         endTemporary:""
@@ -34,6 +25,8 @@ function Register(){
         floor: "",
         relationToOwner: ""
     });
+    const [availableFloors, setAvailableFloors] = useState([]);
+    const [availableRooms, setAvailableRooms] = useState([]);
 
     useEffect(() => {
         fetch("http://localhost:8386/apartments/api/v1/remains", {
@@ -41,14 +34,13 @@ function Register(){
             headers: {"Content-Type": "application/json"}
         })
         .then(res => {
-            if(res.status === 200)
-                return res.json();
+            return res.json();
         })
         .then(data => {
-            setRemain(data);
+            setRemains(data);
         });
-    })
-
+    }, [])
+    
     const handlePersonalChange = (e) => {
         e.preventDefault();
         const name = e.target.name;
@@ -58,7 +50,7 @@ function Register(){
             [name]: value
         });
     }
-
+    
     const handleHouseholdChange = (e) => {
         e.preventDefault();
         const name = e.target.name;
@@ -84,7 +76,7 @@ function Register(){
             fetch(url, {
                 method: "POST",
                 headers: {"Content-Type": "application/json"},
-                body: JSON.stringify({ ...householdInfor, id, contact: personalInfor.phone })
+                body: JSON.stringify({ ...householdInfor, id, contact_phone: personalInfor.contact_phone })
             })
             .then(res => {
                 return res.json()
@@ -97,13 +89,21 @@ function Register(){
         })
     }
 
-    const availableFloors = [...new Set(remains.map(item => item.floor))];
-    const availableRooms = remains.filter(item => item.floor === parseInt(householdInfor.floor, 10));
     const [status,setStatus] = useState("Thường trú");
     useEffect(()=>{
         setStatus(personalInfor.status);
     },[personalInfor])
 
+    useEffect(() => {
+        const data = remains?.map(apt => <option key={apt.floor} value={apt.floor}>{apt.floor}</option>)
+        setAvailableFloors(data);
+    }, [remains])
+
+    useEffect(() => {
+        const data = remains?.filter(apt => apt.floor === householdInfor.floor);
+        const rooms = data?.map(apt => apt.number);
+        setAvailableRooms(rooms);
+    }, [householdInfor.floor])
 
     return(
     <>
@@ -151,11 +151,11 @@ function Register(){
                     </div>
                     <div className="input-fields">
                         <label htmlFor="">Dân tộc</label>
-                        <input id="ethnic" name="ethnic" type="text" placeholder="" onChange={handlePersonalChange} required />
+                        <input id="ethnic" name="ethnicity" type="text" placeholder="" onChange={handlePersonalChange} required />
                     </div>
                     <div className="input-fields">
                         <label htmlFor="">Số điện thoại</label>
-                        <input id="phone" name="phone" type="number" placeholder="" onChange={handlePersonalChange} required />
+                        <input id="phone" name="contact_phone" type="text" placeholder="" onChange={handlePersonalChange} required />
                     </div>
                 </div>
             </div>
@@ -179,18 +179,16 @@ function Register(){
                     <div className="input-fields">
                          <label htmlFor="floor">Chọn tầng</label>
                           <select id="floor" name="floor" onChange={handleHouseholdChange} required>
-                             <option value="">Chọn tầng</option>
-                                {availableFloors.map(floor => (
-                                <option key={floor} value={floor}>{floor}</option>
-                                ))}
+                                <option value="">Chọn tầng</option>
+                                {availableFloors}
                           </select>
                     </div>
                     <div className="input-fields">
                           <label htmlFor="room">Chọn phòng</label>
-                          <select id="room" name="room" onChange={handleHouseholdChange} required>
+                          <select id="room" name="number" onChange={handleHouseholdChange} required>
                           <option value="">Chọn phòng</option>
                             {availableRooms.map(room => (
-                            <option key={room.room} value={room.room}>{room.room}</option>
+                            <option key={room} value={room}>{room}</option>
                              ))}
                           </select>
                     </div>

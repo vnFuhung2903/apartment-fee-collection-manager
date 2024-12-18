@@ -30,8 +30,7 @@ const HouseholdInfo = () => {
         console.log('household', res);
         const household = res.household;
         setData(household.members.map(member => handleMember(member)));
-        const apartments = handleApartment(household.apartments);
-        setEditedOwnerInfo({...household.head, floors: apartments.floors, numbers: apartments.numbers });
+        setEditedOwnerInfo({...household.head, floors: (household.apartments.number / 100).toFixed(0), numbers: household.apartments.number });
       }
       else if(res.message)
         alert(res.message);
@@ -40,15 +39,6 @@ const HouseholdInfo = () => {
       console.log(error);
     });
   }, [householdId]);
-
-  const handleApartment = (apartments) => {
-    const numbers = apartments.map(apartment => apartment.number);
-    const floors = apartments.map(apartment => (Number(apartment.number) / 100).toFixed(0));
-    return {
-      floors: floors,
-      numbers: numbers
-    }
-  }
 
   const handleMember = (member) => {
     return {
@@ -112,10 +102,11 @@ const HouseholdInfo = () => {
   const [isDeleted,setIsDeleted] = useState(false);
 
   const updateResidentInfo = (updatedInfo) => {
+    const value = handleMember(updatedInfo);
     setData(prev => {
-      const index = prev.findIndex((item) => item._id === updatedInfo._id);
+      const index = prev.findIndex((item) => item._id === value._id);
       const updatedData = [...prev];
-      updatedData[index] = handleMember(updatedInfo);
+      updatedData[index] = value;
       return updatedData;
     });
   };

@@ -6,10 +6,10 @@ import './style.css'
 
 export default function PersonalProfile() {
   const [data, setData] = useState({
-    name: "Nguyễn Văn A",
+    fullname: "Nguyễn Văn A",
     email: "ANV@gmail.com",
-    birth: dayjs("31/10/2004", "DD/MM/YYYY"),
-    phone: "0987654321",
+    dob: dayjs("31/10/2004", "DD/MM/YYYY"),
+    contact_phone: "0987654321",
     address: "Hai Bà Trưng, Hà Nội"
   })
 
@@ -36,7 +36,7 @@ export default function PersonalProfile() {
                   <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="Admin" className="rounded-circle" width="150"/>
                   <div className="mt-3">
                     <h4>Admin</h4>
-                    <p>{data.name}</p>
+                    <p>{data.fullname}</p>
                     <p>Quản trị viên</p>
                     <Link to="/password" className="btn">Đổi mật khẩu</Link>
                   </div>
@@ -50,7 +50,7 @@ export default function PersonalProfile() {
                 <div className="card-body">
                   <Form.Item label="Họ và tên:">
                     <div className="row">
-                      <Input value={data.name} onChange={(e) => handleChange("name", e.target.value)}/>
+                      <Input value={data.fullname} onChange={(e) => handleChange("fullname", e.target.value)}/>
                     </div>
                   </Form.Item>
                   <hr/>
@@ -62,13 +62,13 @@ export default function PersonalProfile() {
                   <hr/>
                   <Form.Item label="Ngày sinh:">
                     <div className="row">
-                      <DatePicker value={data.birth} onChange={(date) => handleChange("birth", date)} format="DD/MM/YYYY"/>
+                      <DatePicker value={data.dob} onChange={(date) => handleChange("dob", date)} format="DD/MM/YYYY"/>
                     </div>
                   </Form.Item>
                   <hr/>
                   <Form.Item label="Số điện thoại:">
                     <div className="row">
-                      <Input value={data.phone} onChange={(e) => handleChange("phone", e.target.value)}/>
+                      <Input value={data.contact_phone} onChange={(e) => handleChange("contact_phone", e.target.value)}/>
                     </div>
                   </Form.Item>
                   <hr/>

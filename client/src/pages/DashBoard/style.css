@@ -306,3 +306,6 @@ label{
   margin-right: 16px !important;
   margin-bottom: 8px !important;
 }
+:where(.css-dev-only-do-not-override-1x0dypw).ant-table-wrapper table tr th.ant-table-selection-column, :where(.css-dev-only-do-not-override-1x0dypw).ant-table-wrapper table tr td.ant-table-selection-column, :where(.css-dev-only-do-not-override-1x0dypw).ant-table-wrapper .ant-table-selection-column {
+  padding-top: 40px;
+}
