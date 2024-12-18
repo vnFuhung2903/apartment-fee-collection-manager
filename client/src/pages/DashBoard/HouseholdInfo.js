@@ -15,7 +15,11 @@ const HouseholdInfo = () => {
   const [data, setData] = useState(null);
   const [editedOwnerInfo, setEditedOwnerInfo] = useState(null);
   const [selectedPerson, setSelectedPerson] = useState(null);
-
+  const [selectedRows, setSelectedRows] = useState([]);
+  const top = "none";
+  const bottom = "bottomRight";
+  const [appearDelete, setAppearDelete] = useState(false);
+  const [isDeleted,setIsDeleted] = useState(false);
 
   useEffect(() => {
     fetch(`http://localhost:8386/household/api/v1/detail?householdId=${householdId}`, {
@@ -93,13 +97,6 @@ const HouseholdInfo = () => {
       ),
     },
   ];
-
-
-  const [selectedRows, setSelectedRows] = useState([]);
-  const top = "none";
-  const bottom = "bottomRight";
-  const [appearDelete, setAppearDelete] = useState(false);
-  const [isDeleted,setIsDeleted] = useState(false);
 
   const updateResidentInfo = (updatedInfo) => {
     const value = handleMember(updatedInfo);
