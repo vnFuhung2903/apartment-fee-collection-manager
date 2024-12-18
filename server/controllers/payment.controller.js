@@ -302,7 +302,10 @@ module.exports.autoGeneratePayments = async () => {
     const mandatoryFees = await Fee.find({ status: "Bắt buộc" });
 
     for (const fee of mandatoryFees) {
-      const households = await Household.find({}, "_id motobikes cars apartments");
+      const households = await Household.find({}, "_id motobikes cars").populate({
+        path: "apartments",
+        select: "totalArea",
+      });
 
       const payments = households.map((household) => {
         let count = 0;
@@ -311,7 +314,9 @@ module.exports.autoGeneratePayments = async () => {
         } else if (fee.name === "Phí gửi ô tô") {
           count = household.cars.length;
         } else {
-          count = household.apartments.length;
+          count = household.apartments && Array.isArray(household.apartments)
+            ? household.apartments.reduce((total, apartment) => total + (apartment.totalArea || 0), 0)
+            : 0;
         }
 
         return {

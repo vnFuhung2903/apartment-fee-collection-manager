@@ -45,12 +45,18 @@ module.exports.addFee = async (req, res) => {
 
     let householdsToAddPayment = [];
     if (status === "Bắt buộc") {
-      householdsToAddPayment = await Household.find({}, "_id motobikes cars apartments");
+      householdsToAddPayment = await Household.find({}, "_id motobikes cars").populate({
+        path: "apartments",
+        select: "totalArea",
+      });
     } else if (status === "Không bắt buộc" && households) {
       householdsToAddPayment = await Household.find(
         { _id: { $in: households } },
-        "_id motobikes cars apartments"
-      );
+        "_id motobikes cars"
+      ).populate({
+        path: "apartments",
+        select: "totalArea",
+      });
     }
 
     const payments = householdsToAddPayment.map((household) => {
@@ -60,7 +66,9 @@ module.exports.addFee = async (req, res) => {
       } else if (name === "Phí gửi ô tô") {
         count = household.cars.length;
       } else {
-        count = household.apartments.length;
+        count = household.apartments && Array.isArray(household.apartments)
+            ? household.apartments.reduce((total, apartment) => total + (apartment.totalArea || 0), 0)
+            : 0;
       }
 
       return {
