@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Form, Input, message, DatePicker } from 'antd'
 import { Link } from 'react-router-dom';
 import dayjs from 'dayjs';
@@ -6,15 +6,44 @@ import './style.css'
 
 export default function PersonalProfile() {
   const [data, setData] = useState({
-    fullname: "Nguyễn Văn A",
-    email: "ANV@gmail.com",
-    dob: dayjs("31/10/2004", "DD/MM/YYYY"),
-    contact_phone: "0987654321",
-    address: "Hai Bà Trưng, Hà Nội"
-  })
+    fullname: "",
+    email: "",
+    dob: "",
+    contact_phone: "",
+    address: ""
+  });
+
+  useEffect(() => {
+    fetch("http://localhost:8386/auth/api/v1/profile", {
+      method: "GET",
+      headers: {"Content-Type": "application/json"},
+      credentials: "include"
+    })
+    .then((res) => {
+      return res.json();
+    })
+    .then((data) => {
+      setData(data);
+    })
+  }, [])
 
   const handleClick = () => {
-    message.success("Cập nhật thông tin thành công");
+    fetch("http://localhost:8386/auth/api/v1/edit", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify(data),
+      credentials: "include"
+    })
+    .then((res) => {
+      return res.json();
+    })
+    .then((data) => {
+      if(data.message && data.message === "Success") {
+        message.success("Cập nhật thông tin thành công");
+        setData(data.profile);
+      } else if (data.message)
+        alert(data.message);
+    })
   }
 
   const handleChange = (field, value) => {
@@ -23,6 +52,7 @@ export default function PersonalProfile() {
       [field]: value,
     });
   };
+
   return (
     <>
     <div className="container">
@@ -62,7 +92,7 @@ export default function PersonalProfile() {
                   <hr/>
                   <Form.Item label="Ngày sinh:">
                     <div className="row">
-                      <DatePicker value={data.dob} onChange={(date) => handleChange("dob", date)} format="DD/MM/YYYY"/>
+                      <DatePicker value={dayjs(new Date(data.dob))} onChange={(date) => handleChange("dob", date.toDate())} format="DD/MM/YYYY"/>
                     </div>
                   </Form.Item>
                   <hr/>

@@ -72,4 +72,32 @@ const changePassword = async (req, res) => {
   }
 };
 
-module.exports = { signIn, signUp, changePassword };
+const getProfile = async (req, res) => {
+  try {
+    const userId = req.cookies.token;
+    const userFound = await user.findOne({ _id: userId });
+    const { password, _id, ...json } = userFound._doc;
+    res.status(200).json(json);
+  } catch (error) {
+    res.status(500).json(error);
+  }
+}
+
+const editProfile = async (req, res) => {
+  try {
+    const reqProfile = req.body;
+    const userId = req.cookies.token;
+    let userFound = await user.findOne({ _id: userId });
+    
+    Object.keys(reqProfile).forEach(key => {
+      userFound[key] = reqProfile[key];
+    });
+    const { password, _id, ...json } = userFound._doc;
+    await userFound.save();
+    res.status(200).json({ message: "Success", profile: json });
+  } catch (error) {
+    res.status(500).json(error);
+  }
+}
+
+module.exports = { signIn, signUp, changePassword, getProfile, editProfile };
