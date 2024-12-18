@@ -116,7 +116,7 @@ function FeeList() {
                     <td>{fee.due} Tháng</td>
                     <td>{fee.status}</td>
                     <td>{fee.count}</td>
-                    <td>
+                    <td style={{maxWidth: '80px'}}>
                       <EditFee item={fee} onReload={handleReload}/>
                       <button className="btn-details delete-icon" onClick={() => handleDelete(fee._id)}><CloseOutlined /></button>
                     </td>
