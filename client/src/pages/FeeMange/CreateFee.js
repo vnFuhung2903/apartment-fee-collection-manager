@@ -113,7 +113,7 @@ function CreateFee(props) {
     <>
       <button className="btn" onClick={() => showModal()}>Thêm loại phí</button>
       <Modal
-        title="Chỉnh sửa thông tin"
+        title="Thêm loại phí:"
         open={isModalVisible}
         //onOk={handleOk}
         onCancel={handleCancel}
@@ -127,7 +127,7 @@ function CreateFee(props) {
             name="feeName"
             rules={[{ required: true, message: "Bắt buộc!" }]}
           >
-            <Input />
+            <Input style={{ width: '200%' }}/>
           </Form.Item>
 
           <Form.Item
@@ -138,7 +138,7 @@ function CreateFee(props) {
             <InputNumber 
               formatter={(value) => `${Number(value).toLocaleString("vi-VN")}`} 
               parser={(value) => value.replace(/\D/g, '')}
-              style={{ width: "auto", maxWidth: '100%' }}
+              style={{ width: "auto", maxWidth: '100%', width: '150%' }}
             />
           </Form.Item>
 
@@ -155,7 +155,7 @@ function CreateFee(props) {
             name="status"
             rules={[{ required: true, message: "Bắt buộc!" }]}
           >
-            <Select placeholder="Chọn trạng thái" onChange={handleStatusChange}>
+            <Select placeholder="Chọn trạng thái" onChange={handleStatusChange} style={{width: "150%"}}>
               <Select.Option value="required">Bắt buộc</Select.Option>
               <Select.Option value="not_required">Không bắt buộc</Select.Option>
             </Select>
@@ -175,6 +175,7 @@ function CreateFee(props) {
                 disabled={isMandatory}
                 value={checkedList}
                 onChange={handleChange}
+                style={{width: '150%'}}
               >
                 {households.map((option) => (
                   <Select.Option key={option.value} value={option.id}>
@@ -184,8 +185,8 @@ function CreateFee(props) {
               </Select>
             )}
           </Form.Item>
-          <Form.Item>
-            <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+          <Form.Item style={{ display: 'flex', justifyContent: 'flex-end' }}>
+            <div>
               <Button onClick={handleCancel} style={{ marginRight: 8 }}>
                 Hủy
               </Button>
