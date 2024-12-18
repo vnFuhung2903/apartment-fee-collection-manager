@@ -73,7 +73,18 @@ function VehicleMange(){
               "Content-Type": "application/json",
             },
           }); 
-          window.location.reload()
+          if (response.status === 200) {
+            const fetchVehicles = async () => {
+              try {
+                const response = await axios.get("http://localhost:8386/vehicles/api/v2/vehicles");
+                setVehicles(response.data); 
+              } catch (error) {
+                console.error("Error fetching residents data:", error);
+              }
+            };
+  
+            fetchVehicles();
+          }
         } catch (error) {
             console.error("Error fetching residents data:", error);
         }
