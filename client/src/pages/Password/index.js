@@ -71,11 +71,15 @@ function Password(){
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (check) {
-      dispatch(changePassword(oldPassword, newPassword, navigate));
-    } else {
-      message.error("Chưa thoả mãn yêu cầu!");
+    if (!isNewValid) {
+      message.error("Mật khẩu mới không hợp lệ. Vui lòng kiểm tra lại yêu cầu.");
+      return;
     }
+    if (!check) {
+      message.error("Mật khẩu xác nhận không khớp.");
+      return;
+    }
+    dispatch(changePassword(oldPassword, newPassword, navigate));
   };
 
   return(
