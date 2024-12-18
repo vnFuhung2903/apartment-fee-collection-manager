@@ -28,6 +28,7 @@ function VehicleMange(){
     })),
   ];
 
+
   const [filters, setFilters] = useState({
     ownName: null, 
     plate: null,
@@ -52,7 +53,7 @@ function VehicleMange(){
       });
   }, [dataList, filters]);
   
-  const handleDelete = async (vehicle, ownerIndex) => {
+  const handleDelete = async (vehicle) => {
     Modal.confirm({
       title: "Xác nhận xóa",
       content: "Bạn có chắc chắn muốn xóa loại phí này không?",
@@ -61,7 +62,7 @@ function VehicleMange(){
       cancelText: "Hủy",
       onOk: async () => {
         try {
-          const response = await axios.post("http://localhost:8386/vehicles/api/v2/delete", {...vehicle, household_id: ownerIndex}, {
+          const response = await axios.post("http://localhost:8386/vehicles/api/v2/delete", {...vehicle}, {
             headers: {
               "Content-Type": "application/json",
             },
