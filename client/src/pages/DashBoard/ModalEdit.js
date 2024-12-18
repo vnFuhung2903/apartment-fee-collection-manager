@@ -1,10 +1,9 @@
-import React ,{useState,useEffect} from "react";
+import { useState, useEffect } from "react";
 import { Modal, DatePicker, Form, Input, InputNumber, Radio, Select, Row, Col } from "antd";
 import "./style.css";
 import moment from "moment";
-import { useSearchParams } from "react-router-dom";
 
-function ModalEdit (props){
+function ModalEdit (props) {
     const [form] = Form.useForm();
     const {householdId, isModalEdit, onCancel, updateInfor, personInfo ={}} = props;
     const [isMovingOut, setIsMovingOut] = useState(personInfo?.status === "Thường trú" ? false : true);
@@ -13,21 +12,32 @@ function ModalEdit (props){
       if (personInfo) {
         form.setFieldsValue({
           ...personInfo,
-          dob: personInfo.dob ? moment(personInfo.dob, "YYYY-MM-DD") : null,
-          movingIn: personInfo.movingIn ? moment(personInfo.movingIn, "YYYY-MM-DD") : null,
-          endTemporary: personInfo.endTemporary && isMovingOut ? moment(personInfo.endTemporary, "YYYY-MM-DD") : null,
+          dob: moment((new Date(personInfo?.dob)).toLocaleDateString('vi-VN'), "DD-MM-YYYY") ,
+          movingIn: moment((new Date(personInfo?.movingIn)).toLocaleDateString('vi-VN'), "DD-MM-YYYY") ,
+          endTemporary: isMovingOut ? moment((new Date(personInfo?.endTemporary)).toLocaleDateString('vi-VN'), "DD-MM-YYYY") : null,
         });
       }
     }, [personInfo, form]);
+
     const handleOk = async (e) => {
       const values = await form.validateFields();
-      updateInfor(values);
+      const updateValues = {
+        ...values,
+        _id: personInfo?._id,
+        dob: values.dob.format(),
+        floors: (values.numbers / 100).toFixed(0),
+        movingIn: values.movingIn.format(),
+        endTemporary: values.endTemporary ? values.endTemporary.format() : null
+      }
+      console.log(updateValues);
+
+      updateInfor(updateValues);
       onCancel();
       e.preventDefault();
       let res = await fetch(`http://localhost:8386/person/api/v1/edit?id=${personInfo._id}`, {
         method: "POST",
         headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({...values, householdId: householdId})
+        body: JSON.stringify({ ...updateValues, householdId: householdId })
       });
       const data = await res.json();
       if(data.message && data.message !== "Success")
@@ -67,15 +77,16 @@ function ModalEdit (props){
         width={900}
         >
        <Form
+        form={form}
         labelCol={{ span: 10 }}
         wrapperCol={{ span: 16 }}
         layout="horizontal"
         style={{ width: 800}}
         initialValues={{
-          ...personInfo, 
-          dob: personInfo.dob ? moment(personInfo.dob, "YYYY-MM-DD") : null,
-          movingIn: personInfo.movingIn ? moment(personInfo.movingIn, "YYYY-MM-DD") : null,
-          endTemporary: personInfo.endTemporary ? moment(personInfo.endTemporary, "YYYY-MM-DD") : null
+          ...personInfo,
+          dob: moment((new Date(personInfo?.dob)).toLocaleDateString('vi-VN'), "DD-MM-YYYY"),
+          movingIn: moment((new Date(personInfo?.movingIn)).toLocaleDateString('vi-VN'), "DD-MM-YYYY"),
+          endTemporary: isMovingOut ? moment((new Date(personInfo?.endTemporary)).toLocaleDateString('vi-VN'), "DD-MM-YYYY") : null
         }}
       >
         <Row gutter={24}>
@@ -98,7 +109,7 @@ function ModalEdit (props){
 
           <Col span={12}>
             <Form.Item label="Ngày sinh" name="dob">
-              <DatePicker format="YYYY-MM-DD" />
+              <DatePicker format="DD-MM-YYYY" />
             </Form.Item>
           </Col>
 
@@ -136,7 +147,7 @@ function ModalEdit (props){
           </Col>
           {isOwner && <Col span={12}>
             <Form.Item label="Số tầng" name="floors">
-              <InputNumber />
+              <InputNumber disabled={true} />
             </Form.Item>
           </Col>}
           {isOwner && <Col span={10}>
@@ -155,12 +166,12 @@ function ModalEdit (props){
           </Col>
           <Col span={10}>
             <Form.Item label="Thời gian đến" name="movingIn">
-              <DatePicker format="YYYY-MM-DD" />
+              <DatePicker format="DD-MM-YYYY" />
             </Form.Item>
           </Col>
           <Col span={12}>
             <Form.Item label="Thời gian đi" name="endTemporary">
-              <DatePicker format="YYYY-MM-DD" disabled = {!isMovingOut}/>
+              <DatePicker format="DD-MM-YYYY" disabled = {!isMovingOut}/>
             </Form.Item>
           </Col>
           {!isOwner && <Col span={10}>

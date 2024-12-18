@@ -12,8 +12,7 @@ const createPerson = async (req, res) => {
       res.status(402).json({ message: "User found" });
     else {
       const newPerson = new person({
-        ...reqPerson,
-        movingIn: Date.now(),
+        ...reqPerson
       });
       await newPerson.save();
       res.status(200).json({ message: "Success", person: newPerson._id });
@@ -27,24 +26,41 @@ const editPerson = async (req, res) => {
   try {
     const { id } = req.query;
     if (!mongoose.isValidObjectId(id))
-      res.status(400).json({ message: 'Invalid person' });
+      return res.status(402).json({ message: 'Invalid person' });
 
-    const reqPerson = req.body;
-    const personFound = await person.findOne({ _id: id });
+    const { householdId, numbers, floors, ...reqPerson } = req.body;
+    let personFound = await person.findOne({ _id: id });
 
     if(!personFound)
-      return res.status(402).json({ message: "User found" })
-
-    personFound = new person(reqPerson);
+      return res.status(402).json({ message: "Invalid person" });
+    Object.keys(reqPerson).forEach(key => {
+      personFound[key] = reqPerson[key];
+    });
     await personFound.save();
 
-    householdFound = await household.findOne({ _id: reqPerson.householdId });
-    const apartmentFound = await apartment.findOne({ number: reqPerson.numbers })
+    if(numbers) {
+      if (!mongoose.isValidObjectId(householdId))
+        return res.status(402).json({ message: 'Invalid household' });
+      let householdFound = await household.findOne({ _id: householdId });
 
-    // WARNING: only 1 apartment case
-    householdFound.apartments = [apartmentFound._id];
-
-    await householdFound.save();
+      // WARNING: only 1 apartment case
+      if(floors !== (numbers / 100).toFixed(0))
+        return res.status(409).json({ message: "Apartment's not in the same floor" });
+      console.log(householdFound.apartments[0]);
+      let [apartmentFound, oldApartment] = await Promise.all([ apartment.findOne({ number: Number(numbers) }), apartment.findOne({ _id: householdFound.apartments[0] }) ]);
+      if(!apartmentFound) {
+        apartmentFound = new apartment({
+          household: householdId,
+          number: Number(numbers),
+          type: "Căn hộ chung cư",
+          totalArea: 85
+        })
+      } else apartmentFound.household = householdId;
+      
+      householdFound.apartments[0] = apartmentFound._id;
+      oldApartment.household = null;
+      await Promise.all([householdFound.save(), oldApartment.save(), apartmentFound.save()]);
+    }
     res.status(200).json({ message: "Success", person: personFound._id });
   } catch (error) {
     res.status(500).json(error);

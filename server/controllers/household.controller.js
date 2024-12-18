@@ -27,17 +27,27 @@ const getHouseholds = async (req, res) => {
 
 const createHousehold = async (req, res) => {
   try {
-    const { number, id, contact } = req.body;
-    const apartmentFound = await apartment.findOne({ number: number });
-    if(apartmentFound.household)
+    const { number, id, contact_phone, ...householdInfo } = req.body;
+    let apartmentFound = await apartment.findOne({ number: number });
+    if(apartmentFound && apartmentFound.household)
       res.status(402).json({ message: "In used" });
     else {
+      if(!apartmentFound) {
+        apartmentFound = new apartment({
+          household: null,
+          number: Number(number),
+          type: "Căn hộ chung cư",
+          totalArea: 85
+        })
+      }
+
       const newHousehold = new household({
         head: id,
-        apartments: [apartmentFound],
-        contact_phone: contact,
+        apartments: [apartmentFound._id],
+        contact_phone,
         members: []
       });
+
       await newHousehold.save();
       apartmentFound.household = newHousehold._id;
       await apartmentFound.save();
@@ -125,7 +135,9 @@ const getHouseholdDetail = async (req, res) => {
     [json.head, mem, json.apartments] = await Promise.all([
       person.findOne({ _id: householdFound.head }),
       Promise.all(householdFound.members.map(member => person.findOne({ _id: member.member_id }))),
-      Promise.all(householdFound.apartments.map(ID => apartment.findOne({ _id: ID }))),
+
+      // WARNING: only 1 apartment case
+      apartment.findOne({ _id: householdFound.apartments[0] })
     ]);
 
     json.members = json.members.map((_, i) => ({
@@ -162,17 +174,37 @@ const editHouseholdMember = async (req, res) => {
 
 const addNewMember = async (req, res) => {
   try {
-    const { number, id, relationToOwner } = req.body;
+    const { number, id, relationToOwner, ...householdInfo } = req.body;
     const apartmentFound = await apartment.findOne({ number: number });
     if(!apartmentFound.household)
       return res.status(402).json({ message: "Invalid apartment" });
     const householdFound = await household.findOne({ _id: apartmentFound.household });
     if(!householdFound) 
       return res.status(402).json({ message: 'Invalid household' });
-
+    if(householdFound.members.includes({ member_id: id, relation_to_head: relationToOwner }))
+      return res.status(407).json({ message: "Person is already in household" })
     householdFound.members.push({ member_id: id, relation_to_head: relationToOwner });
     await householdFound.save();
     return res.status(200).json({ message: "Success", household: householdFound._id });
+  } catch (error) {
+    res.status(500).json(error);
+  }
+};
+
+const deleteHouseholdMember = async (req, res) => {
+  try {
+    const id = req.query;
+    if (!mongoose.isValidObjectId(id))
+      res.status(400).json({ message: 'Invalid household' });
+
+    const householdFound = await household.findOne({ _id: id });
+    if(!householdFound) 
+      res.status(400).json({ message: 'Invalid household' });
+  
+    await Promise.all(householdFound.members.map(per => person.deleteOne(per.member_id)));
+    householdFound.members = [];
+    await householdFound.save();
+    res.status(200).json({ message: "Success", household: householdFound._id });
   } catch (error) {
     res.status(500).json(error);
   }
@@ -185,5 +217,6 @@ module.exports = {
   deleteHousehold,
   getHouseholdDetail,
   addNewMember,
-  editHouseholdMember
+  editHouseholdMember,
+  deleteHouseholdMember
 };

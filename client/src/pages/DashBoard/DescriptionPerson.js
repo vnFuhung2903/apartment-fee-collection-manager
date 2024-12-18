@@ -3,7 +3,7 @@ import { Descriptions } from "antd";
 
 
 function DescriptionPerson(props) {
-  const { person } = props;
+  const {person} = props;
   return (
     <Descriptions column={3}>
         <Descriptions.Item label="Họ và tên">
