@@ -1,7 +1,7 @@
 import React ,{useState,useEffect} from "react";
 import { Modal, DatePicker, Form, Input, InputNumber, Radio, Select, Row, Col } from "antd";
 import "./style.css";
-import moment from "moment";
+
 
 function ModalEdit(props){
     const [form] = Form.useForm();
@@ -12,9 +12,9 @@ function ModalEdit(props){
       if (personInfo) {
         form.setFieldsValue({
           ...personInfo,
-          dob:   moment(personInfo?.dob, "DD-MM-YYYY") ,
-          movingIn: moment(personInfo?.movingIn, "DD-MM-YYYY") ,
-          movingOut: personInfo?.movingOut ? moment(personInfo.movingOut, "DD-MM-YYYY") : null,
+          dob:   personInfo?.dob,
+          movingIn: personInfo?.movingIn, 
+          movingOut: personInfo?.movingOut,
         });
       }
     }, [personInfo, form]);
@@ -26,14 +26,14 @@ function ModalEdit(props){
       updateInfor(updateValues);
       onCancel();
       e.preventDefault();
-      // const res = await fetch("http://localhost:8386/person/api/v1/edit", {
-      //   method: "POST",
-      //   headers: {"Content-Type": "application/json"},
-      //   body: JSON.stringify(values)
-      // });
-      // const data = await res.json();
-      // if(data.message && data.message !== "Success")
-      //   alert(data.message);
+      const res = await fetch("http://localhost:8386/person/api/v1/edit", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify(values)
+      });
+      const data = await res.json();
+      if(data.message && data.message !== "Success")
+        alert(data.message);
     }
     const handleChangeStatus = (e) => {
       const {value} = e.target;
@@ -64,7 +64,7 @@ function ModalEdit(props){
         wrapperCol={{ span: 16 }}
         layout="horizontal"
         style={{ width: 800}}
-        initialValues={{...personInfo, dob: moment(personInfo?.dob, "DD-MM-YYYY"), movingIn: moment(personInfo?.movingIn, "DD-MM-YYYY")}}
+        initialValues={{...personInfo, dob: personInfo?.dob, movingIn: personInfo?.movingIn}}
       >
         <Row gutter={24}>
           <Col span={10}>
@@ -118,7 +118,7 @@ function ModalEdit(props){
           </Col>
 
           <Col span={10}>
-            <Form.Item label="Dân tộc" name="religion">
+            <Form.Item label="Dân tộc" name="ethnicity">
               <Input />
             </Form.Item>
           </Col>

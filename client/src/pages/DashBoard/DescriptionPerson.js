@@ -31,7 +31,7 @@ function DescriptionPerson(props) {
                {person.hometown}
              </Descriptions.Item>
              <Descriptions.Item label="Dân tộc">
-               {person.religion}
+               {person.ethnicity}
              </Descriptions.Item>
              <Descriptions.Item label="Trạng Thái">
                {person.status}
