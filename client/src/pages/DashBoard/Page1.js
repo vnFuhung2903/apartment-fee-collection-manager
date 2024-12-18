@@ -1,11 +1,11 @@
 import "./style.css"
 import customer01 from "../Layout/assets/imgs/customer01.jpg"
 import { Link } from "react-router-dom"
-import  React,{ useEffect,useMemo, useState,useMessage } from "react"
+import  React,{ useEffect,useMemo, useState,} from "react"
 import { useSelector, useDispatch } from "react-redux";
 import { fetchDashboardData, fetchHouseholds,setHouseholds } from "../../actions";
-import { Tag,Form,Row,Col,Select ,Button,Modal,message} from "antd";
-import {ExclamationCircleOutlined} from '@ant-design/icons';
+import { Form,Row,Col,Select ,Button,Modal,message} from "antd";
+import {ExclamationCircleOutlined,ExportOutlined} from '@ant-design/icons';
 function Page1(){
     const dispatch = useDispatch();
     const {
@@ -16,7 +16,6 @@ function Page1(){
         numTemporary,
         numAbsence,
     } = useSelector((state) => state.page1Reducer);
-
     useEffect(() => {
         dispatch(fetchHouseholds());
         dispatch(fetchDashboardData());
@@ -60,32 +59,20 @@ function Page1(){
             });
         },[households,filters]);
     
-    const [messageApi] = message.useMessage();
-    const key = 'delete';
 
-    const openMessage = () => {
-    messageApi.open({
-      key,
-      type: 'loading',
-      content: 'Loading...',
-    });
-    setTimeout(() => {
-      messageApi.open({
-        key,
-        type: 'success',
-        content: 'Đã xóa!',
-        duration: 2,
-      });
-    }, 1000);
-   };  
-    const handleDelete = (householdID) => {
-        console.log(householdID);
-        const updatedHouseholds = households.filter((household) => household._id !== householdID);
-        console.log(updatedHouseholds);
+    const handleDelete = async (householdID) => {
+        const updatedHouseholds = households.filter((household) => household.id !== householdID);
+        //fetch api delete...
+        message.loading({ content: 'Deleting...', key: 'delete' });
+
+        // Perform the API call to delete the household
+        // Dispatch the updated list to the store
         dispatch(setHouseholds(updatedHouseholds));
-        openMessage();
-    }
-    const handleConfirm = (e) => {
+
+        // Show a success message
+        message.success({ content: 'Xóa thành công!', key: 'delete' });
+        }
+    const handleConfirm = (id) => {
       Modal.confirm({
           title : "Confirm",
           icon : <ExclamationCircleOutlined />,
@@ -93,7 +80,7 @@ function Page1(){
           okText:"Xác nhận",
           cancelText:"Hủy",
           centered: true,
-          onOk: handleDelete(e.target.value),
+          onOk: () => {handleDelete(id)},
       });
   };
 
@@ -166,7 +153,7 @@ function Page1(){
                             lg: 32,
                         }}
                         >
-                            <Col className="gutter-row" span={10}>
+                            <Col className="gutter-row" span={7}>
                                 <Form.Item label="Tên chủ hộ">
                                     <Select
                                         showSearch
@@ -220,17 +207,13 @@ function Page1(){
                             <td> { household.contact } </td>
                             <td> { household.floors } </td>
                             <td> { household.numbers } </td>
-                            <td>
-                                <Tag className="status" color={household.status === "Thường trú" ? "orange" : " red"}>
-                                        {household.status}
-                                </Tag> 
-                            </td>
-                            <td><span className="status">
-                                <Link to={`/household_infor?household_id=${household.id}`}  onClick={() => {localStorage.setItem("household_id", household._id);}}>
-                                    Mở rộng
+                            <td>{household.status}</td>
+                            <td><span>
+                                <Link to={`/household_infor?household_id=${household.id}`}>
+                                    <ExportOutlined className="status"/>
                                 </Link>
                             </span></td>
-                            <td> <Button danger onClick={(e) => {handleConfirm(e)}} value={household.id}>Xóa</Button></td>
+                            <td> <Button danger onClick={() => {handleConfirm(household.id)}} >Xóa</Button></td>
                          </tr>
                       )}
                     </tbody>

@@ -1,9 +1,9 @@
-import React ,{useState,useEffect} from "react";
+import { useState, useEffect } from "react";
 import { Modal, DatePicker, Form, Input, InputNumber, Radio, Select, Row, Col } from "antd";
 import "./style.css";
 import moment from "moment";
 
-function ModalEdit (props){
+function ModalEdit (props) {
     const [form] = Form.useForm();
     const {householdId, isModalEdit, onCancel, updateInfor, personInfo ={}} = props;
     const [isMovingOut, setIsMovingOut] = useState(personInfo?.status === "Thường trú" ? false : true);

@@ -139,6 +139,9 @@
 .details .recentCt table tr td:nth-child(5) {
   text-align: center;
 }
+.details .recentCt table tr td:nth-child(6) {
+  text-align: center;
+}
 /*=========================status =============================*/
 
 span{
@@ -159,9 +162,10 @@ span{
 }
 
 .status {
-  background-color: #7DB927;
-  color: #fff;
+  border: 1px solid gray;
   text-align: center;
+  background-color: #fff;
+  color: black;
 }
 
 
