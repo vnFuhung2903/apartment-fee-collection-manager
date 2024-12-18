@@ -1,12 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { Link } from "react-router-dom"
 import "./style.css"
-import { useDispatch, useSelector } from "react-redux";
-import { fetchTotalPayments } from "../../actions/feeManage";
-import { Form, Select, Col, Row, Modal, Input, notification } from 'antd';
-import dayjs from 'dayjs';
-import axios from "axios";
-import { message } from "antd";
+import { Form, Select, Col, Row, Modal, Input } from 'antd';
 import { CloseOutlined } from "@ant-design/icons";
 import AddVehicle from "./AddVehicle"
 
@@ -63,7 +57,7 @@ function VehicleMange(){
           ...owner,
           vehicle: owner.vehicle.filter(vehicle => {
             // Lọc theo biển kiểm soát
-            if (filters.plate && !vehicle.plate.toLowerCase().includes(filters.plate.toLowerCase())) {
+            if (filters.plate && !vehicle.plate.toLowerCase().startsWith(filters.plate.toLowerCase())) {
               return false;
             }
             return true;
