@@ -38,7 +38,7 @@ const HouseholdInfo = () => {
     .catch(error => {
       console.log(error);
     });
-  }, [householdId]);
+  }, [householdId, isDeleted]);
 
   const handleMember = (member) => {
     return {
@@ -125,7 +125,20 @@ const HouseholdInfo = () => {
       setSelectedRows(rows);
   }; 
   const handleDelete = () => {
-      setIsDeleted(true);
+    fetch(`http://localhost:8386/household/api/v1/deleteMem?householdId=${householdId}`, {
+      method: "POST",
+      headers: {"Content-Type": "application/json"}
+    })
+    .then((res) => {
+      return res.json();
+    })
+    .then(res => {
+      if(res.status === 200) {
+        setIsDeleted(true);
+      }
+      else if(res.message)
+        alert(res.message);
+    })
   };
 
   const handleConfirm = () => {

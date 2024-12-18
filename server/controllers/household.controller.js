@@ -191,6 +191,25 @@ const addNewMember = async (req, res) => {
   }
 };
 
+const deleteHouseholdMember = async (req, res) => {
+  try {
+    const id = req.query;
+    if (!mongoose.isValidObjectId(id))
+      res.status(400).json({ message: 'Invalid household' });
+
+    const householdFound = await household.findOne({ _id: id });
+    if(!householdFound) 
+      res.status(400).json({ message: 'Invalid household' });
+  
+    await Promise.all(householdFound.members.map(per => person.deleteOne(per.member_id)));
+    householdFound.members = [];
+    await householdFound.save();
+    res.status(200).json({ message: "Success", household: householdFound._id });
+  } catch (error) {
+    res.status(500).json(error);
+  }
+};
+
 module.exports = {
   getHouseholds,
   createHousehold,
@@ -198,5 +217,6 @@ module.exports = {
   deleteHousehold,
   getHouseholdDetail,
   addNewMember,
-  editHouseholdMember
+  editHouseholdMember,
+  deleteHouseholdMember
 };

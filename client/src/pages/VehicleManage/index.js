@@ -18,43 +18,10 @@ function VehicleMange(){
     };
 
     fetchVehicles();
-}, []);
-
-  const dataList1 = [
-    {
-      ownName: "Nguyễn Văn An",
-      vehicle: [
-        {
-          type: "Xe máy",
-          plate: "99-AF-02276"
-        },
-        {
-          type: "Xe máy",
-          plate: "29-AF-02234"
-        },
-        {
-          type: "Ô tô",
-          plate: "30G-43234"
-        }
-      ]
-    },
-    {
-      ownName: "Trần Thị Bích",
-      vehicle: [
-        {
-          type: "Ô tô",
-          plate: "88B-12345"
-        },
-        {
-          type: "Xe máy",
-          plate: "90B-56789"
-        }
-      ]
-    },
-  ];
+  }, []);
 
   const householdName = [
-    { value: "", label: "None" },
+    { value: "", label: "Tất cả" },
       ...dataList.map(item => ({
       value: item.ownName,
       label: item.ownName,
@@ -62,41 +29,49 @@ function VehicleMange(){
   ];
 
   const [filters, setFilters] = useState({
-      householdName: null, 
-      plate: null   
-    });
+    ownName: null, 
+    plate: null,
+  });
 
-    const filteredData = useMemo(() => {
-      return dataList
-        .map(owner => ({
-          ...owner,
-          vehicle: owner.vehicle.filter(vehicle => {
-            // Lọc theo biển kiểm soát
-            if (filters.plate && !vehicle.plate.toLowerCase().startsWith(filters.plate.toLowerCase())) {
-              return false;
-            }
-            return true;
-          })
-        }))
-        .filter(owner => {
-          // Lọc theo tên chủ hộ
-          if (filters.householdName && !owner.name.toLowerCase().includes(filters.householdName.toLowerCase())) {
+  const filteredData = useMemo(() => {
+    return dataList
+      .map(owner => ({
+        ...owner,
+        vehicle: owner.vehicle.filter(vehicle => {
+          if (filters.plate && !vehicle.plate.toLowerCase().startsWith(filters.plate.toLowerCase())) {
             return false;
           }
-          // Loại bỏ chủ hộ không có phương tiện sau khi lọc
-          return owner.vehicle.length > 0;
-        });
-    }, [dataList, filters]);
+          return true;
+        })
+      }))
+      .filter(owner => {
+        if (filters.ownName && !owner.ownName.toLowerCase().includes(filters.ownName.toLowerCase())) {
+          return false;
+        }
+        return owner.vehicle.length > 0;
+      });
+  }, [dataList, filters]);
   
-    const handleDelete = async (id) => {
-        // Hiển thị modal xác nhận trước khi xóa
-        Modal.confirm({
-          title: "Xác nhận xóa",
-          content: "Bạn có chắc chắn muốn xóa loại phí này không?",
-          okText: "Xóa",
-          okType: "danger",
-          cancelText: "Hủy",
-    })};
+  const handleDelete = async (vehicle, ownerIndex) => {
+    Modal.confirm({
+      title: "Xác nhận xóa",
+      content: "Bạn có chắc chắn muốn xóa loại phí này không?",
+      okText: "Xóa",
+      okType: "danger",
+      cancelText: "Hủy",
+      onOk: async () => {
+        try {
+          const response = await axios.post("http://localhost:8386/vehicles/api/v2/delete", {...vehicle, household_id: ownerIndex}, {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }); 
+          setVehicles(response.data);
+        } catch (error) {
+            console.error("Error fetching residents data:", error);
+        }
+      }
+  })};
   
   return(
     <>
@@ -125,7 +100,7 @@ function VehicleMange(){
                         <Select 
                           placeholder="Chọn chủ hộ" 
                           options={householdName}
-                          onChange={(value) => setFilters((prev) => ({ ...prev, householdName: value }))}
+                          onChange={(value) => setFilters((prev) => ({ ...prev, ownName: value }))}
                           style={{width: '200%'}}
                         >
                         </Select>
@@ -164,7 +139,7 @@ function VehicleMange(){
                     <td>{vehicle.vehicle_type}</td>
                     <td>{vehicle.plate}</td>
                     <td>
-                      <button className="btn-details delete-icon" onClick={() => handleDelete(vehicle.plate)}><CloseOutlined /></button>
+                      <button className="btn-details delete-icon" onClick={() => handleDelete(vehicle)}><CloseOutlined /></button>
                     </td>
                   </tr>
                 ))
