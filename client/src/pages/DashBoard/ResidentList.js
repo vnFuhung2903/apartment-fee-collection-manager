@@ -1,7 +1,5 @@
 import { Link } from "react-router-dom"
-import React,{ useEffect,useMemo, useState } from "react"
-import { useSelector, useDispatch } from "react-redux";
-import { fetchDashboardData, fetchHouseholds } from "../../actions";
+import { useEffect,useMemo, useState } from "react"
 import { Form,Select,Row,Col} from "antd";
 import {ExportOutlined } from '@ant-design/icons';
 import "./style.css";
@@ -19,74 +17,7 @@ function ResidentList(){
         };
 
         fetchResidents();
-    }, [])
-    const residents1 = [
-        {
-          id: "1",
-          name: "Nguyễn Văn A",
-          phone: "0987654321",
-          cic: "123456789012",
-          dob: "1979-05-12",
-          floornumber: "2",
-          apartmentNumber: "202",
-          relationship: "Chủ nhà",
-          nationality: "Việt Nam",
-          gender: "Nam",
-          occupation: "Kỹ sư",
-          hometown: "Hà Nội",
-          ethnic: "Kinh",
-          status: "Thường trú",
-        },
-        {
-          id: "2",
-          name: "Nguyễn Thị B",
-          phone: "0981234567",
-          cic: "123456789013",
-          dob: "1981-03-25",
-          floornumber: "2",
-          apartmentNumber: "202",
-          relationship: "Vợ",
-          nationality: "Việt Nam",
-          gender: "Nữ",
-          occupation: "Giáo viên",
-          hometown: "Hải Phòng",
-          ethnic: "Kinh",
-          status: "Thường trú",
-        },
-        {
-          id: "3",
-          name: "Nguyễn Văn C",
-          phone: "0976543210",
-          cic: "123456789014",
-          dob: "2004-07-10",
-          floornumber: "2",
-          apartmentNumber: "202",
-          relationship: "Con trai",
-          nationality: "Việt Nam",
-          gender: "Nam",
-          occupation: "Sinh viên",
-          hometown: "Hà Nội",
-          ethnic: "Kinh",
-          status: "Thường trú",
-        },
-        {
-          id: "4",
-          name: "Nguyễn Thị D",
-          phone: "0976123456",
-          cic: "123456789015",
-          dob: "2006-01-15",
-          floornumber: "2",
-          apartmentNumber: "202",
-          relationship: "Con gái",
-          nationality: "Việt Nam",
-          gender: "Nữ",
-          occupation: "Học sinh",
-          hometown: "Hà Nội",
-          ethnic: "Kinh",
-          status: "Thường trú",
-        },
-      ];
-    //Dữ liệu để lọc
+    }, []);
     const personNames = [
         {value: "",label: "None"},
         ...[...new Set(residents.map(resident => resident.name))].map(personName => ({
@@ -197,13 +128,13 @@ function ResidentList(){
                     <tbody>
                         { filteredPeople.map(resident => 
                             <tr key={resident._id}>
-                                <td>{resident._id}</td>
+                                <td>{resident.cic}</td>
                                 <td> { resident.name } </td>
                                 <td> { resident.contact_phone } </td>
-                                <td> { resident.floornumber } </td>
-                                <td> { resident.apartmentNumber } </td>
+                                <td> { resident.floors } </td>
+                                <td> { resident.numbers } </td>
                                 <td> { resident.status } </td>
-                                <td><span className="status"><Link to="/household_infor"><ExportOutlined /></Link></span></td>
+                                <td><span className="status"><Link to={`/household_infor?household_id=${resident.householdId}`}><ExportOutlined /></Link></span></td>
                             </tr>
                         )}
                     </tbody>

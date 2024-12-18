@@ -99,60 +99,24 @@ const getFilterdList = async (req, res) => {
 
 const getPersonAll = async (req, res) => {
   try {
-    const result = await person.aggregate([
-      {
-        $lookup: {
-          from: 'household', 
-          let: { personId: '$_id' },
-          pipeline: [
-            {
-              $match: {
-                $expr: {
-                  $or: [
-                    { $in: ['$$personId', '$members.member_id'] },
-                    { $in: [{ $toString: '$$personId' }, '$members.member_id'] }
-                  ]
-                }
-              }
-            }
-          ],
-          as: 'household'
-        }
-      },
-      {
-        $unwind: {
-          path: '$household',
-          preserveNullAndEmptyArrays: true
-        }
-      },
-      {
-        $lookup: {
-          from: 'apartment', 
-          localField: 'household.apartments',
-          foreignField: '_id',
-          as: 'apartments'
-        }
-      },
-      {
-        $addFields: {
-          apartmentNumber: { 
-            $ifNull: [{ $arrayElemAt: ['$apartments.Number', 0] }, null] 
-          }
-        }
-      },
-      {
-        $project: {
-          household: 0,
-          apartments: 0,
-          __v: 0 
-        }
-      }
-    ]);
-    res.status(200).json(result);
+    let householdsFound = await household.find({});
+    let json = [];
+    for(const data of householdsFound) {
+      const [head, mem, ownedApartments] = await Promise.all([
+        person.findOne({ _id: data.head }),
+        Promise.all(data.members.map(member => person.findOne({ _id: member.member_id }))),
+        Promise.all(data.apartments.map(ID => apartment.findOne({ _id: ID }))),
+      ]);
+      const numbers = ownedApartments.map(owned => owned.number);
+      const floors = ownedApartments.map(owned => (Number(owned.number) / 100).toFixed(0));
+      json.push({ ...head._doc, householdId: data._id, floors: floors, numbers: numbers });
+      mem.forEach(member => { return json.push({ ...member._doc, householdId: data._id, floors: floors, numbers: numbers })})
+    }
+    res.status(200).json(json);
   } catch (error) {
-    res.status(500).json({ error: "Internal Server Error" });
+    res.status(500).json(error);
   }
-};
+} 
 
 
 module.exports = {
