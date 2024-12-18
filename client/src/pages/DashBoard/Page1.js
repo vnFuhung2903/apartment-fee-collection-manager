@@ -65,13 +65,13 @@ function Page1(){
         //fetch api delete...
         message.loading({ content: 'Deleting...', key: 'delete' });
 
-    // Perform the API call to delete the household
-    // Dispatch the updated list to the store
-    dispatch(setHouseholds(updatedHouseholds));
+        // Perform the API call to delete the household
+        // Dispatch the updated list to the store
+        dispatch(setHouseholds(updatedHouseholds));
 
-    // Show a success message
-    message.success({ content: 'Xóa thành công!', key: 'delete' });
-    }
+        // Show a success message
+        message.success({ content: 'Xóa thành công!', key: 'delete' });
+        }
     const handleConfirm = (id) => {
       Modal.confirm({
           title : "Confirm",
@@ -153,7 +153,7 @@ function Page1(){
                             lg: 32,
                         }}
                         >
-                            <Col className="gutter-row" span={10}>
+                            <Col className="gutter-row" span={7}>
                                 <Form.Item label="Tên chủ hộ">
                                     <Select
                                         showSearch
