@@ -1,20 +1,28 @@
-import React from 'react';
-import { Form, Input, message } from 'antd'
+import { useState } from 'react';
+import { Form, Input, message, DatePicker } from 'antd'
 import { Link } from 'react-router-dom';
+import dayjs from 'dayjs';
 import './style.css'
 
 export default function PersonalProfile() {
-  const data = {
+  const [data, setData] = useState({
     name: "Nguyễn Văn A",
     email: "ANV@gmail.com",
-    birth: "31/10/2004",
+    birth: dayjs("31/10/2004", "DD/MM/YYYY"),
     phone: "0987654321",
     address: "Hai Bà Trưng, Hà Nội"
-  }
+  })
 
   const handleClick = () => {
     message.success("Cập nhật thông tin thành công");
   }
+
+  const handleChange = (field, value) => {
+    setData({
+      ...data,
+      [field]: value,
+    });
+  };
   return (
     <>
     <div className="container">
@@ -42,31 +50,31 @@ export default function PersonalProfile() {
                 <div className="card-body">
                   <Form.Item label="Họ và tên:">
                     <div className="row">
-                      <Input value={data.name}/>
+                      <Input value={data.name} onChange={(e) => handleChange("name", e.target.value)}/>
                     </div>
                   </Form.Item>
                   <hr/>
                   <Form.Item label="Email:">
                     <div className="row">
-                      <Input value={data.email}/>
+                      <Input value={data.email} onChange={(e) => handleChange("email", e.target.value)}/>
                     </div>
                   </Form.Item>
                   <hr/>
                   <Form.Item label="Ngày sinh:">
                     <div className="row">
-                      <Input value={data.birth}/>
+                      <DatePicker value={data.birth} onChange={(date) => handleChange("birth", date)} format="DD/MM/YYYY"/>
                     </div>
                   </Form.Item>
                   <hr/>
                   <Form.Item label="Số điện thoại:">
                     <div className="row">
-                      <Input value={data.phone}/>
+                      <Input value={data.phone} onChange={(e) => handleChange("phone", e.target.value)}/>
                     </div>
                   </Form.Item>
                   <hr/>
                   <Form.Item label="Địa chỉ:">
                     <div className="row">
-                      <Input value={data.address}/>
+                      <Input value={data.address} onChange={(e) => handleChange("address", e.target.value)}/>
                     </div>
                   </Form.Item>
                   <hr/>

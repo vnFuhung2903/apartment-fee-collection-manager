@@ -60,7 +60,14 @@ function LayoutDefault(){
                         <span className="title">Quản lý căn hộ và cư dân</span>
                     </Link>
                 </li>
-
+                <li>
+                    <Link to="/vehicle_manage">
+                        <span className="icon">
+                            <ion-icon name="car-sport-outline"></ion-icon>
+                        </span>
+                        <span className="title">Quản lý phương tiện</span>
+                    </Link>
+                </li>
                 <li>
                     <Link to="/fee_manage">
                         <span className="icon">
