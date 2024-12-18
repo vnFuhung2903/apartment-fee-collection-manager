@@ -139,6 +139,9 @@
 .details .recentCt table tr td:nth-child(5) {
   text-align: center;
 }
+.details .recentCt table tr td:nth-child(6) {
+  text-align: center;
+}
 /*=========================status =============================*/
 
 span{
@@ -159,9 +162,10 @@ span{
 }
 
 .status {
-  background-color: #7DB927;
-  color: #fff;
+  border: 1px solid gray;
   text-align: center;
+  background-color: #fff;
+  color: black;
 }
 
 
@@ -305,4 +309,7 @@ label{
 .components-table-demo-control-bar .ant-form-item {
   margin-right: 16px !important;
   margin-bottom: 8px !important;
+}
+:where(.css-dev-only-do-not-override-1x0dypw).ant-table-wrapper table tr th.ant-table-selection-column, :where(.css-dev-only-do-not-override-1x0dypw).ant-table-wrapper table tr td.ant-table-selection-column, :where(.css-dev-only-do-not-override-1x0dypw).ant-table-wrapper .ant-table-selection-column {
+  padding-top: 40px;
 }

@@ -26,7 +26,7 @@ function CreateFee(props) {
       try {
         const response = await axios.get("http://localhost:8386/household/api/v1/all");
         const options = response.data.map((household) => ({
-          id:household.id,
+          id: household.id,
           value: household.numbers[0],
           label: `Hộ ${household.head}`,
         }));

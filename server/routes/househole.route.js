@@ -9,5 +9,6 @@ router.post("/api/v1/edit", controller.editHousehold);
 router.post("/api/v1/addMember", controller.addNewMember);
 router.post("/api/v1/editMember", controller.editHouseholdMember);
 router.post("/api/v1/delete", controller.deleteHousehold);
+router.post("/api/v1/deleteMem", controller.deleteHouseholdMember);
 
 module.exports = router;
