@@ -14,30 +14,29 @@ module.exports.index = async (req, res) => {
 //[POST] vehicles/api/v2/delete
 module.exports.deleteVehicle = async (req, res) => {
   try {
-    const { _id, household_id, plate, vehicle_type } = req.body;
+    const { household_id, plate, vehicle_type } = req.body;
     await Vehicle.updateOne(
-      { _id, household_id },
+      {  household_id },
       {
         $pull: { vehicle: { plate, vehicle_type } },
       }
     );
     let updateData = {};
 
-    if (type === "Xe máy") {
+    if (vehicle_type === "Xe máy") {
       updateData = {
         $pull: { motobikes: { plate, vehicle_type } },
       };
-    } else if (type === "Ô tô") {
+    } else if (vehicle_type === "Ô tô") {
       updateData = {
         $pull: { cars: { plate, vehicle_type } },
       };
     }
 
     await Household.updateOne({ _id: household_id }, updateData);
-
     res.status(200).json({ message: "Vehicle deleted successfully" });
-    res.status(200).json(vehicleRecord);
   } catch (error) {
+    console.log(error);
     res.status(500).json({ message: "Error deleting vehicle" });
   }
 };
