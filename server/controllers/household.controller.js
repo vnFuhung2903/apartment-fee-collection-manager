@@ -27,13 +27,13 @@ const getHouseholds = async (req, res) => {
 
 const createHousehold = async (req, res) => {
   try {
-    const { apartmentNumber, headId, contact } = req.body;
-    const apartmentFound = await apartment.findOne({ number: apartmentNumber });
+    const { number, id, contact } = req.body;
+    const apartmentFound = await apartment.findOne({ number: number });
     if(apartmentFound.household)
       res.status(402).json({ message: "In used" });
     else {
       const newHousehold = new household({
-        head: headId,
+        head: id,
         apartments: [apartmentFound],
         contact_phone: contact,
         members: []
@@ -121,13 +121,18 @@ const getHouseholdDetail = async (req, res) => {
     if(!householdFound)  
       return res.status(400).json({ message: 'Invalid household' });
     let json = householdFound._doc;
-    console.log(householdFound.members);
-    [json.head, json.members, json.apartments] = await Promise.all([
+    let mem = [];
+    [json.head, mem, json.apartments] = await Promise.all([
       person.findOne({ _id: householdFound.head }),
       Promise.all(householdFound.members.map(member => person.findOne({ _id: member.member_id }))),
       Promise.all(householdFound.apartments.map(ID => apartment.findOne({ _id: ID }))),
     ]);
 
+    json.members = json.members.map((_, i) => ({
+      ...mem[i]._doc,
+      relation_to_head: householdFound.members[i].relation_to_head
+    }));
+    
     res.status(200).json({ message: "Success", household: json });
   } catch (error) {
     res.status(500).json(error);
@@ -137,7 +142,7 @@ const getHouseholdDetail = async (req, res) => {
 const editHouseholdMember = async (req, res) => {
   try {
     const id = req.query;
-    const members = req.body;
+    const { member_id, relation_to_head } = req.body;
     if (!mongoose.isValidObjectId(id))
       res.status(400).json({ message: 'Invalid household' });
 
@@ -145,11 +150,29 @@ const editHouseholdMember = async (req, res) => {
     if(!householdFound) 
       res.status(400).json({ message: 'Invalid household' });
   
-    householdFound.members = householdFound.members.filter((personId) => members.includes(personId.toString()));
-    const newMembers = members.filter((personId) => !householdFound.members.includes(personId));
-    for(const member of newMembers)
-      householdFound.members.push(member);
+    const members = householdFound.members.map(person => person.member_id !== member_id);
+    members.push({ member_id, relation_to_head });
+    householdFound.members = members;
+    await householdFound.save();
     res.status(200).json({ message: "Success", household: householdFound._id });
+  } catch (error) {
+    res.status(500).json(error);
+  }
+};
+
+const addNewMember = async (req, res) => {
+  try {
+    const { number, id, relationToOwner } = req.body;
+    const apartmentFound = await apartment.findOne({ number: number });
+    if(!apartmentFound.household)
+      return res.status(402).json({ message: "Invalid apartment" });
+    const householdFound = await household.findOne({ _id: apartmentFound.household });
+    if(!householdFound) 
+      return res.status(402).json({ message: 'Invalid household' });
+
+    householdFound.members.push({ member_id: id, relation_to_head: relationToOwner });
+    await householdFound.save();
+    return res.status(200).json({ message: "Success", household: householdFound._id });
   } catch (error) {
     res.status(500).json(error);
   }
@@ -161,5 +184,6 @@ module.exports = {
   editHousehold,
   deleteHousehold,
   getHouseholdDetail,
+  addNewMember,
   editHouseholdMember
 };

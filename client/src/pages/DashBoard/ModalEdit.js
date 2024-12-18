@@ -2,36 +2,46 @@ import React ,{useState,useEffect} from "react";
 import { Modal, DatePicker, Form, Input, InputNumber, Radio, Select, Row, Col } from "antd";
 import "./style.css";
 import moment from "moment";
+import { useSearchParams } from "react-router-dom";
 
-function ModalEdit(props){
+function ModalEdit (props){
     const [form] = Form.useForm();
-    const {isModalEdit, setModalEdit, updateInfor, personInfo = {} } = props;
-    const [isMovingOut, setIsMovingOut] = useState(personInfo?.status === "Thường trú"? false: true);
-    const isOwner = personInfo?.relationship === "Chủ Nhà" ? true : false;
-   //chỉnh sửa form khi personInfor thay đổi
+    const {householdId, isModalEdit, onCancel, updateInfor, personInfo ={}} = props;
+    const [isMovingOut, setIsMovingOut] = useState(personInfo?.status === "Thường trú" ? false : true);
+    const isOwner = personInfo?.relation_to_head ? false : true;
     useEffect(() => {
       if (personInfo) {
         form.setFieldsValue({
           ...personInfo,
           dob: personInfo.dob ? moment(personInfo.dob, "YYYY-MM-DD") : null,
           movingIn: personInfo.movingIn ? moment(personInfo.movingIn, "YYYY-MM-DD") : null,
-          endTemporary: personInfo.endTemporary ? moment(personInfo.endTemporary, "YYYY-MM-DD") :null,
+          endTemporary: personInfo.endTemporary && isMovingOut ? moment(personInfo.endTemporary, "YYYY-MM-DD") : null,
         });
       }
     }, [personInfo, form]);
     const handleOk = async (e) => {
       const values = await form.validateFields();
       updateInfor(values);
-      setModalEdit(false);
+      onCancel();
       e.preventDefault();
-      const res = await fetch("http://localhost:8386/person/api/v1/edit", {
+      let res = await fetch(`http://localhost:8386/person/api/v1/edit?id=${personInfo._id}`, {
         method: "POST",
         headers: {"Content-Type": "application/json"},
-        body: JSON.stringify(values)
+        body: JSON.stringify({...values, householdId: householdId})
       });
       const data = await res.json();
       if(data.message && data.message !== "Success")
         alert(data.message);
+      if(!isOwner) {
+        await fetch(`http://localhost:8386/household/api/v1/editMember?id=${householdId}`, {
+          method: "POST",
+          headers: {"Content-Type": "application/json"},
+          body: JSON.stringify({ member_id: personInfo._id, relation_to_head: values.relation_to_head })
+        });
+        const data = await res.json();
+        if(data.message && data.message !== "Success")
+          alert(data.message);
+      }
     }
     const handleChangeStatus = (e) => {
       const {value} = e.target;
@@ -49,7 +59,9 @@ function ModalEdit(props){
         title="Chỉnh sửa thông tin"
         open={isModalEdit}
         onOk={handleOk}
-        onCancel={()=>{setModalEdit(false)}}
+        onCancel={() => {
+          onCancel();
+        }}
         okText="Lưu"
         cancelText="Hủy"
         width={900}
@@ -59,7 +71,12 @@ function ModalEdit(props){
         wrapperCol={{ span: 16 }}
         layout="horizontal"
         style={{ width: 800}}
-        initialValues={{...personInfo, dob: moment(personInfo?.dob, "YYYY-MM-DD"), movingIn: moment(personInfo?.movingIn, "YYYY-MM-DD")}}
+        initialValues={{
+          ...personInfo, 
+          dob: personInfo.dob ? moment(personInfo.dob, "YYYY-MM-DD") : null,
+          movingIn: personInfo.movingIn ? moment(personInfo.movingIn, "YYYY-MM-DD") : null,
+          endTemporary: personInfo.endTemporary ? moment(personInfo.endTemporary, "YYYY-MM-DD") : null
+        }}
       >
         <Row gutter={24}>
           <Col span={10}>
@@ -147,7 +164,7 @@ function ModalEdit(props){
             </Form.Item>
           </Col>
           {!isOwner && <Col span={10}>
-            <Form.Item label="Quan hệ" name="relationship">
+            <Form.Item label="Quan hệ" name="relation_to_head">
             <Select>
                 <Select.Option value="Con cái">Con cái</Select.Option>
                 <Select.Option value="Vợ chồng">Vợ chồng</Select.Option>

@@ -56,7 +56,7 @@ function FeeMange(){
         return false;
       }
       // Lọc theo ngày
-      const paymentDate = dayjs(payment.date); // Giả sử `payment.date` chứa ngày
+      const paymentDate = dayjs(payment.payment_date); // Giả sử `payment.date` chứa ngày
       if (filters.fromDate && paymentDate.isBefore(dayjs(filters.fromDate))) {
         return false;
       }

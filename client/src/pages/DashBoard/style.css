@@ -302,3 +302,7 @@ label{
 :where(.css-dev-only-do-not-override-1x0dypw).ant-form-item .ant-form-item-control-input-content {
   min-width: 150px !important;
 }
+.components-table-demo-control-bar .ant-form-item {
+  margin-right: 16px !important;
+  margin-bottom: 8px !important;
+}

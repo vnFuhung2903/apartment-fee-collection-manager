@@ -39,7 +39,7 @@ function DescriptionPerson(props) {
         <Descriptions.Item label="Thời gian đến">
         {(new Date(person.movingIn)).toLocaleDateString('vi-VN')}
         </Descriptions.Item>
-        {person.movingOut && <Descriptions.Item label="Thời gian đi">{(new Date(person.movingIn)).toLocaleDateString('vi-VN')}</Descriptions.Item>}
+        {person.endTemporary && <Descriptions.Item label="Thời gian đi">{(new Date(person.movingIn)).toLocaleDateString('vi-VN')}</Descriptions.Item>}
     </Descriptions>
   );
 }

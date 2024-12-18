@@ -157,7 +157,7 @@ function EditFee(props) {
             name: fee ? fee.name : "",
             amount: fee ? fee.amount : undefined,
             due: fee ? fee.due : undefined,
-            status: fee ? (fee.status ? "Bắt buộc" : "Không bắt buộc") : "",
+            status: fee ? fee.status : undefined,
           }}
         >
           <Form.Item name="id" style={{ display: "none" }}>

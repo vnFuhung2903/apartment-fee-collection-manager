@@ -1,11 +1,11 @@
 import "./style.css"
 import customer01 from "../Layout/assets/imgs/customer01.jpg"
 import { Link } from "react-router-dom"
-import  React,{ useEffect,useMemo, useState } from "react"
+import  React,{ useEffect,useMemo, useState,useMessage } from "react"
 import { useSelector, useDispatch } from "react-redux";
-import { fetchDashboardData, fetchHouseholds } from "../../actions";
-import { Tag,Form,Row,Col,Select } from "antd";
-
+import { fetchDashboardData, fetchHouseholds,setHouseholds } from "../../actions";
+import { Tag,Form,Row,Col,Select ,Button,Modal,message} from "antd";
+import {ExclamationCircleOutlined} from '@ant-design/icons';
 function Page1(){
     const dispatch = useDispatch();
     const {
@@ -59,6 +59,43 @@ function Page1(){
                 return true;
             });
         },[households,filters]);
+    
+    const [messageApi] = message.useMessage();
+    const key = 'delete';
+
+    const openMessage = () => {
+    messageApi.open({
+      key,
+      type: 'loading',
+      content: 'Loading...',
+    });
+    setTimeout(() => {
+      messageApi.open({
+        key,
+        type: 'success',
+        content: 'Đã xóa!',
+        duration: 2,
+      });
+    }, 1000);
+   };  
+    const handleDelete = (householdID) => {
+        console.log(householdID);
+        const updatedHouseholds = households.filter((household) => household._id !== householdID);
+        console.log(updatedHouseholds);
+        dispatch(setHouseholds(updatedHouseholds));
+        openMessage();
+    }
+    const handleConfirm = (e) => {
+      Modal.confirm({
+          title : "Confirm",
+          icon : <ExclamationCircleOutlined />,
+          content: "Xác nhận xóa?",
+          okText:"Xác nhận",
+          cancelText:"Hủy",
+          centered: true,
+          onOk: handleDelete(e.target.value),
+      });
+  };
 
     return (
     <>
@@ -119,7 +156,7 @@ function Page1(){
          </div>
          <div className="household">
                     <Form
-                        layout="horizontal"
+                        layout="vertical"
                     >
                         <Row
                             gutter={{
@@ -172,6 +209,7 @@ function Page1(){
                            <td>Số căn hộ</td>
                            <td>Trạng thái</td>
                            <td>Chi tiết</td>
+                           <td></td>
                         </tr>
                   </thead>
 
@@ -192,6 +230,7 @@ function Page1(){
                                     Mở rộng
                                 </Link>
                             </span></td>
+                            <td> <Button danger onClick={(e) => {handleConfirm(e)}} value={household.id}>Xóa</Button></td>
                          </tr>
                       )}
                     </tbody>
