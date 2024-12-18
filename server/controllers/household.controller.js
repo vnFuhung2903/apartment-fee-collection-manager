@@ -11,7 +11,7 @@ const getHouseholds = async (req, res) => {
     let json = [];
     for(const data of householdsFound) {
       const head = await person.findOne({ _id: data.head });
-      console.log('head', head);
+      // console.log('head', head);
       
       const ownedApartments = await Promise.all(data.apartments.map(ID => apartment.findOne({ _id: ID })))
       const numbers = ownedApartments.map(owned => owned.number);

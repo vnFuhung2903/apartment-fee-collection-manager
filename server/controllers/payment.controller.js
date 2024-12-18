@@ -79,10 +79,14 @@ module.exports.index = async (req, res) => {
     const results = payments.map(payment => {
       const household = householdMap[payment.household_id.toString()];
       const headPerson = household && household.head ? personMap[household.head.toString()] : null;
+      const paymentDateObj = new Date(payment.payment_date);
+      const month = paymentDateObj.getMonth() + 1;
+      const year = paymentDateObj.getFullYear();
       return {
         ...payment,
         householdHead: headPerson ? headPerson.name : "Unknown",
-        feeName: feeMap[payment.fee_id?.toString()] || "Unknown"
+        feeName: feeMap[payment.fee_id?.toString()] || "Unknown",
+        payment_name : `${feeMap[payment.fee_id?.toString()]} tháng ${month}/${year}` 
       };
     });
     res.json(results);
@@ -200,14 +204,14 @@ module.exports.totalPayment = async (req,res) => {
           {$match:{
             household_id:householdId.toString(),
           }},
-          {$group:{_id:householdId.toString(),totalAmount: {$sum:"$amount"}}}
+          {$group:{_id:householdId.toString(),totalAmount: {$sum:{ $multiply: ["$amount", "$count"] }}}}
         ]);
         const  paymented = await Payment.aggregate([
           {$match:{
             household_id:householdId.toString(),
             status: { $ne: "Đã thanh toán" }
           }},
-          {$group:{_id:householdId.toString(),totalAmount: {$sum:"$amount"}}}
+          {$group:{_id:householdId.toString(),totalAmount: {$sum:{ $multiply: ["$amount", "$count"] }}}}
         ]);
         //Nếu không có khoản thanh toán nào,sum = 0
         const payed = paymented.length > 0 ? paymented[0].totalAmount : 0;
@@ -241,27 +245,89 @@ const calulateDueDate = (monthsToAdd) => {
   dueDate.setMonth(now.getMonth() + monthsToAdd);
   return dueDate;
 };
+
+module.exports.addFee = async (req, res) => {
+  try {
+    const { name, amount, due, status, households } = req.body;
+    const fee = new Fee({
+      name,
+      amount,
+      due,
+      status,
+    });
+    await fee.save();
+
+    let householdsToAddPayment = [];
+    if (status === "Bắt buộc") {
+      householdsToAddPayment = await Household.find({}, "_id motobikes cars apartments");
+    } else if (status === "Không bắt buộc" && households) {
+      householdsToAddPayment = await Household.find(
+        { _id: { $in: households } },
+        "_id motobikes cars apartments"
+      );
+    }
+
+    const payments = householdsToAddPayment.map((household) => {
+      let count = 0;
+      if (name === "Phí gửi xe máy") {
+        count = household.motobikes.length;
+      } else if (name === "Phí gửi ô tô") {
+        count = household.cars.length;
+      } else {
+        count = household.apartments.length;
+      }
+
+      return {
+        fee_id: fee._id,
+        payment_id: generatePaymentID(),
+        household_id: household._id,
+        amount: fee.amount,
+        payment_date: calculateDueDate(fee.due),
+        status: "Chưa thanh toán",
+        count,
+      };
+    });
+
+    await Payment.insertMany(payments);
+
+    res.status(201).json({ message: "Fee created successfully", fee });
+  } catch (error) {
+    console.error("Error creating fee:", error);
+    res.status(500).json({ message: "Error creating fee", error });
+  }
+};
+
 module.exports.autoGeneratePayments = async () => {
   try {
-    const mandatoryFees = await Fee.find({status:"Bắt buộc"});
+    const mandatoryFees = await Fee.find({ status: "Bắt buộc" });
 
-    for (const fee of mandatoryFees){
-      const paymentID = generatePaymentID();
+    for (const fee of mandatoryFees) {
+      const households = await Household.find({}, "_id motobikes cars apartments");
 
-      const dueDate = calulateDueDate(fee.due);
-      //Do hàm getMonth() trong Javascript trả về giá trị từ 0-11 nên phải +1
-      const newPayment = new Payment({
-        fee_id: fee.id,
-        household_id: fee.household,
-        amount : fee.amount,
-        payment_date: dueDate,
-        status: "Chưa thanh toán",
-        name: `${fee.name} tháng ${dueDate.getMonth() + 1}/${dueDate.getFullYear()}`,
-        payment_id: paymentID,
+      const payments = households.map((household) => {
+        let count = 0;
+        if (fee.name === "Phí gửi xe máy") {
+          count = household.motobikes.length;
+        } else if (fee.name === "Phí gửi ô tô") {
+          count = household.cars.length;
+        } else {
+          count = household.apartments.length;
+        }
+
+        return {
+          fee_id: fee._id,
+          household_id: household._id,
+          amount: fee.amount,
+          payment_date: calculateDueDate(fee.due),
+          status: "Chưa thanh toán",
+          payment_id: generatePaymentID(),
+          count,
+        };
       });
-      await newPayment.save();
+
+      await Payment.insertMany(payments);
     }
   } catch (error) {
     console.error("Lỗi khi tạo payment tự động:", error);
   }
-}
+};

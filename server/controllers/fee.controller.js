@@ -45,19 +45,35 @@ module.exports.addFee = async (req, res) => {
 
     let householdsToAddPayment = [];
     if (status === "Bắt buộc") {
-      householdsToAddPayment = await Household.find({}, "_id");
+      householdsToAddPayment = await Household.find({}, "_id motobikes cars apartments");
     } else if (status === "Không bắt buộc" && households) {
-      householdsToAddPayment = households.map((householdId) => ({ _id: householdId }));
+      householdsToAddPayment = await Household.find(
+        { _id: { $in: households } },
+        "_id motobikes cars apartments"
+      );
     }
 
-    const payments = householdsToAddPayment.map((household) => ({
-      fee_id: fee._id,
-      payment_id:generatePaymentID(),
-      household_id: household._id,
-      amount: fee.amount,
-      payment_date: calculateDueDate(fee.due),
-      status: "Chưa thanh toán",
-    }));
+    const payments = householdsToAddPayment.map((household) => {
+      let count = 0;
+      if (name === "Phí gửi xe máy") {
+        count = household.motobikes.length;
+      } else if (name === "Phí gửi ô tô") {
+        count = household.cars.length;
+      } else {
+        count = household.apartments.length;
+      }
+
+      return {
+        fee_id: fee._id,
+        payment_id: generatePaymentID(),
+        household_id: household._id,
+        amount: fee.amount,
+        payment_date: calculateDueDate(fee.due),
+        status: "Chưa thanh toán",
+        count,
+      };
+    });
+
     await Payment.insertMany(payments);
 
     res.status(201).json({ message: "Fee created successfully", fee });

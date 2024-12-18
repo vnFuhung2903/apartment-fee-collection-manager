@@ -115,6 +115,7 @@ function FeeList() {
                     <td>{fee.amount.toLocaleString("vi-VN")} VNĐ</td>
                     <td>{fee.due} Tháng</td>
                     <td>{fee.status}</td>
+                    <td>{fee.count}</td>
                     <td>
                       <EditFee item={fee} onReload={handleReload}/>
                       <button className="btn-details delete-icon" onClick={() => handleDelete(fee._id)}><CloseOutlined /></button>
