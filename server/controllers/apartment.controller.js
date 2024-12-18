@@ -27,7 +27,7 @@ module.exports.index = async (req,res) => {
 
 module.exports.getRemain = async (req, res) => {
     try {
-        const apartments = await apartment.find({ household: null });
+        const apartments = await apartment.find({});
         const json = apartments.map(apt => {
             return {
                 floor: (apt.number / 100).toFixed(0),

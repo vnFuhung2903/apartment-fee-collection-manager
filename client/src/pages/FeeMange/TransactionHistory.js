@@ -80,9 +80,9 @@ function TransactionHistory(){
                 <tr key={index}>
                   <td>{fee.bill_id}</td>
                   <td>{fee.payment_id}</td>
-                  <td>{fee.feeName}</td>
+                  <td>{fee.payment_name}</td>
                   <td>{dayjs(fee.bill_time).format("DD/MM/YYYY HH:mm:ss")}</td>
-                  <td>+{fee.amount.toLocaleString("vi-VN")} VNĐ</td>
+                  <td>+{(fee.amount*fee.count).toLocaleString("vi-VN")} VNĐ</td>
                 </tr>
               ))}
             </tbody>

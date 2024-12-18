@@ -103,7 +103,7 @@ function FeeMange(){
 
   const totalAmount = selectedPayments.reduce(
     (sum, item) =>
-      sum += item.amount,
+      sum += item.amount*item.count,
     0
   ) || 0;
 
@@ -215,8 +215,8 @@ function FeeMange(){
                   <td>{Tpayment.payment_id}</td> {/* Hiển thị payment_id */}
                   <td>{dayjs(Tpayment.payment_date).format('DD/MM/YYYY')}</td> {/* Định dạng ngày nộp */}
                   <td>{Tpayment.householdHead}</td>
-                  <td>{Tpayment.feeName}</td> {/* Hiển thị tên khoản thu */}
-                  <td>{Number(Tpayment.amount).toLocaleString("vi-VN")} VNĐ</td> {/* Định dạng số tiền */}
+                  <td>{Tpayment.payment_name}</td> {/* Hiển thị tên khoản thu */}
+                  <td>{Number(Tpayment.amount*Tpayment.count).toLocaleString("vi-VN")} VNĐ</td> {/* Định dạng số tiền */}
                   <td>{Tpayment.status}</td> {/* Hiển thị tên khoản thu */}
                   <td>
                     <Checkbox 

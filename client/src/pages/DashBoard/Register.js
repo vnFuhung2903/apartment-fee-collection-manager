@@ -95,8 +95,11 @@ function Register(){
     },[personalInfor])
 
     useEffect(() => {
-        const data = remains?.map(apt => <option key={apt.floor} value={apt.floor}>{apt.floor}</option>)
-        setAvailableFloors(data);
+        const data = remains?.map(apt => apt.floor);
+        const set = new Set(data);
+        let res = [...set];
+        res = res.map(fl => { return <option key={fl} value={fl}>{fl}</option> });
+        setAvailableFloors(res);
     }, [remains])
 
     useEffect(() => {

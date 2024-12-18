@@ -81,9 +81,9 @@ function Detail(){
             <tbody>
               {sortedFees.map((fee, index) => (
                 <tr key={index}>
-                  <td>{fee.feeName}</td>
-                  <td>1</td>
-                  <td> {fee.amount.toLocaleString("vi-VN")} VNĐ</td>
+                  <td>{fee.payment_name}</td>
+                  <td>{fee.count}</td>
+                  <td> {(fee.amount*fee.count).toLocaleString("vi-VN")} VNĐ</td>
                   <td>
                     {fee.payment_date ? new Date(fee.payment_date).toLocaleDateString('vi-VN') : 'Chưa có ngày'}                                     
                   </td>
