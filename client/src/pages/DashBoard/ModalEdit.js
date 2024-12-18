@@ -1,7 +1,7 @@
 import React ,{useState,useEffect} from "react";
 import { Modal, DatePicker, Form, Input, InputNumber, Radio, Select, Row, Col } from "antd";
 import "./style.css";
-
+import dayjs from "dayjs";
 
 function ModalEdit(props){
     const [form] = Form.useForm();
@@ -12,9 +12,9 @@ function ModalEdit(props){
       if (personInfo) {
         form.setFieldsValue({
           ...personInfo,
-          dob:   personInfo?.dob,
-          movingIn: personInfo?.movingIn, 
-          movingOut: personInfo?.movingOut,
+          dob: personInfo?.dob ? dayjs(personInfo.dob) : null, 
+          movingIn: personInfo?.movingIn ? dayjs(personInfo.movingIn) : null,
+          movingOut: personInfo?.movingOut ? dayjs(personInfo.movingOut) : null,
         });
       }
     }, [personInfo, form]);
@@ -64,7 +64,7 @@ function ModalEdit(props){
         wrapperCol={{ span: 16 }}
         layout="horizontal"
         style={{ width: 800}}
-        initialValues={{...personInfo, dob: personInfo?.dob, movingIn: personInfo?.movingIn}}
+        initialValues={{...personInfo, dob: personInfo?.dob ? dayjs(personInfo.dob) : null, movingIn: personInfo?.movingIn ? dayjs(personInfo.movingIn) : null,movingOut: personInfo?.movingOut ? dayjs(personInfo.movingOut) : null,}}
       >
         <Row gutter={24}>
           <Col span={10}>
