@@ -103,7 +103,7 @@ function FeeMange(){
 
   const totalAmount = selectedPayments.reduce(
     (sum, item) =>
-      sum += item.amount,
+      sum += item.amount*item.count,
     0
   ) || 0;
 
