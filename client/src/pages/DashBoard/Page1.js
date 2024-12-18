@@ -4,8 +4,8 @@ import { Link } from "react-router-dom"
 import  React,{ useEffect,useMemo, useState,} from "react"
 import { useSelector, useDispatch } from "react-redux";
 import { fetchDashboardData, fetchHouseholds,setHouseholds } from "../../actions";
-import { Tag,Form,Row,Col,Select ,Button,Modal,message} from "antd";
-import {ExclamationCircleOutlined} from '@ant-design/icons';
+import { Form,Row,Col,Select ,Button,Modal,message} from "antd";
+import {ExclamationCircleOutlined,ExportOutlined} from '@ant-design/icons';
 function Page1(){
     const dispatch = useDispatch();
     const {
@@ -207,14 +207,10 @@ function Page1(){
                             <td> { household.contact } </td>
                             <td> { household.floors } </td>
                             <td> { household.numbers } </td>
-                            <td>
-                                <Tag className="status" color={household.status === "Thường trú" ? "orange" : " red"}>
-                                        {household.status}
-                                </Tag> 
-                            </td>
-                            <td><span className="status">
+                            <td>{household.status}</td>
+                            <td><span>
                                 <Link to={`/household_infor?household_id=${household.id}`}>
-                                    Mở rộng
+                                    <ExportOutlined className="status"/>
                                 </Link>
                             </span></td>
                             <td> <Button danger onClick={() => {handleConfirm(household.id)}} >Xóa</Button></td>
