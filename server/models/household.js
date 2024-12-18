@@ -8,7 +8,19 @@ const householdSchema = new mongoose.Schema({
     members: [ { 
         member_id: { type: Schema.Types.ObjectId, ref: 'persons' },
         relation_to_head: String
-    } ]
+    } ],
+    motobikes: [
+        {
+          vehicle_type: String,
+          plate: String
+        }
+      ],
+      cars: [
+        {
+          vehicle_type: String,
+          plate: String
+        }
+      ]
 })
 
 const household = mongoose.model("households", householdSchema);
