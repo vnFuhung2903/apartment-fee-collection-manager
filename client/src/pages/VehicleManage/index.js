@@ -7,6 +7,7 @@ import axios from "axios";
 
 function VehicleMange(){
   const [dataList, setVehicles] = useState([]);
+  
   useEffect(() => {
     const fetchVehicles = async () => {
         try {
@@ -53,7 +54,7 @@ function VehicleMange(){
       });
   }, [dataList, filters]);
   
-  const handleDelete = async (vehicle) => {
+  const handleDelete = async (vehicle,owner) => {
     Modal.confirm({
       title: "Xác nhận xóa",
       content: "Bạn có chắc chắn muốn xóa loại phí này không?",
@@ -62,12 +63,17 @@ function VehicleMange(){
       cancelText: "Hủy",
       onOk: async () => {
         try {
-          const response = await axios.post("http://localhost:8386/vehicles/api/v2/delete", {...vehicle}, {
+          const response = await axios.post("http://localhost:8386/vehicles/api/v2/delete", {
+            "household_id":owner.household_id,
+            "ownName":owner.ownName,
+            "vehicle_type":vehicle.vehicle_type,
+            "plate":vehicle.plate
+          }, {
             headers: {
               "Content-Type": "application/json",
             },
           }); 
-          setVehicles(response.data);
+          window.location.reload()
         } catch (error) {
             console.error("Error fetching residents data:", error);
         }
@@ -140,7 +146,7 @@ function VehicleMange(){
                     <td>{vehicle.vehicle_type}</td>
                     <td>{vehicle.plate}</td>
                     <td>
-                      <button className="btn-details delete-icon" onClick={() => handleDelete(vehicle)}><CloseOutlined /></button>
+                      <button className="btn-details delete-icon" onClick={() => handleDelete(vehicle,owner)}><CloseOutlined /></button>
                     </td>
                   </tr>
                 ))
