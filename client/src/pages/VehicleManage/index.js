@@ -3,11 +3,26 @@ import "./style.css"
 import { Form, Select, Col, Row, Modal, Input } from 'antd';
 import { CloseOutlined } from "@ant-design/icons";
 import AddVehicle from "./AddVehicle"
+import axios from "axios";
 
 function VehicleMange(){
-  const dataList = [
+  const [dataList, setVehicles] = useState([]);
+  useEffect(() => {
+    const fetchVehicles = async () => {
+        try {
+            const response = await axios.get("http://localhost:8386/vehicles/api/v2/vehicles"); 
+            setVehicles(response.data);
+        } catch (error) {
+            console.error("Error fetching residents data:", error);
+        }
+    };
+
+    fetchVehicles();
+}, []);
+
+  const dataList1 = [
     {
-      name: "Nguyễn Văn An",
+      ownName: "Nguyễn Văn An",
       vehicle: [
         {
           type: "Xe máy",
@@ -24,7 +39,7 @@ function VehicleMange(){
       ]
     },
     {
-      name: "Trần Thị Bích",
+      ownName: "Trần Thị Bích",
       vehicle: [
         {
           type: "Ô tô",
@@ -41,8 +56,8 @@ function VehicleMange(){
   const householdName = [
     { value: "", label: "None" },
       ...dataList.map(item => ({
-      value: item.name,
-      label: item.name,
+      value: item.ownName,
+      label: item.ownName,
     })),
   ];
 
@@ -144,9 +159,9 @@ function VehicleMange(){
               {filteredData.map((owner, ownerIndex) => (
                 owner.vehicle.map((vehicle, vehicleIndex) => (
                   <tr key={`${ownerIndex}-${vehicleIndex}`}>
-                    <td>{vehicleIndex === 0 ? owner.name : ""}</td>
+                    <td>{vehicleIndex === 0 ? owner.ownName : ""}</td>
                     <td>{vehicleIndex === 0 ? owner.vehicle.length : ""}</td>
-                    <td>{vehicle.type}</td>
+                    <td>{vehicle.vehicle_type}</td>
                     <td>{vehicle.plate}</td>
                     <td>
                       <button className="btn-details delete-icon" onClick={() => handleDelete(vehicle.plate)}><CloseOutlined /></button>
