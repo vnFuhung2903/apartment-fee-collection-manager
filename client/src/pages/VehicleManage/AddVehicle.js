@@ -1,4 +1,4 @@
-import { Input, Form, Button, Radio, Modal, message, Select } from "antd";
+import { Input, Form, Button, Radio, Modal, message, Select,notification } from "antd";
 import { useEffect, useState, useSelector } from "react";
 import { fetchHouseholds } from "../../actions";
 
@@ -19,8 +19,19 @@ function AddVehicle(){
     });
   }, [])
 
+  const openNotification = (type, message, description) => {
+    notification[type]({
+      message,
+      description,
+      placement: "topRight",
+      duration: 2,
+      pauseOnHover: true,
+    });
+  };
   const handleSubmit = (value) => {
-    const household_id = households.filter(household => value.ownerName !== household.head).at(0)._id;
+    const owner = households.find(household => value.ownName === household.head);
+    const household_id = owner.id;
+    console.log(JSON.stringify({...value, household_id }));
     fetch("http://localhost:8386/vehicles/api/v2/create", {
       method: "POST",
       headers: {"Content-Type": "application/json"},
@@ -32,12 +43,17 @@ function AddVehicle(){
     .then((data) => {
       if(data.message) {
         if(data.message === "Success") {
-          message.success("Thêm phương tiện thành công");
+          openNotification("success", "Thành công", "Thêm phương tiện thành công!");
           setIsModalVisible(false);
+          window.location.reload();
         }
-        else alert(data.message);
+        else {
+          console.log(message);
+          openNotification("error", "Lỗi", "Có lỗi xảy ra khi gửi yêu cầu !!!");
+        }
       }
     })
+  
   }
   return(
     <>

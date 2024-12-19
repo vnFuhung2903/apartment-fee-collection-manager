@@ -1,22 +1,23 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import "./style.css"
-import { Form, Select, Col, Row, Modal, Input } from 'antd';
+import { Form, Select, Col, Row, Modal, Input,notification } from 'antd';
 import { CloseOutlined } from "@ant-design/icons";
 import AddVehicle from "./AddVehicle"
 import axios from "axios";
 
 function VehicleMange(){
   const [dataList, setVehicles] = useState([]);
-  useEffect(() => {
-    const fetchVehicles = async () => {
-        try {
-            const response = await axios.get("http://localhost:8386/vehicles/api/v2/vehicles"); 
-            setVehicles(response.data);
-        } catch (error) {
-            console.error("Error fetching residents data:", error);
-        }
-    };
+  const fetchVehicles = async () => {
+    try {
+        const response = await axios.get("http://localhost:8386/vehicles/api/v2/vehicles"); 
+        setVehicles(response.data);
+    } catch (error) {
+        console.error("Error fetching residents data:", error);
+    }
+};
 
+  useEffect(() => {
+    
     fetchVehicles();
   }, []);
 
@@ -27,6 +28,7 @@ function VehicleMange(){
       label: item.ownName,
     })),
   ];
+
 
   const [filters, setFilters] = useState({
     ownName: null, 
@@ -52,7 +54,17 @@ function VehicleMange(){
       });
   }, [dataList, filters]);
   
-  const handleDelete = async (vehicle, ownerIndex) => {
+  const openNotification = (type, message, description) => {
+    notification[type]({
+      message,
+      description,
+      placement: "topRight",
+      duration: 2,
+      pauseOnHover: true,
+    });
+  };
+
+  const handleDelete = async (vehicle,owner) => {
     Modal.confirm({
       title: "Xác nhận xóa",
       content: "Bạn có chắc chắn muốn xóa loại phí này không?",
@@ -61,14 +73,23 @@ function VehicleMange(){
       cancelText: "Hủy",
       onOk: async () => {
         try {
-          const response = await axios.post("http://localhost:8386/vehicles/api/v2/delete", {...vehicle, household_id: ownerIndex}, {
+          const response = await axios.post("http://localhost:8386/vehicles/api/v2/delete", {
+            "household_id":owner.household_id,
+            "ownName":owner.ownName,
+            "vehicle_type":vehicle.vehicle_type,
+            "plate":vehicle.plate
+          }, {
             headers: {
               "Content-Type": "application/json",
             },
           }); 
-          setVehicles(response.data);
+          if (response.status === 200) {
+            openNotification("success", "Thành công", "Xóa phương tiện thành công!");
+            fetchVehicles();
+          }
         } catch (error) {
             console.error("Error fetching residents data:", error);
+            openNotification("error", "Lỗi", "Có lỗi xảy ra khi gửi yêu cầu !!!");
         }
       }
   })};
@@ -139,7 +160,7 @@ function VehicleMange(){
                     <td>{vehicle.vehicle_type}</td>
                     <td>{vehicle.plate}</td>
                     <td>
-                      <button className="btn-details delete-icon" onClick={() => handleDelete(vehicle)}><CloseOutlined /></button>
+                      <button className="btn-details delete-icon" onClick={() => handleDelete(vehicle,owner)}><CloseOutlined /></button>
                     </td>
                   </tr>
                 ))
