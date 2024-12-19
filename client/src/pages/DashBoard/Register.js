@@ -66,7 +66,7 @@ function Register(){
         fetch("http://localhost:8386/person/api/v1/create", {
             method: "POST",
             headers: {"Content-Type": "application/json"},
-            body: personalInfor
+            body: JSON.stringify(personalInfor)
         })
         .then((res) => {
             return res.json();
