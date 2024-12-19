@@ -1,8 +1,13 @@
 import "./style_register.css"
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { setHouseholds } from "../../actions";
+import { message } from "antd";
+import { useSelector, useDispatch } from "react-redux";
 
 function Register(){
+    const dispatch = useDispatch();
+    const {households} = useSelector((state) => state.page1Reducer);
     const navigate = useNavigate();
     const [remain, setRemain] = useState([]);
     //test
@@ -18,15 +23,16 @@ function Register(){
         name: "",
         cic: "",
         dob: "",
-        nationality: "",
+        nation: "",
         occupation: "",
         gender: "Nam",
         hometown: "",
-        ethnic: "",
-        phone: "",
+        ethnicity: "",
+        contact_phone: "",
         status: "Thường trú",
-        start:"",
-        end:""
+        relation_to_head:"",
+        movingIn:"",
+        movingOut:""
     })
 
     const [householdInfor, setHouseholdInfor] = useState({
@@ -70,29 +76,44 @@ function Register(){
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        fetch("http://localhost:8386/person/api/v1/create", {
-            method: "POST",
-            headers: {"Content-Type": "application/json"},
-            body: personalInfor
-        })
-        .then((res) => {
-            return res.json();
-        })
-        .then(data => {
-            fetch("http://localhost:8386/household/api/v1/create", {
-                method: "POST",
-                headers: {"Content-Type": "application/json"},
-                body: JSON.stringify({ headId: data, apartmentNumber: householdInfor.number, contact: personalInfor.phone })
-            })
-            .then(res => {
-                return res.json()
-            })
-            .then(data => {
-                if(data.message === 'Success')
-                    navigate(`/household_infor/:${data.household}`);
-                else alert(data.message);
-            })
-        })
+        console.log(personalInfor);
+        message.success({ content: 'Đăng kí thành công!', key: 'success' });
+        if(personalInfor.relation_to_head === "Chủ nhà")
+        { 
+            const newHousehold = {
+                contact : personalInfor.contact_phone,
+                floors : [householdInfor.floor],
+                head: personalInfor.name,
+                id:"1",
+                numbers: [householdInfor.number],
+                status:personalInfor.status,
+            };
+            dispatch(setHouseholds([...households,newHousehold]));
+            console.log(households);
+        }
+        // fetch("http://localhost:8386/person/api/v1/create", {
+        //     method: "POST",
+        //     headers: {"Content-Type": "application/json"},
+        //     body: personalInfor
+        // })
+        // .then((res) => {
+        //     return res.json();
+        // })
+        // .then(data => {
+        //     fetch("http://localhost:8386/household/api/v1/create", {
+        //         method: "POST",
+        //         headers: {"Content-Type": "application/json"},
+        //         body: JSON.stringify({ headId: data, apartmentNumber: householdInfor.number, contact: personalInfor.phone })
+        //     })
+        //     .then(res => {
+        //         return res.json()
+        //     })
+        //     .then(data => {
+        //         if(data.message === 'Success')
+        //             navigate(`/household_infor/:${data.household}`);
+        //         else alert(data.message);
+        //     })
+        // })
     }
 
     const availableFloors = [...new Set(remains.map(item => item.floor))];
@@ -120,23 +141,23 @@ function Register(){
                         <input id="name" name="name" type="text" placeholder="" onChange={handlePersonalChange} required />
                     </div>
                     <div className="input-fields">
-                        <label htmlFor="">CCCD</label>
+                        <label htmlFor="cic">CCCD</label>
                         <input id="cic" name="cic" type="text" placeholder="" onChange={handlePersonalChange} required />
                     </div>
                     <div className="input-fields">
-                        <label htmlFor="">Ngày sinh</label>
+                        <label htmlFor="dob">Ngày sinh</label>
                         <input id="dob" name="dob" type="date" placeholder="" onChange={handlePersonalChange} required />
                     </div>
                     <div className="input-fields">
-                        <label htmlFor="">Quốc tịch</label>
-                        <input id="nationality" name="nationality" type="text" placeholder="" onChange={handlePersonalChange} required /> 
+                        <label htmlFor="nation">Quốc tịch</label>
+                        <input id="nation" name="nation" type="text" placeholder="" onChange={handlePersonalChange} required /> 
                     </div>
                     <div className="input-fields">
-                        <label htmlFor="">Nghề nghiệp</label>
+                        <label htmlFor="occupation">Nghề nghiệp</label>
                         <input id="occupation" name="occupation" type="text" placeholder="" onChange={handlePersonalChange} required />
                     </div>
                     <div className="input-fields">
-                        <label htmlFor="">Giới tính</label>
+                        <label htmlFor="gender">Giới tính</label>
                         <select name="gender" id="gender" onChange={handlePersonalChange}>
                             <option value="Nam">Nam</option>
                             <option value="Nữ">Nữ</option>
@@ -144,16 +165,16 @@ function Register(){
                         </select>
                     </div>
                     <div className="input-fields">
-                        <label htmlFor="">Quê quán</label>
+                        <label htmlFor="hometown">Quê quán</label>
                         <input id="hometown" name="hometown" type="text" placeholder="" onChange={handlePersonalChange} required />
                     </div>
                     <div className="input-fields">
-                        <label htmlFor="">Dân tộc</label>
-                        <input id="ethnic" name="ethnic" type="text" placeholder="" onChange={handlePersonalChange} required />
+                        <label htmlFor="ethnicity">Dân tộc</label>
+                        <input id="ethnicity" name="ethnicity" type="text" placeholder="" onChange={handlePersonalChange} required />
                     </div>
                     <div className="input-fields">
-                        <label htmlFor="">Số điện thoại</label>
-                        <input id="phone" name="phone" type="number" placeholder="" onChange={handlePersonalChange} required />
+                        <label htmlFor="contact_phone">Số điện thoại</label>
+                        <input id="contact_phone" name="contact_phone" type="number" placeholder="" onChange={handlePersonalChange} required />
                     </div>
                 </div>
             </div>
@@ -193,8 +214,8 @@ function Register(){
                           </select>
                     </div>
                     <div className="input-fields">
-                        <label htmlFor="relationToOwner">Quan hệ với chủ hộ</label>
-                        <select id="relationToOwner" name="relationToOwner" onChange={handlePersonalChange}>
+                        <label htmlFor="relation_to_head">Quan hệ với chủ hộ</label>
+                        <select id="relation_to_head" name="relation_to_head" onChange={handlePersonalChange}>
                             <option value="Chủ nhà">Chủ nhà</option>
                             <option value="Con cái">Con cái</option>
                             <option value="Vợ chồng">Vợ chồng</option>
@@ -205,7 +226,7 @@ function Register(){
                     </div> 
                     <div className="input-fields">
                         <label htmlFor="">Trạng thái</label>
-                        <select id="residenceType" name="status" onChange={handlePersonalChange}>
+                        <select id="status" name="status" onChange={handlePersonalChange}>
                             <option value="Thường trú">Thường trú</option>
                             <option value="Tạm trú">Tạm trú</option>
                             <option value="Tạm vắng">Tạm vắng</option>
@@ -213,11 +234,11 @@ function Register(){
                     </div>
                     <div className="input-fields">
                         <label htmlFor="">Từ ngày</label>
-                        <input id="start" name="start" type="date" placeholder="Ngày bắt đầu tạm trú" onChange={handlePersonalChange} disabled={status === "Thường trú"} required/>
+                        <input id="movingIn" name="movingIn" type="date" placeholder="Ngày bắt đầu tạm trú" onChange={handlePersonalChange} required/>
                     </div>
                     <div className="input-fields">
                         <label htmlFor="">Đến ngày</label>
-                        <input id="end" name="end" type="date" placeholder="Ngày kết thúc tạm trú" onChange={handlePersonalChange} disabled={status === "Thường trú"} required/>
+                        <input id="movingOut" name="movingOut" type="date" placeholder="Ngày kết thúc tạm trú" onChange={handlePersonalChange} disabled={status === "Thường trú"} required/>
                     </div>
                 </div>
             </div>

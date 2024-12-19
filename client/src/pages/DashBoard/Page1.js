@@ -20,6 +20,7 @@ function Page1(){
         dispatch(fetchHouseholds());
         dispatch(fetchDashboardData());
     }, [dispatch]);
+    console.log(households);
     const ownerNames = [
         {value: "",label: "None"},
         ...[...new Set(households.map(household => household.head))].map(ownerName => ({
