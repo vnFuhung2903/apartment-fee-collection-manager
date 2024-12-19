@@ -18,11 +18,11 @@ const page1Reducer = (state = initialState, action) => {
     case "SET_DASHBOARD_DATA":
       return {
         ...state,
-        numApartment: action.payload.numApartment,
-        numPerson: action.payload.numPerson,
-        numTemporary: action.payload.numTemporary,
-        numAbsence: action.payload.numAbsence,
-        recentCustomers: action.payload.recentCustomers,
+        numApartment: action.payload?.numApartment,
+        numPerson: action.payload?.numPerson,
+        numTemporary: action.payload?.numTemporary,
+        numAbsence: action.payload?.numAbsence,
+        recentCustomers: action.payload?.recentCustomers,
       };
 
     default:

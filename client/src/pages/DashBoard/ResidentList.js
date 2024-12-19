@@ -6,6 +6,9 @@ import "./style.css";
 import axios from "axios";
 function ResidentList(){
     const [residents, setResidents] = useState([]);
+    const [personNames, setPersonNames] = useState([]);
+    const [floorNumbers, setFloorNumbers] = useState([]);
+    const [roomNumbers, setRoomNumbers] = useState([]);
     useEffect(() => {
         const fetchResidents = async () => {
             try {
@@ -18,27 +21,35 @@ function ResidentList(){
 
         fetchResidents();
     }, []);
-    const personNames = [
-        {value: "",label: "None"},
-        ...[...new Set(residents.map(resident => resident.name))].map(personName => ({
-            value:personName,
-            label:personName,
-        })),
-    ];
-    const floorNumbers = [
-        {value: "",label: "None"},
-        ...[...new Set(residents.map(resident => resident.floornumber))].map(floorNumber => ({
-            value:floorNumber,
-            label:floorNumber,
-        })),
-    ];
-    const roomNumbers = [
-        {value: "",label: "None"},
-        ...[...new Set(residents.map(resident => resident.apartmentNumber))].map(roomNumber => ({
-            value:roomNumber,
-            label:roomNumber,
-        })),
-    ];
+
+    useEffect(() => {
+        const people = new Set(residents.map(resident => resident.name));
+        const fl = new Set(residents.map(resident => resident.floors[0]));
+        const rm = new Set(residents.map(resident => resident.numbers[0]))
+        setPersonNames([
+            {value: "",label: "Tất cả"},
+            ...[...people].map(personName => ({
+                value:personName,
+                label:personName,
+            })),
+        ]);
+        
+        setFloorNumbers([
+            {value: "",label: "Tất cả"},
+            ...[...fl].map(floorNumber => ({
+                value:floorNumber,
+                label:floorNumber,
+            })),
+        ]);
+
+        setRoomNumbers([
+            {value: "",label: "Tất cả"},
+            ...[...rm].map(roomNumber => ({
+                value:roomNumber,
+                label:roomNumber,
+            })),
+        ]);
+    }, [residents])
     const [filters,setFilters] = useState({
         personName: null,
         roomNumber:null,
