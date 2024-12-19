@@ -127,7 +127,7 @@ function Chart() {
                   <div className="message">
                     <p>
                       <b>{payment.householdHead}</b> Đã đóng {(payment.amount*payment.count).toLocaleString("vi-VN")}{" "}
-                      VNĐ {payment.feeName}
+                      VNĐ {payment.payment_name} 
                     </p>
                   </div>
                 </div>
