@@ -181,9 +181,11 @@ const addNewMember = async (req, res) => {
     const householdFound = await household.findOne({ _id: apartmentFound.household });
     if(!householdFound) 
       return res.status(402).json({ message: 'Invalid household' });
+    
     if(householdFound.members.includes({ member_id: id, relation_to_head: relationToOwner }))
       return res.status(407).json({ message: "Person is already in household" })
     householdFound.members.push({ member_id: id, relation_to_head: relationToOwner });
+
     await householdFound.save();
     return res.status(200).json({ message: "Success", household: householdFound._id });
   } catch (error) {

@@ -9,7 +9,7 @@ const createPerson = async (req, res) => {
     const reqPerson = req.body;
     const personFound = await person.findOne({ cic: reqPerson.cic });
     if(personFound)
-      res.status(402).json({ message: "User found" });
+      res.status(402).json({ message: "User found", person: personFound._id });
     else {
       const newPerson = new person({
         ...reqPerson

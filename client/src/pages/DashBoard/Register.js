@@ -23,7 +23,7 @@ function Register(){
     const [householdInfor, setHouseholdInfor] = useState({
         number: "",
         floor: "",
-        relationToOwner: ""
+        relationToOwner: "Chủ nhà"
     });
     const [availableFloors, setAvailableFloors] = useState([]);
     const [availableRooms, setAvailableRooms] = useState([]);
@@ -71,19 +71,19 @@ function Register(){
         .then((res) => {
             return res.json();
         })
-        .then(id => {
-            const url = householdInfor.relationToOwner === "Chủ hộ" ? "http://localhost:8386/household/api/v1/create" : "http://localhost:8386/household/api/v1/addMember"
+        .then(data => {
+            const url = householdInfor.relationToOwner === "Chủ nhà" ? "http://localhost:8386/household/api/v1/create" : "http://localhost:8386/household/api/v1/addMember"
             fetch(url, {
                 method: "POST",
                 headers: {"Content-Type": "application/json"},
-                body: JSON.stringify({ ...householdInfor, id, contact_phone: personalInfor.contact_phone })
+                body: JSON.stringify({ ...householdInfor, id: data.person, contact_phone: personalInfor.contact_phone })
             })
             .then(res => {
                 return res.json()
             })
             .then(data => {
                 if(data.message === 'Success')
-                    navigate(`/household_infor/:${data.household}`);
+                    navigate(`/household_infor?household_id=${data.household}`);
                 else alert(data.message);
             })
         })
@@ -95,15 +95,22 @@ function Register(){
     },[personalInfor])
 
     useEffect(() => {
-        const data = remains?.map(apt => apt.floor);
+        let remainData = remains;
+        if(householdInfor.relationToOwner === 'Chủ nhà')
+            remainData = remains?.filter(apt => apt.household_id === null);
+
+        const data = remainData?.map(apt => apt.floor);
         const set = new Set(data);
         let res = [...set];
         res = res.map(fl => { return <option key={fl} value={fl}>{fl}</option> });
         setAvailableFloors(res);
-    }, [remains])
+    }, [householdInfor.relationToOwner, remains])
 
     useEffect(() => {
-        const data = remains?.filter(apt => apt.floor === householdInfor.floor);
+        let remainData = remains;
+        if(householdInfor.relationToOwner === 'Chủ nhà')
+            remainData = remains?.filter(apt => apt.household_id === null);
+        const data = remainData?.filter(apt => apt.floor === householdInfor.floor);
         const rooms = data?.map(apt => apt.number);
         setAvailableRooms(rooms);
     }, [householdInfor.floor])
@@ -180,6 +187,17 @@ function Register(){
                         <input id="householdDOB" name="householdDOB" type="date" placeholder="" onChange={handleHouseholdChange} required />
                     </div> */}
                     <div className="input-fields">
+                        <label htmlFor="relationToOwner">Quan hệ với chủ hộ</label>
+                        <select id="relationToOwner" name="relationToOwner" onChange={handleHouseholdChange}>
+                            <option value="Chủ nhà">Chủ nhà</option>
+                            <option value="Con cái">Con cái</option>
+                            <option value="Vợ chồng">Vợ chồng</option>
+                            <option value="Bố mẹ">Bố mẹ</option>
+                            <option value="Họ hàng">Họ hàng</option>
+                            <option value="Anh em">Anh em</option>
+                        </select>
+                    </div> 
+                    <div className="input-fields">
                          <label htmlFor="floor">Chọn tầng</label>
                           <select id="floor" name="floor" onChange={handleHouseholdChange} required>
                                 <option value="">Chọn tầng</option>
@@ -196,17 +214,6 @@ function Register(){
                           </select>
                     </div>
                     <div className="input-fields">
-                        <label htmlFor="relationToOwner">Quan hệ với chủ hộ</label>
-                        <select id="relationToOwner" name="relationToOwner" onChange={handleHouseholdChange}>
-                            <option value="Chủ nhà">Chủ nhà</option>
-                            <option value="Con cái">Con cái</option>
-                            <option value="Vợ chồng">Vợ chồng</option>
-                            <option value="Bố mẹ">Bố mẹ</option>
-                            <option value="Họ hàng">Họ hàng</option>
-                            <option value="Anh em">Anh em</option>
-                        </select>
-                    </div> 
-                    <div className="input-fields">
                         <label htmlFor="">Trạng thái</label>
                         <select id="residenceType" name="status" onChange={handlePersonalChange}>
                             <option value="Thường trú">Thường trú</option>
@@ -216,7 +223,7 @@ function Register(){
                     </div>
                     <div className="input-fields">
                         <label htmlFor="">Từ ngày</label>
-                        <input id="movingIn" name="movingIn" type="date" placeholder="Ngày bắt đầu tạm trú" onChange={handlePersonalChange} disabled={status === "Thường trú"} required/>
+                        <input id="movingIn" name="movingIn" type="date" placeholder="Ngày bắt đầu tạm trú" onChange={handlePersonalChange} required/>
                     </div>
                     <div className="input-fields">
                         <label htmlFor="">Đến ngày</label>
