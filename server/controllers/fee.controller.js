@@ -37,18 +37,20 @@ module.exports.index = async (req, res) => {
     //End Pagination
 
     const fees = await Fee.find(find).sort(sort).skip(objectPagination.skip).limit(objectPagination.limitItem);
-    fees.push({
-      pagination: {
-        currentPage: objectPagination.currentPage,
-        totalPage: objectPagination.totalPage,
-        limitItem: objectPagination.limitItem,
-        totalItems: countFees,
-      },
-    })
+    
     if (!fees) {
       return res.status(404).json({ message: "Not Found" });
     } else {
-      res.json(fees);
+      const results = fees.map((fee) => ({
+        ...fee._doc,
+        pagination: {
+          currentPage: objectPagination.currentPage,
+          totalPage: objectPagination.totalPage,
+          limitItem: objectPagination.limitItem,
+          totalItems: countFees,
+        },
+      }));
+      res.json(results);
     }
   } catch (error) {
     res.status(500).json({ message: "Server Error" });
