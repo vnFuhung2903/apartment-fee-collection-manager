@@ -20,7 +20,7 @@ function FeeMange(){
 
   //Dữ liệu để lọc
   const householdName = [
-    { value: "", label: "None" },
+    { value: "", label: "Tất cả" },
     ...[...new Set(totalPayment.map(Tpayment => Tpayment.householdHead))].map(householdHead => ({
       value: householdHead,
       label: householdHead,
@@ -28,7 +28,7 @@ function FeeMange(){
   ];
   
   const paymentName = [
-    { value: "", label: "None" },
+    { value: "", label: "Tất cả" },
     ...[...new Set(totalPayment.map(Tpayment => Tpayment.feeName))].map(feeName => ({
       value: feeName,
       label: feeName,

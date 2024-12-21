@@ -21,14 +21,14 @@ function Page1(){
         dispatch(fetchDashboardData());
     }, [dispatch]);
     const ownerNames = [
-        {value: "",label: "None"},
+        {value: "",label: "Tất cả"},
         ...[...new Set(households.map(household => household.head))].map(ownerName => ({
             value:ownerName,
             label:ownerName,
         })),
     ];
     const floorNumbers = [
-        {value: "",label: "None"},
+        {value: "",label: "Tất cả"},
         ...[...new Set(
             households.reduce((floors, household) => [...floors, ...household.floors], []))].map(floorNumber => ({
             value:floorNumber,
@@ -36,7 +36,7 @@ function Page1(){
         })),
     ];
     const roomNumbers = [
-        {value: "",label: "None"},
+        {value: "",label: "Tất cả"},
         ...[...new Set(households.reduce((rooms, household) => [...rooms, ...household.numbers], []))].map(roomNumber => ({
             value:roomNumber,
             label:roomNumber,
