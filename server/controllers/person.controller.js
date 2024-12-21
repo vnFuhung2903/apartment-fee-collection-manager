@@ -115,7 +115,22 @@ const getFilterdList = async (req, res) => {
 
 const getPersonAll = async (req, res) => {
   try {
-    let householdsFound = await household.find({});
+    // Pagination
+    let objectPagination = {
+      currentPage: 1,
+      limitItem: 8, 
+    };
+
+    if (req.query.page) {
+      objectPagination.currentPage = parseInt(req.query.page);
+    }
+
+    objectPagination.skip = (objectPagination.currentPage - 1) * objectPagination.limitItem;
+    const totalHouseholds = await household.countDocuments();
+    const totalPage = Math.ceil(totalHouseholds / objectPagination.limitItem);
+    objectPagination.totalPage = totalPage;
+
+    let householdsFound = await household.find({}).skip(objectPagination.skip).limit(objectPagination.limitItem);;
     let json = [];
     for(const data of householdsFound) {
       const [head, mem, ownedApartments] = await Promise.all([
@@ -125,8 +140,32 @@ const getPersonAll = async (req, res) => {
       ]);
       const numbers = ownedApartments.map(owned => owned.number);
       const floors = ownedApartments.map(owned => (Number(owned.number) / 100).toFixed(0));
-      json.push({ ...head._doc, householdId: data._id, floors: floors, numbers: numbers });
-      mem.forEach(member => { return json.push({ ...member._doc, householdId: data._id, floors: floors, numbers: numbers })})
+      json.push({
+        ...head._doc,
+        householdId: data._id,
+        floors: floors,
+        numbers: numbers,
+        pagination: {
+          currentPage: objectPagination.currentPage,
+          totalPage: objectPagination.totalPage,
+          limitItem: objectPagination.limitItem,
+          totalItems: totalHouseholds,
+        },
+      });
+      mem.forEach((member) => {
+        return json.push({
+          ...member._doc,
+          householdId: data._id,
+          floors: floors,
+          numbers: numbers,
+          pagination: {
+            currentPage: objectPagination.currentPage,
+            totalPage: objectPagination.totalPage,
+            limitItem: objectPagination.limitItem,
+            totalItems: totalHouseholds,
+          },
+        });
+      });
     }
     res.status(200).json(json);
   } catch (error) {

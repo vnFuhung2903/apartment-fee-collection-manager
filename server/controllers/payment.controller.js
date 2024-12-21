@@ -20,7 +20,19 @@ module.exports.index = async (req, res) => {
     if (req.query.status=='undone'){
       filter.status='Chưa thanh toán';
     }
-
+    //Pagination
+    let objectPagination = {
+      currentPage:1,
+      limitItem:8
+    };
+    if (req.query.page){
+      objectPagination.currentPage= parseInt(req.query.page);
+    }
+    objectPagination.skip = (objectPagination.currentPage - 1)*objectPagination.limitItem;
+    const countPayments = await Payment.countDocuments(filter);
+    const totalPage = Math.ceil(countPayments/objectPagination.limitItem);
+    objectPagination.totalPage = totalPage;
+    //End Pagination
     const sort = {};
     if (req.query.sortKey && req.query.sortValue) {
       sort[req.query.sortKey] = parseInt(req.query.sortValue) || 1;
@@ -30,7 +42,7 @@ module.exports.index = async (req, res) => {
     const limit = req.query.limit ? parseInt(req.query.limit) : null;
     let query = Payment.find(filter)
       .sort(sort)
-      .lean();
+      .lean().skip(objectPagination.skip).limit(objectPagination.limitItem);
     
     //Limit
     if (limit && limit > 0) {
@@ -86,7 +98,13 @@ module.exports.index = async (req, res) => {
         ...payment,
         householdHead: headPerson ? headPerson.name : "Unknown",
         feeName: feeMap[payment.fee_id?.toString()] || "Unknown",
-        payment_name : `${feeMap[payment.fee_id?.toString()]} tháng ${month}/${year}` 
+        payment_name : `${feeMap[payment.fee_id?.toString()]} tháng ${month}/${year}` ,
+        pagination: {
+          currentPage: objectPagination.currentPage,
+          totalPage: objectPagination.totalPage,
+          limitItem: objectPagination.limitItem,
+          totalItems: countPayments,
+        },
       };
     });
     res.json(results);

@@ -7,7 +7,22 @@ const getHouseholds = async (req, res) => {
   try {
     const { id } = req.query;
     const conditions = id ? { _id: id } : {};
-    let householdsFound = await household.find(conditions);
+    // Pagination
+    let objectPagination = {
+      currentPage: 1,
+      limitItem: 8,
+    };
+
+    if (req.query.page) {
+      objectPagination.currentPage = parseInt(req.query.page);
+    }
+    objectPagination.skip = (objectPagination.currentPage - 1) * objectPagination.limitItem;
+    const countHouseholds = await household.countDocuments(conditions);
+    const totalPage = Math.ceil(countHouseholds / objectPagination.limitItem);
+    objectPagination.totalPage = totalPage;
+    //End Pagination
+
+    let householdsFound = await household.find(conditions).skip(objectPagination.skip).limit(objectPagination.limitItem);
     let json = [];
     for(const data of householdsFound) {
       const head = await person.findOne({ _id: data.head });
@@ -17,7 +32,19 @@ const getHouseholds = async (req, res) => {
       const numbers = ownedApartments.map(owned => owned.number);
       const floors = ownedApartments.map(owned => (Number(owned.number) / 100).toFixed(0));
       
-      json.push({ id: data._id, head: head.name, contact: data.contact_phone, status: head.status, floors: floors, numbers: numbers });
+      json.push({ id: data._id, 
+        head: head.name, 
+        contact: data.contact_phone, 
+        status: head.status, 
+        floors: floors, 
+        numbers: numbers ,
+        pagination: {
+          currentPage: objectPagination.currentPage,
+          totalPage: objectPagination.totalPage,
+          limitItem: objectPagination.limitItem,
+          totalItems: countHouseholds,
+        }, 
+    });
     }
     res.status(200).json(json);
   } catch (error) {

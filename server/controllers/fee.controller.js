@@ -21,7 +21,30 @@ module.exports.index = async (req, res) => {
       sort[req.query.sortKey] = req.query.sortValue;
     }
     //End Sort
-    const fees = await Fee.find(find).sort(sort);
+
+    //Pagination
+    let objectPagination = {
+      currentPage:1,
+      limitItem:8
+    };
+    if (req.query.page){
+      objectPagination.currentPage= parseInt(req.query.page);
+    }
+    objectPagination.skip = (objectPagination.currentPage - 1)*objectPagination.limitItem;
+    const countFees = await Fee.countDocuments(find);
+    const totalPage = Math.ceil(countFees/objectPagination.limitItem);
+    objectPagination.totalPage = totalPage;
+    //End Pagination
+
+    const fees = await Fee.find(find).sort(sort).skip(objectPagination.skip).limit(objectPagination.limitItem);
+    fees.push({
+      pagination: {
+        currentPage: objectPagination.currentPage,
+        totalPage: objectPagination.totalPage,
+        limitItem: objectPagination.limitItem,
+        totalItems: countFees,
+      },
+    })
     if (!fees) {
       return res.status(404).json({ message: "Not Found" });
     } else {
