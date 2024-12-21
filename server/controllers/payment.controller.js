@@ -20,7 +20,18 @@ module.exports.index = async (req, res) => {
     if (req.query.status=='undone'){
       filter.status='Chưa thanh toán';
     }
-
+    //Pagination
+    let pagination = {
+      currentPage:1,
+      limitItem:8
+    };
+    if (req.query.page){
+      pagination.currentPage= parseInt(req.query.page);
+    }
+    const skip = (pagination.currentPage - 1) * pagination.limitItem;
+    pagination.totalItems = await Payment.countDocuments(filter);
+    pagination.totalPage = Math.ceil(pagination.totalItems / pagination.limitItem);
+    //End Pagination
     const sort = {};
     if (req.query.sortKey && req.query.sortValue) {
       sort[req.query.sortKey] = parseInt(req.query.sortValue) || 1;
@@ -30,7 +41,7 @@ module.exports.index = async (req, res) => {
     const limit = req.query.limit ? parseInt(req.query.limit) : null;
     let query = Payment.find(filter)
       .sort(sort)
-      .lean();
+      .lean().skip(skip).limit(pagination.limitItem);
     
     //Limit
     if (limit && limit > 0) {
@@ -75,8 +86,8 @@ module.exports.index = async (req, res) => {
       return acc;
     }, {});
 
-
-    const results = payments.map(payment => {
+    let results = { ...pagination, array: [] };
+    results.array = payments.map(payment => {
       const household = householdMap[payment.household_id.toString()];
       const headPerson = household && household.head ? personMap[household.head.toString()] : null;
       const paymentDateObj = new Date(payment.payment_date);
@@ -86,11 +97,10 @@ module.exports.index = async (req, res) => {
         ...payment,
         householdHead: headPerson ? headPerson.name : "Unknown",
         feeName: feeMap[payment.fee_id?.toString()] || "Unknown",
-        payment_name : `${feeMap[payment.fee_id?.toString()]} tháng ${month}/${year}` 
+        payment_name : `${feeMap[payment.fee_id?.toString()]} tháng ${month}/${year}`,
       };
     });
     res.json(results);
-
   } catch (error) {
     console.error('Payment index error:', error);
     res.status(500).json({ 

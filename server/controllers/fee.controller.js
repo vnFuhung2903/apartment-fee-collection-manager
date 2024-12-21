@@ -21,11 +21,30 @@ module.exports.index = async (req, res) => {
       sort[req.query.sortKey] = req.query.sortValue;
     }
     //End Sort
-    const fees = await Fee.find(find).sort(sort);
+
+    //Pagination
+    let pagination = {
+      currentPage: 1,
+      limitItem: 8
+    };
+    if (req.query.page){
+      pagination.currentPage= parseInt(req.query.page);
+    }
+    const skip = (pagination.currentPage - 1) * pagination.limitItem;
+    pagination.totalItems = await Fee.countDocuments(find);
+    pagination.totalPage = Math.ceil(pagination.totalItems / pagination.limitItem);
+    //End Pagination
+
+    const fees = await Fee.find(find).sort(sort).skip(skip).limit(pagination.limitItem);
+    
     if (!fees) {
       return res.status(404).json({ message: "Not Found" });
     } else {
-      res.json(fees);
+      let results = { ...pagination, array: [] };
+      results.array = fees.map((fee) => ({
+        ...fee._doc,
+      }));
+      res.json(results);
     }
   } catch (error) {
     res.status(500).json({ message: "Server Error" });

@@ -115,9 +115,30 @@ const getFilterdList = async (req, res) => {
 
 const getPersonAll = async (req, res) => {
   try {
+    // Pagination
+    let pagination = {
+      currentPage: 1,
+      limitItem: 8, 
+    };
+
+    if (req.query.page) {
+      pagination.currentPage = parseInt(req.query.page);
+    }
+
+    let skip = (pagination.currentPage - 1) * pagination.limitItem;
+    pagination.totalItems = await person.countDocuments();
+    pagination.totalPage = Math.ceil(pagination.totalItems / pagination.limitItem);
+
     let householdsFound = await household.find({});
-    let json = [];
+    let json = { ...pagination, array: [] };
+
     for(const data of householdsFound) {
+      if(json.array.length === pagination.limitItem)
+        break;
+      if(skip >= 1 + data.members.length) {
+        skip -= (data.members.length + 1);
+        continue;
+      }
       const [head, mem, ownedApartments] = await Promise.all([
         person.findOne({ _id: data.head }),
         Promise.all(data.members.map(member => person.findOne({ _id: member.member_id }))),
@@ -125,8 +146,21 @@ const getPersonAll = async (req, res) => {
       ]);
       const numbers = ownedApartments.map(owned => owned.number);
       const floors = ownedApartments.map(owned => (Number(owned.number) / 100).toFixed(0));
-      json.push({ ...head._doc, householdId: data._id, floors: floors, numbers: numbers });
-      mem.forEach(member => { return json.push({ ...member._doc, householdId: data._id, floors: floors, numbers: numbers })})
+      
+      skip-- <= 0 && json.array.push({
+        ...head._doc,
+        householdId: data._id,
+        floors: floors,
+        numbers: numbers,
+      });
+      mem.forEach((member) => {
+        return skip-- <= 0 && json.array.length < pagination.limitItem && json.array.push({
+          ...member._doc,
+          householdId: data._id,
+          floors: floors,
+          numbers: numbers,
+        });
+      });
     }
     res.status(200).json(json);
   } catch (error) {

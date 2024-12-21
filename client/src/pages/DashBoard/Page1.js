@@ -21,23 +21,23 @@ function Page1(){
         dispatch(fetchDashboardData());
     }, [dispatch]);
     const ownerNames = [
-        {value: "",label: "None"},
-        ...[...new Set(households.map(household => household.head))].map(ownerName => ({
+        {value: "",label: "Tất cả"},
+        ...[...new Set(households.array?.map(household => household.head))]?.map(ownerName => ({
             value:ownerName,
             label:ownerName,
         })),
     ];
     const floorNumbers = [
-        {value: "",label: "None"},
+        {value: "",label: "Tất cả"},
         ...[...new Set(
-            households.reduce((floors, household) => [...floors, ...household.floors], []))].map(floorNumber => ({
+            households.array?.reduce((floors, household) => [...floors, ...household.floors], []))]?.map(floorNumber => ({
             value:floorNumber,
             label:floorNumber,
         })),
     ];
     const roomNumbers = [
-        {value: "",label: "None"},
-        ...[...new Set(households.reduce((rooms, household) => [...rooms, ...household.numbers], []))].map(roomNumber => ({
+        {value: "",label: "Tất cả"},
+        ...[...new Set(households.array?.reduce((rooms, household) => [...rooms, ...household.numbers], []))].map(roomNumber => ({
             value:roomNumber,
             label:roomNumber,
         })),
@@ -48,20 +48,20 @@ function Page1(){
         floorNumber:null
     });
     const filteredHousehold = useMemo(() => {
-            return households.filter((household) => {
-                if(filters.ownerName && filters.ownerName !== household.head)
-                    return false;
-                if(filters.floorNumber && !household.floors.includes(filters.floorNumber))
-                    return false;
-                if(filters.roomNumber &&  !household.numbers.includes(filters.roomNumber))
-                    return false;
-                return true;
-            });
-        },[households,filters]);
+        return households.array?.filter((household) => {
+            if(filters.ownerName && filters.ownerName !== household.head)
+                return false;
+            if(filters.floorNumber && !household.floors.includes(filters.floorNumber))
+                return false;
+            if(filters.roomNumber &&  !household.numbers.includes(filters.roomNumber))
+                return false;
+            return true;
+        });
+    },[households,filters]);
     
 
     const handleDelete = async (householdID) => {
-        const updatedHouseholds = households.filter((household) => household.id !== householdID);
+        const updatedHouseholds = households.array?.filter((household) => household.id !== householdID);
         //fetch api delete...
         message.loading({ content: 'Deleting...', key: 'delete' });
 
@@ -201,7 +201,7 @@ function Page1(){
                   </thead>
 
                   <tbody>
-                      { filteredHousehold.map(household =>
+                      { filteredHousehold?.map(household =>
                          <tr>
                             <td> { household.head } </td>
                             <td> { household.contact } </td>
@@ -227,7 +227,7 @@ function Page1(){
         </div>
 
         <table>
-            { recentCustomers.map(customer =>
+            { recentCustomers?.map(customer =>
                 <tr>
                     <td width="60px">
                         <div className="imgBx"><img src={customer01} alt=""/></div>
