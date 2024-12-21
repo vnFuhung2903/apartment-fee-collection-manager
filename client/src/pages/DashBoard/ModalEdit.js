@@ -48,7 +48,7 @@ function ModalEdit (props) {
           headers: {"Content-Type": "application/json"},
           body: JSON.stringify({ member_id: personInfo._id, relation_to_head: values.relation_to_head })
         });
-        const data = await res.json();
+        // const data = await res.json();
         if(data.message && data.message !== "Success")
           alert(data.message);
       }

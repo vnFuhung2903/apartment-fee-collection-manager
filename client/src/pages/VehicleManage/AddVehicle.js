@@ -45,6 +45,7 @@ function AddVehicle(){
         if(data.message === "Success") {
           openNotification("success", "Thành công", "Thêm phương tiện thành công!");
           setIsModalVisible(false);
+          window.location.reload();
         }
         else {
           console.log(message);

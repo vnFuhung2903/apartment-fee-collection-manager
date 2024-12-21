@@ -1,23 +1,23 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import "./style.css"
-import { Form, Select, Col, Row, Modal, Input } from 'antd';
+import { Form, Select, Col, Row, Modal, Input,notification } from 'antd';
 import { CloseOutlined } from "@ant-design/icons";
 import AddVehicle from "./AddVehicle"
 import axios from "axios";
 
 function VehicleMange(){
   const [dataList, setVehicles] = useState([]);
-  
-  useEffect(() => {
-    const fetchVehicles = async () => {
-        try {
-            const response = await axios.get("http://localhost:8386/vehicles/api/v2/vehicles"); 
-            setVehicles(response.data);
-        } catch (error) {
-            console.error("Error fetching residents data:", error);
-        }
-    };
+  const fetchVehicles = async () => {
+    try {
+        const response = await axios.get("http://localhost:8386/vehicles/api/v2/vehicles"); 
+        setVehicles(response.data);
+    } catch (error) {
+        console.error("Error fetching residents data:", error);
+    }
+};
 
+  useEffect(() => {
+    
     fetchVehicles();
   }, []);
 
@@ -54,6 +54,16 @@ function VehicleMange(){
       });
   }, [dataList, filters]);
   
+  const openNotification = (type, message, description) => {
+    notification[type]({
+      message,
+      description,
+      placement: "topRight",
+      duration: 2,
+      pauseOnHover: true,
+    });
+  };
+
   const handleDelete = async (vehicle,owner) => {
     Modal.confirm({
       title: "Xác nhận xóa",
@@ -74,19 +84,12 @@ function VehicleMange(){
             },
           }); 
           if (response.status === 200) {
-            const fetchVehicles = async () => {
-              try {
-                const response = await axios.get("http://localhost:8386/vehicles/api/v2/vehicles");
-                setVehicles(response.data); 
-              } catch (error) {
-                console.error("Error fetching residents data:", error);
-              }
-            };
-  
+            openNotification("success", "Thành công", "Xóa phương tiện thành công!");
             fetchVehicles();
           }
         } catch (error) {
             console.error("Error fetching residents data:", error);
+            openNotification("error", "Lỗi", "Có lỗi xảy ra khi gửi yêu cầu !!!");
         }
       }
   })};
