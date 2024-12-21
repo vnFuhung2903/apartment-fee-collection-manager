@@ -31,7 +31,7 @@ function EditFee(props) {
     const fetchHouseholds = async () => {
       try {
         const response = await axios.get("http://localhost:8386/household/api/v1/all");
-        const options = response.data.map((household) => ({
+        const options = response.data.array.map((household) => ({
           household_id:household.id,
           value: household.numbers[0],
           label: `Hộ ${household.head}`,

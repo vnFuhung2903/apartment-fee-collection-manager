@@ -23,32 +23,26 @@ module.exports.index = async (req, res) => {
     //End Sort
 
     //Pagination
-    let objectPagination = {
-      currentPage:1,
-      limitItem:8
+    let pagination = {
+      currentPage: 1,
+      limitItem: 8
     };
     if (req.query.page){
-      objectPagination.currentPage= parseInt(req.query.page);
+      pagination.currentPage= parseInt(req.query.page);
     }
-    objectPagination.skip = (objectPagination.currentPage - 1)*objectPagination.limitItem;
-    const countFees = await Fee.countDocuments(find);
-    const totalPage = Math.ceil(countFees/objectPagination.limitItem);
-    objectPagination.totalPage = totalPage;
+    const skip = (pagination.currentPage - 1) * pagination.limitItem;
+    pagination.totalItems = await Fee.countDocuments(find);
+    pagination.totalPage = Math.ceil(pagination.totalItems / pagination.limitItem);
     //End Pagination
 
-    const fees = await Fee.find(find).sort(sort).skip(objectPagination.skip).limit(objectPagination.limitItem);
+    const fees = await Fee.find(find).sort(sort).skip(skip).limit(pagination.limitItem);
     
     if (!fees) {
       return res.status(404).json({ message: "Not Found" });
     } else {
-      const results = fees.map((fee) => ({
+      let results = { ...pagination, array: [] };
+      results.array = fees.map((fee) => ({
         ...fee._doc,
-        pagination: {
-          currentPage: objectPagination.currentPage,
-          totalPage: objectPagination.totalPage,
-          limitItem: objectPagination.limitItem,
-          totalItems: countFees,
-        },
       }));
       res.json(results);
     }

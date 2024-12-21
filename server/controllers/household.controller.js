@@ -8,43 +8,37 @@ const getHouseholds = async (req, res) => {
     const { id } = req.query;
     const conditions = id ? { _id: id } : {};
     // Pagination
-    let objectPagination = {
+    let pagination = {
       currentPage: 1,
       limitItem: 8,
     };
 
     if (req.query.page) {
-      objectPagination.currentPage = parseInt(req.query.page);
+      pagination.currentPage = parseInt(req.query.page);
     }
-    objectPagination.skip = (objectPagination.currentPage - 1) * objectPagination.limitItem;
-    const countHouseholds = await household.countDocuments(conditions);
-    const totalPage = Math.ceil(countHouseholds / objectPagination.limitItem);
-    objectPagination.totalPage = totalPage;
+    const skip = (pagination.currentPage - 1) * pagination.limitItem;
+    pagination.totalItems = await household.countDocuments(conditions);
+    pagination.totalPage = Math.ceil(pagination.totalItems / pagination.limitItem);
     //End Pagination
 
-    let householdsFound = await household.find(conditions).skip(objectPagination.skip).limit(objectPagination.limitItem);
-    let json = [];
+    let householdsFound = await household.find(conditions).skip(skip).limit(pagination.limitItem);
+    let json = { ...pagination, array: [] };
+
     for(const data of householdsFound) {
       const head = await person.findOne({ _id: data.head });
-      // console.log('head', head);
       
       const ownedApartments = await Promise.all(data.apartments.map(ID => apartment.findOne({ _id: ID })))
       const numbers = ownedApartments.map(owned => owned.number);
       const floors = ownedApartments.map(owned => (Number(owned.number) / 100).toFixed(0));
       
-      json.push({ id: data._id, 
+      json.array.push({ 
+        id: data._id, 
         head: head.name, 
         contact: data.contact_phone, 
         status: head.status, 
         floors: floors, 
-        numbers: numbers ,
-        pagination: {
-          currentPage: objectPagination.currentPage,
-          totalPage: objectPagination.totalPage,
-          limitItem: objectPagination.limitItem,
-          totalItems: countHouseholds,
-        }, 
-    });
+        numbers: numbers
+      });
     }
     res.status(200).json(json);
   } catch (error) {

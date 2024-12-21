@@ -21,7 +21,7 @@ function FeeMange(){
   //Dữ liệu để lọc
   const householdName = [
     { value: "", label: "Tất cả" },
-    ...[...new Set(totalPayment.map(Tpayment => Tpayment.householdHead))].map(householdHead => ({
+    ...[...new Set(totalPayment.array?.map(Tpayment => Tpayment.householdHead))].map(householdHead => ({
       value: householdHead,
       label: householdHead,
     })),
@@ -29,7 +29,7 @@ function FeeMange(){
   
   const paymentName = [
     { value: "", label: "Tất cả" },
-    ...[...new Set(totalPayment.map(Tpayment => Tpayment.feeName))].map(feeName => ({
+    ...[...new Set(totalPayment.array?.map(Tpayment => Tpayment.feeName))].map(feeName => ({
       value: feeName,
       label: feeName,
     })),
@@ -47,7 +47,7 @@ function FeeMange(){
     toDate: null      
   });
   const filteredPayments = useMemo(() => {
-    return totalPayment.filter((payment) => {
+    return totalPayment.array?.filter((payment) => {
       if (filters.paymentName && filters.paymentName !== payment.feeName) {
         return false;
       }
@@ -98,10 +98,10 @@ function FeeMange(){
   };
 
   const selectedPayments = useMemo(() => {
-    return totalPayment.filter(payment => checkedPayments.includes(payment.payment_id));
+    return totalPayment.array?.filter(payment => checkedPayments.includes(payment.payment_id));
   }, [totalPayment, checkedPayments]);
 
-  const totalAmount = selectedPayments.reduce(
+  const totalAmount = selectedPayments?.reduce(
     (sum, item) =>
       sum += item.amount*item.count,
     0
@@ -111,7 +111,7 @@ function FeeMange(){
     try {
       // Gửi danh sách payment_id đến API
       const response = await axios.post("http://localhost:8386/payments/api/v1/changes", {
-        payment_ids: selectedPayments.map((payment) => payment.payment_id),
+        payment_ids: selectedPayments?.map((payment) => payment.payment_id),
         bill_id:transactionID,
         bill_time: dayjs().toISOString(),
       });
@@ -210,7 +210,7 @@ function FeeMange(){
               </tr>
             </thead>
             <tbody>
-            {filteredPayments.map((Tpayment, index) => (
+            {filteredPayments?.map((Tpayment, index) => (
                 <tr key={index}>
                   <td>{Tpayment.payment_id}</td> {/* Hiển thị payment_id */}
                   <td>{dayjs(Tpayment.payment_date).format('DD/MM/YYYY')}</td> {/* Định dạng ngày nộp */}
@@ -252,7 +252,7 @@ function FeeMange(){
                   <td>Hạn nộp</td>
                 </thead>
                 <tbody>
-                  {selectedPayments.map((Tpayment, index) => (
+                  {selectedPayments?.map((Tpayment, index) => (
                     <tr key={index}>
                       <td>{Tpayment.payment_id}</td>
                       <td>{Tpayment.feeName}</td> 

@@ -15,7 +15,7 @@ function AddVehicle(){
       if (res.status === 200) return res.json();
     })
     .then((data) => {
-      setHouseholds(data);
+      setHouseholds(data.array);
     });
   }, [])
 

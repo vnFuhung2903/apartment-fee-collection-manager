@@ -13,7 +13,7 @@ function ResidentList(){
         const fetchResidents = async () => {
             try {
                 const response = await axios.get("http://localhost:8386/person/api/v1/all"); 
-                setResidents(response.data);
+                setResidents(response.data.array);
             } catch (error) {
                 console.error("Error fetching residents data:", error);
             }
@@ -33,7 +33,7 @@ function ResidentList(){
                 label:personName,
             })),
         ]);
-        
+
         setFloorNumbers([
             {value: "",label: "Tất cả"},
             ...[...fl].map(floorNumber => ({
@@ -121,7 +121,7 @@ function ResidentList(){
                             </Col>
                         </Row>
                      </Form>
-          </div>
+                </div>
 
                 <table>
                     <thead>

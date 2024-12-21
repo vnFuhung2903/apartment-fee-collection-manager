@@ -30,7 +30,7 @@ function FeeList() {
     setLoading(true);
     try {
       const response = await axios.get("http://localhost:8386/fees/api/v1/fees");
-      setFees(response.data);
+      setFees(response.data.array);
     } catch (error) {
       console.error("Error fetching fees data:", error);
       openNotification("error", "Lỗi", "Có lỗi khi tải dữ liệu!");
