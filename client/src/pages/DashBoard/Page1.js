@@ -70,7 +70,11 @@ function Page1(){
 
         // Perform the API call to delete the household
         // Dispatch the updated list to the store
-        dispatch(setHouseholds(updatedHouseholds));
+        dispatch(setHouseholds({
+            households: updatedHouseholds,
+            limitItem: limitItem,
+            totalItems: totalItems - 1
+        }));
 
         // Show a success message
         message.success({ content: 'Xóa thành công!', key: 'delete' });
