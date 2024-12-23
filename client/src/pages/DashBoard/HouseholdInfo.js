@@ -122,9 +122,9 @@ const HouseholdInfo = () => {
       setSelectedRows(rows);
   }; 
   const handleDelete = () => {
-    fetch(`http://localhost:8386/household/api/v1/deleteMem?householdId=${householdId}`, {
+    fetch("http://localhost:8386/household/api/v1/deleteMem", {
       method: "POST",
-      headers: {"Content-Type": "application/json"}
+      headers: {"Content-Type": "application/json"},
     })
     .then((res) => {
       return res.json();

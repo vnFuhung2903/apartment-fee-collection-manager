@@ -17,19 +17,18 @@ function ResidentList(){
         // const savedData = sessionStorage.getItem(`residents_page_${page}`);
     
         // if (savedData) {
-        //     // Nếu có dữ liệu, sử dụng dữ liệu từ sessionStorage
         //     const parsedData = JSON.parse(savedData);
-        //     setResidents(parsedData.data.array); 
-        //     setTotal(parsedData.data.totalItems); 
-        //     setLimit(parsedData.data.limitItem);
-        //     return;  // Không cần gọi lại API
+        //     setResidents(parsedData.array); 
+        //     setTotal(parsedData.totalItems); 
+        //     setLimit(parsedData.limitItem);
+        //     return;
         // }
         try {
           const response = await axios.get(`http://localhost:8386/person/api/v1/all?page=${page}`);
           setResidents(response.data.array); 
           setTotal(response.data.totalItems); 
           setLimit(response.data.limitItem);
-          sessionStorage.setItem(`residents_page_${page}`, JSON.stringify(response.data));
+        //   sessionStorage.setItem(`residents_page_${page}`, JSON.stringify(response.data));
         } catch (error) {
           console.error("Error fetching data:", error);
         }

@@ -1,5 +1,6 @@
 const Vehicle = require("../models/vehicle.js");
 const Household = require("../models/household.js");
+const Person = require("../models/person.js");
 
 //[GET] vehicles/api/v2/vehicles
 module.exports.index = async (req, res) => {
@@ -44,16 +45,21 @@ module.exports.deleteVehicle = async (req, res) => {
 //[POST] vehicles/api/v2/create
 module.exports.createVehicle = async (req, res) => {
   try {
-    const { ownName, vehicle_type, plate, household_id } = req.body;    
-    
+    const { ownName, vehicle_type, plate } = req.body;    
+    let personFound = await Person.findOne({
+      name: ownName
+    });
+    let householdFound = await Household.findOne({
+      head: personFound._id
+    });
     let vehicleRecord = await Vehicle.findOne({
-      household_id,
+      household_id: householdFound._id
     });
 
     if (!vehicleRecord) {
       vehicleRecord = new Vehicle({
         ownName,
-        household_id,
+        household_id: householdFound._id,
         vehicle: [{ plate, vehicle_type }],
       });
     } else {
@@ -66,7 +72,7 @@ module.exports.createVehicle = async (req, res) => {
 
     const updateField = vehicle_type === "Xe máy" ? "motobikes" : "cars";
     await Household.updateOne(
-      { _id: household_id },
+      { _id: householdFound._id },
       { $addToSet: { [updateField]: { vehicle_type, plate } } }
     );
     res.status(200).json({ message: "Success" });

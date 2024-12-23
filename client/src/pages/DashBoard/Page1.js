@@ -3,26 +3,44 @@ import customer01 from "../Layout/assets/imgs/customer01.jpg"
 import { Link } from "react-router-dom"
 import  React,{ useEffect,useMemo, useState,} from "react"
 import { useSelector, useDispatch } from "react-redux";
-import { fetchDashboardData, fetchHouseholds,setHouseholds } from "../../actions";
+import { fetchDashboardData } from "../../actions";
 import { Form,Row,Col,Select ,Button,Modal,message,Pagination} from "antd";
 import {ExclamationCircleOutlined,ExportOutlined} from '@ant-design/icons';
 function Page1(){
     const [currentPage, setCurrentPage] = useState(1);
     const dispatch = useDispatch();
     const {
-        households,
+        // households,
         recentCustomers,
         numApartment,
         numPerson,
         numTemporary,
         numAbsence,
-        totalItems,
-        limitItem
+        // totalItems,
+        // limitItem
     } = useSelector((state) => state.page1Reducer);
+
+    const [households, setHouseholds] = useState([]);
+    const [totalItems, setTotalItems] = useState(0);
+    const [limitItem, setLimitItems] = useState(8);
+
     useEffect(() => {
-        dispatch(fetchHouseholds(currentPage));
         dispatch(fetchDashboardData());
-    }, [dispatch, currentPage]);
+        const fetchHousehold = async () => {
+        let data = JSON.parse(sessionStorage.getItem(`households_page_${currentPage}`));
+            if (!data) {
+                const response = await fetch(`http://localhost:8386/household/api/v1/all?page=${currentPage}`, {
+                    method: "GET",
+                    headers: {"Content-Type": "application/json"},
+                });
+                data = await response.json();
+            }
+            setHouseholds(data?.array);
+            setTotalItems(data?.totalItems);
+            sessionStorage.setItem(`households_page_${currentPage}`, JSON.stringify(data));
+        };
+        fetchHousehold();
+    }, [dispatch, currentPage, totalItems, limitItem]);
     const ownerNames = [
         {value: "",label: "Tất cả"},
         ...[...new Set(households?.map(household => household.head))]?.map(ownerName => ({
@@ -64,21 +82,24 @@ function Page1(){
     
 
     const handleDelete = async (householdID) => {
-        const updatedHouseholds = households?.filter((household) => household.id !== householdID);
         //fetch api delete...
+        const response = await fetch("http://localhost:8386/household/api/v1/delete", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: householdID,
+        });
+        const data = await response.json();
         message.loading({ content: 'Deleting...', key: 'delete' });
+        if(data.message === "Delete complete") {
+            const updatedHouseholds = households?.filter((household) => household.id !== householdID);
 
-        // Perform the API call to delete the household
-        // Dispatch the updated list to the store
-        dispatch(setHouseholds({
-            households: updatedHouseholds,
-            limitItem: limitItem,
-            totalItems: totalItems - 1
-        }));
+            setHouseholds(updatedHouseholds);
+            setTotalItems(totalItems - 1);
 
-        // Show a success message
-        message.success({ content: 'Xóa thành công!', key: 'delete' });
+            // Show a success message
+            message.success({ content: 'Xóa thành công!', key: 'delete' });
         }
+    }
     const handleConfirm = (id) => {
       Modal.confirm({
           title : "Confirm",
@@ -149,50 +170,50 @@ function Page1(){
              <Link to="/register_resident" className="btn">Đăng kí</Link>
          </div>
          <div className="household">
-                    <Form
-                        layout="vertical"
-                    >
-                        <Row
-                            gutter={{
-                            xs: 8,
-                            sm: 16,
-                            md: 24,
-                            lg: 32,
-                        }}
-                        >
-                            <Col className="gutter-row" span={7}>
-                                <Form.Item label="Tên chủ hộ">
-                                    <Select
-                                        showSearch
-                                        placeholder="Điền họ tên" 
-                                        filterOption={(input, option) => 
-                                        (option.label).includes(input)
-                                        }
-                                        options={ownerNames}
-                                        onChange={(value) => setFilters((prev) => ({ ...prev, ownerName: value }))}
-                                    ></Select>
-                                </Form.Item>
-                            </Col>
-                            <Col className="gutter-row" span={6}>
-                                <Form.Item label="Tầng">
-                                <Select 
-                                  placeholder="Chọn tầng" 
-                                  options={floorNumbers}
-                                  onChange={(value) => setFilters((prev) => ({ ...prev, floorNumber: value }))}
-                                ></Select>
-                                </Form.Item>
-                            </Col>
-                            <Col className="gutter-row" span={6}>
-                                <Form.Item label="Số căn hộ">
-                                <Select 
-                                  placeholder="Chọn số căn hộ" 
-                                  options={roomNumbers}
-                                  onChange={(value) => setFilters((prev) => ({ ...prev, roomNumber: value }))}
-                                ></Select>
-                                </Form.Item>
-                            </Col>
-                        </Row>
-                     </Form>
+            <Form
+                layout="vertical"
+            >
+                <Row
+                    gutter={{
+                    xs: 8,
+                    sm: 16,
+                    md: 24,
+                    lg: 32,
+                }}
+                >
+                    <Col className="gutter-row" span={7}>
+                        <Form.Item label="Tên chủ hộ">
+                            <Select
+                                showSearch
+                                placeholder="Điền họ tên" 
+                                filterOption={(input, option) => 
+                                (option.label).includes(input)
+                                }
+                                options={ownerNames}
+                                onChange={(value) => setFilters((prev) => ({ ...prev, ownerName: value }))}
+                            ></Select>
+                        </Form.Item>
+                    </Col>
+                    <Col className="gutter-row" span={6}>
+                        <Form.Item label="Tầng">
+                        <Select 
+                            placeholder="Chọn tầng" 
+                            options={floorNumbers}
+                            onChange={(value) => setFilters((prev) => ({ ...prev, floorNumber: value }))}
+                        ></Select>
+                        </Form.Item>
+                    </Col>
+                    <Col className="gutter-row" span={6}>
+                        <Form.Item label="Số căn hộ">
+                        <Select 
+                            placeholder="Chọn số căn hộ" 
+                            options={roomNumbers}
+                            onChange={(value) => setFilters((prev) => ({ ...prev, roomNumber: value }))}
+                        ></Select>
+                        </Form.Item>
+                    </Col>
+                </Row>
+            </Form>
           </div>
              <table>
                   <thead>

@@ -9,22 +9,17 @@ export const setDashboardData = (data) => ({
 });
 
 export const fetchHouseholds = (page) => {
-  return (dispatch) => {
-    fetch(`http://localhost:8386/household/api/v1/all?page=${page}`, {
-      method: "GET",
-      headers: { "Content-Type": "application/json" },
+  fetch(`http://localhost:8386/household/api/v1/all?page=${page}`, {
+    method: "GET",
+    headers: { "Content-Type": "application/json" },
+  })
+    .then((res) => {
+      if (res.status === 200) return res.json();
     })
-      .then((res) => {
-        if (res.status === 200) return res.json();
-      })
-      .then((data) => {
-        dispatch(setHouseholds({
-          households: data.array, 
-          totalItems: data.totalItems, 
-          limitItem: data.limitItem,
-        }));
-      });
-  };
+    .then((data) => {
+      sessionStorage.setItem(`households_page_${page}`, JSON.stringify(data));
+      return data;
+    });
 };
 
 export const fetchDashboardData = () => {

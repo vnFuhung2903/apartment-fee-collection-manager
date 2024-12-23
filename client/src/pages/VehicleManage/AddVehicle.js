@@ -1,24 +1,8 @@
 import { Input, Form, Button, Radio, Modal, message, Select,notification } from "antd";
-import { useEffect, useState, useSelector } from "react";
-import { fetchHouseholds } from "../../actions";
+import { useState } from "react";
 
-function AddVehicle(){
+function AddVehicle({ owners }) {
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [households, setHouseholds] = useState([]);
-
-  useEffect(() => {
-    fetch("http://localhost:8386/household/api/v1/all", {
-      method: "GET",
-      headers: { "Content-Type": "application/json" },
-    })
-    .then((res) => {
-      if (res.status === 200) return res.json();
-    })
-    .then((data) => {
-      setHouseholds(data.array);
-    });
-  }, [])
-
   const openNotification = (type, message, description) => {
     notification[type]({
       message,
@@ -29,13 +13,10 @@ function AddVehicle(){
     });
   };
   const handleSubmit = (value) => {
-    const owner = households.find(household => value.ownName === household.head);
-    const household_id = owner.id;
-    console.log(JSON.stringify({...value, household_id }));
     fetch("http://localhost:8386/vehicles/api/v2/create", {
       method: "POST",
       headers: {"Content-Type": "application/json"},
-      body: JSON.stringify({...value, household_id })
+      body: JSON.stringify({...value})
     })
     .then((res) => {
       return res.json();
@@ -72,8 +53,8 @@ function AddVehicle(){
           >
             <Select style={{ width: '400px' }}> 
               {
-                households.map((household) => (
-                  <Select.Option value={household.head}>{household.head}</Select.Option>
+                owners?.map((owner) => (
+                  <Select.Option value={owner}>{owner}</Select.Option>
                 ))
               }
               </Select>

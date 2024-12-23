@@ -129,7 +129,7 @@ const deleteHousehold = async (req, res) => {
     if (householdFound.head) {
       await person.deleteOne({ _id: householdFound.head });
     }
-  
+
     householdFound.members.forEach(async (memberId) => {
       await person.deleteOne({ _id: memberId });
     });

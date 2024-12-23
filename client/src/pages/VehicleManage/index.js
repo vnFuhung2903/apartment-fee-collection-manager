@@ -9,15 +9,14 @@ function VehicleMange(){
   const [dataList, setVehicles] = useState([]);
   const fetchVehicles = async () => {
     try {
-        const response = await axios.get("http://localhost:8386/vehicles/api/v2/vehicles"); 
+        const response = await axios.get("http://localhost:8386/vehicles/api/v2/vehicles");
         setVehicles(response.data);
     } catch (error) {
         console.error("Error fetching residents data:", error);
     }
-};
+  };
 
   useEffect(() => {
-    
     fetchVehicles();
   }, []);
 
@@ -101,7 +100,7 @@ function VehicleMange(){
           <div className="cardHeader">
               <h2>Quản lý phương tiện</h2>
               <div className="all-button">
-                <AddVehicle/>
+                <AddVehicle owners={dataList?.map(data => data?.ownName)} />
               </div>
           </div>
           <div className="filter_options">
