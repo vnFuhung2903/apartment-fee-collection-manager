@@ -8,7 +8,7 @@ function Table(){
   const dispatch = useDispatch();
   const totalPaymentData = useSelector((state) => state.feeManageReducer1.totalPayment) || [];
   const [showAll, setShowAll] = useState(false);
-  const visibleData = totalPaymentData;
+  const visibleData = showAll ? totalPaymentData : totalPaymentData.slice(0, 3);
 
   useEffect(() => {
     dispatch(fetchTotalPayment());

@@ -121,7 +121,7 @@ function Chart() {
           <h2>Cập nhật gần đây</h2>
           <div className="recent_updates" ref={recentUpdatesRef}>
             <div className="updates">
-              {payments.map((payment, index) => (
+              {payments.array?.map((payment, index) => (
                 <div className="update" key={index}>
                   <img src={profile} alt="" />
                   <div className="message">
