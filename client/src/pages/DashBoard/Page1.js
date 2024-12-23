@@ -4,9 +4,10 @@ import { Link } from "react-router-dom"
 import  React,{ useEffect,useMemo, useState,} from "react"
 import { useSelector, useDispatch } from "react-redux";
 import { fetchDashboardData, fetchHouseholds,setHouseholds } from "../../actions";
-import { Form,Row,Col,Select ,Button,Modal,message} from "antd";
+import { Form,Row,Col,Select ,Button,Modal,message,Pagination} from "antd";
 import {ExclamationCircleOutlined,ExportOutlined} from '@ant-design/icons';
 function Page1(){
+    const [currentPage, setCurrentPage] = useState(1);
     const dispatch = useDispatch();
     const {
         households,
@@ -15,14 +16,16 @@ function Page1(){
         numPerson,
         numTemporary,
         numAbsence,
+        totalItems,
+        limitItem
     } = useSelector((state) => state.page1Reducer);
     useEffect(() => {
-        dispatch(fetchHouseholds());
+        dispatch(fetchHouseholds(currentPage));
         dispatch(fetchDashboardData());
-    }, [dispatch]);
+    }, [dispatch, currentPage]);
     const ownerNames = [
         {value: "",label: "Tất cả"},
-        ...[...new Set(households.array?.map(household => household.head))]?.map(ownerName => ({
+        ...[...new Set(households?.map(household => household.head))]?.map(ownerName => ({
             value:ownerName,
             label:ownerName,
         })),
@@ -30,14 +33,14 @@ function Page1(){
     const floorNumbers = [
         {value: "",label: "Tất cả"},
         ...[...new Set(
-            households.array?.reduce((floors, household) => [...floors, ...household.floors], []))]?.map(floorNumber => ({
+            households?.reduce((floors, household) => [...floors, ...household.floors], []))]?.map(floorNumber => ({
             value:floorNumber,
             label:floorNumber,
         })),
     ];
     const roomNumbers = [
         {value: "",label: "Tất cả"},
-        ...[...new Set(households.array?.reduce((rooms, household) => [...rooms, ...household.numbers], []))].map(roomNumber => ({
+        ...[...new Set(households?.reduce((rooms, household) => [...rooms, ...household.numbers], []))].map(roomNumber => ({
             value:roomNumber,
             label:roomNumber,
         })),
@@ -48,7 +51,7 @@ function Page1(){
         floorNumber:null
     });
     const filteredHousehold = useMemo(() => {
-        return households.array?.filter((household) => {
+        return households?.filter((household) => {
             if(filters.ownerName && filters.ownerName !== household.head)
                 return false;
             if(filters.floorNumber && !household.floors.includes(filters.floorNumber))
@@ -61,7 +64,7 @@ function Page1(){
     
 
     const handleDelete = async (householdID) => {
-        const updatedHouseholds = households.array?.filter((household) => household.id !== householdID);
+        const updatedHouseholds = households?.filter((household) => household.id !== householdID);
         //fetch api delete...
         message.loading({ content: 'Deleting...', key: 'delete' });
 
@@ -201,7 +204,7 @@ function Page1(){
                   </thead>
 
                   <tbody>
-                      { filteredHousehold?.map(household =>
+                      {filteredHousehold?.map(household =>
                          <tr>
                             <td> { household.head } </td>
                             <td> { household.contact } </td>
@@ -218,6 +221,14 @@ function Page1(){
                       )}
                     </tbody>
                </table>
+               <div style={{ display: "flex", justifyContent: "center", marginTop: 16 }}>
+                    <Pagination
+                        current={currentPage}
+                        pageSize={limitItem}
+                        total={totalItems}
+                        onChange={(page) => setCurrentPage(page)}
+                    />
+                </div>
         </div>
 
         <div className="recentCustomers">

@@ -28,7 +28,7 @@ function TransactionHistory(){
   }
 
   // Lọc các khoản phí theo tháng đã chọn
-  const filteredFees = fees.filter((fee) => {
+  const filteredFees = fees.array?.filter((fee) => {
     if (!selectedMonth) return true; // Nếu không có tháng chọn, hiển thị tất cả
     const feeMonth = dayjs(fee.payment_date);  // Giả sử fee.payment_date là ngày thanh toán
     return feeMonth.month() === selectedMonth.month() && feeMonth.year() === selectedMonth.year();

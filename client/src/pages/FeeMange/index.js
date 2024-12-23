@@ -3,25 +3,27 @@ import { Link } from "react-router-dom"
 import "./style.css"
 import { useDispatch, useSelector } from "react-redux";
 import { fetchTotalPayments } from "../../actions/feeManage";
-import { Form, Select, Col, Row, DatePicker, Modal, Input, Checkbox, InputNumber } from 'antd';
+import { Form, Select, Col, Row, DatePicker, Modal, Input, Checkbox, InputNumber, Pagination } from 'antd';
 import dayjs from 'dayjs';
 import axios from "axios";
 import { message } from "antd";
 
 function FeeMange(){
-
+  const [currentPage, setCurrentPage] = useState(1);
   const dispatch = useDispatch();
   const totalPayment = useSelector((state) => state.feeManageReducer.totalPayments);
+  const limitItem = useSelector((state) => state.feeManageReducer.limitItem);
+  const totalItems = useSelector((state) => state.feeManageReducer.totalItems);
   const [reload, setReload] = useState(false);
 
   useEffect(() => {
-    dispatch(fetchTotalPayments());
-  }, [dispatch, reload]);
+    dispatch(fetchTotalPayments(currentPage));
+  }, [dispatch, reload, currentPage]);
 
   //Dữ liệu để lọc
   const householdName = [
     { value: "", label: "Tất cả" },
-    ...[...new Set(totalPayment.array?.map(Tpayment => Tpayment.householdHead))].map(householdHead => ({
+    ...[...new Set(totalPayment?.map(Tpayment => Tpayment.householdHead))].map(householdHead => ({
       value: householdHead,
       label: householdHead,
     })),
@@ -29,9 +31,17 @@ function FeeMange(){
   
   const paymentName = [
     { value: "", label: "Tất cả" },
-    ...[...new Set(totalPayment.array?.map(Tpayment => Tpayment.feeName))].map(feeName => ({
+    ...[...new Set(totalPayment?.map(Tpayment => Tpayment.feeName))].map(feeName => ({
       value: feeName,
       label: feeName,
+    })),
+  ]
+
+  const paymentStatus = [
+    { value: "", label: "Tất cả" },
+    ...[...new Set(totalPayment?.map(Tpayment => Tpayment.status))].map(feeStatus => ({
+      value: feeStatus,
+      label: feeStatus,
     })),
   ]
 
@@ -44,10 +54,11 @@ function FeeMange(){
     paymentName: null, 
     householdName: null, 
     fromDate: null,      
-    toDate: null      
+    toDate: null,
+    paymentStatus: null      
   });
   const filteredPayments = useMemo(() => {
-    return totalPayment.array?.filter((payment) => {
+    return totalPayment?.filter((payment) => {
       if (filters.paymentName && filters.paymentName !== payment.feeName) {
         return false;
       }
@@ -61,6 +72,9 @@ function FeeMange(){
         return false;
       }
       if (filters.toDate && paymentDate.isAfter(dayjs(filters.toDate))) {
+        return false;
+      }
+      if (filters.paymentStatus && filters.paymentStatus !== payment.status) {
         return false;
       }
       return true;
@@ -98,7 +112,7 @@ function FeeMange(){
   };
 
   const selectedPayments = useMemo(() => {
-    return totalPayment.array?.filter(payment => checkedPayments.includes(payment.payment_id));
+    return totalPayment?.filter(payment => checkedPayments.includes(payment.payment_id));
   }, [totalPayment, checkedPayments]);
 
   const totalAmount = selectedPayments?.reduce(
@@ -155,7 +169,7 @@ function FeeMange(){
                   lg: 32,
                 }}
               >
-                <Col className="gutter-row" span={6}>
+                <Col className="gutter-row" span={4.8}>
                   <Form.Item label="Tên khoản thu">
                     <Select 
                       placeholder="Chọn khoản thu" 
@@ -165,7 +179,7 @@ function FeeMange(){
                     </Select>
                   </Form.Item>
                 </Col>
-                <Col className="gutter-row" span={6}>
+                <Col className="gutter-row" span={4.8}>
                   <Form.Item label="Tên chủ hộ">
                     <Select 
                       showSearch
@@ -178,14 +192,27 @@ function FeeMange(){
                     ></Select>
                   </Form.Item>
                 </Col>
-                <Col className="gutter-row" span={6}>
+                <Col className="gutter-row" span={4.8}>
+                  <Form.Item label="Trạng thái">
+                    <Select 
+                      showSearch
+                      placeholder="Chọn trạng thái" 
+                      filterOption={(input, option) => 
+                        (option.label).includes(input)
+                      }
+                      options={paymentStatus}
+                      onChange={(value) => setFilters((prev) => ({ ...prev, paymentStatus: value }))}
+                    ></Select>
+                  </Form.Item>
+                </Col>
+                <Col className="gutter-row" span={4.8}>
                   <Form.Item label="Từ ngày">
                     <DatePicker 
                       onChange={(date, dateString) => setFilters((prev) => ({ ...prev, fromDate: dateString }))}
                     />
                   </Form.Item>
                 </Col>
-                <Col className="gutter-row" span={6}>
+                <Col className="gutter-row" span={4.8}>
                   <Form.Item label="Đến ngày">
                     <DatePicker 
                       onChange={(date, dateString) => setFilters((prev) => ({ ...prev, toDate: dateString }))}
@@ -230,6 +257,14 @@ function FeeMange(){
               ))}
             </tbody>
           </table>
+          <div style={{ display: "flex", justifyContent: "center", marginTop: 16 }}>
+            <Pagination
+              current={currentPage}
+              pageSize={limitItem}
+              total={totalItems}
+              onChange={(page) => setCurrentPage(page)}
+            />
+          </div>
 
           <Modal
             title={`Thanh toán hoá đơn cho hộ: `}

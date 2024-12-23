@@ -12,7 +12,8 @@ function Detail(){
   const dispatch = useDispatch();
   const { household_id } = useParams();
   const fees = useSelector(state => state.feeDetailReducer.fees);
-  const households = useSelector(state => state.householdDetailReducer.households);
+  const households = useSelector(state => state.householdDetailReducer.households.array);
+  console.log(households);
   // State để lưu tháng chọn
   const [selectedMonth, setSelectedMonth] = useState(dayjs());  // Mặc định là tháng hiện tại
   useEffect(() => {
@@ -29,13 +30,13 @@ function Detail(){
   }
 
   // Lọc các khoản phí theo tháng đã chọn
-  const filteredFees = fees.filter((fee) => {
+  const filteredFees = fees.array?.filter((fee) => {
     if (!selectedMonth) return true; // Nếu không có tháng chọn, hiển thị tất cả
     const feeMonth = dayjs(fee.payment_date);  // Giả sử fee.payment_date là ngày thanh toán
     return feeMonth.month() === selectedMonth.month() && feeMonth.year() === selectedMonth.year();
   });
 
-  const sortedFees = filteredFees.sort((a, b) => {
+  const sortedFees = filteredFees?.sort((a, b) => {
     if (a.status === 'Chưa thanh toán' && b.status === 'Đã thanh toán') {
       return -1; // 'Chưa thanh toán' lên trước
     }
@@ -79,7 +80,7 @@ function Detail(){
               </tr>
             </thead>
             <tbody>
-              {sortedFees.map((fee, index) => (
+              {sortedFees?.map((fee, index) => (
                 <tr key={index}>
                   <td>{fee.payment_name}</td>
                   <td>{fee.count}</td>

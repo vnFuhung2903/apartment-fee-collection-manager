@@ -17,11 +17,16 @@ export const setError = (error) => ({
 });
 
 // Fetch actions with error handling
-export const fetchTotalPayments = () => {
+export const fetchTotalPayments = (page) => {
   return async (dispatch) => {
     try {
-      const response = await axios.get("http://localhost:8386/payments/api/v1/payments");
-      dispatch(setTotalPayments(response.data)); 
+      const response = await axios.get(`http://localhost:8386/payments/api/v1/payments?page=${page}`);
+      dispatch(setTotalPayments({
+        totalPayments: response.data.array,
+        limitItem: response.data.limitItem,
+        totalItems: response.data.totalItems,
+        currentPage: response.data.currentPage
+      })); 
     } catch (error) {
       dispatch(setError("Failed to fetch total payments"));
       console.error("Error fetching total payments:", error);

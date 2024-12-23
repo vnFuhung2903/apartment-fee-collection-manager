@@ -5,6 +5,8 @@ const initialState = {
   numPerson: 0,
   numTemporary: 0,
   numAbsence: 0,
+  totalItems: 0,
+  limitItem: 8,
 };
 
 const page1Reducer = (state = initialState, action) => {
@@ -12,7 +14,9 @@ const page1Reducer = (state = initialState, action) => {
     case "SET_HOUSEHOLDS":
       return {
         ...state,
-        households: action.payload,
+        households: action.payload.households,
+        totalItems: action.payload.totalItems,
+        limitItem: action.payload.limitItem
       };
 
     case "SET_DASHBOARD_DATA":

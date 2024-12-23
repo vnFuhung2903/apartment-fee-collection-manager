@@ -8,9 +8,9 @@ export const setDashboardData = (data) => ({
   payload: data
 });
 
-export const fetchHouseholds = () => {
+export const fetchHouseholds = (page) => {
   return (dispatch) => {
-    fetch("http://localhost:8386/household/api/v1/all", {
+    fetch(`http://localhost:8386/household/api/v1/all?page=${page}`, {
       method: "GET",
       headers: { "Content-Type": "application/json" },
     })
@@ -18,7 +18,11 @@ export const fetchHouseholds = () => {
         if (res.status === 200) return res.json();
       })
       .then((data) => {
-        dispatch(setHouseholds(data));
+        dispatch(setHouseholds({
+          households: data.array, 
+          totalItems: data.totalItems, 
+          limitItem: data.limitItem,
+        }));
       });
   };
 };

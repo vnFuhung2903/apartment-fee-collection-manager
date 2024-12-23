@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom"
 import { useEffect,useMemo, useState } from "react"
-import { Form,Select,Row,Col} from "antd";
+import { Form,Select,Row,Col,Pagination} from "antd";
 import {ExportOutlined } from '@ant-design/icons';
 import "./style.css";
 import axios from "axios";
@@ -9,18 +9,35 @@ function ResidentList(){
     const [personNames, setPersonNames] = useState([]);
     const [floorNumbers, setFloorNumbers] = useState([]);
     const [roomNumbers, setRoomNumbers] = useState([]);
-    useEffect(() => {
-        const fetchResidents = async () => {
-            try {
-                const response = await axios.get("http://localhost:8386/person/api/v1/all"); 
-                setResidents(response.data.array);
-            } catch (error) {
-                console.error("Error fetching residents data:", error);
-            }
-        };
+    const [currentPage, setCurrentPage] = useState(1);
+    const [limit, setLimit] = useState(10);
+    const [total, setTotal] = useState(0);
 
-        fetchResidents();
-    }, []);
+    const fetchData = async (page) => {
+        // const savedData = sessionStorage.getItem(`residents_page_${page}`);
+    
+        // if (savedData) {
+        //     // Nếu có dữ liệu, sử dụng dữ liệu từ sessionStorage
+        //     const parsedData = JSON.parse(savedData);
+        //     setResidents(parsedData.data.array); 
+        //     setTotal(parsedData.data.totalItems); 
+        //     setLimit(parsedData.data.limitItem);
+        //     return;  // Không cần gọi lại API
+        // }
+        try {
+          const response = await axios.get(`http://localhost:8386/person/api/v1/all?page=${page}`);
+          setResidents(response.data.array); 
+          setTotal(response.data.totalItems); 
+          setLimit(response.data.limitItem);
+          sessionStorage.setItem(`residents_page_${page}`, JSON.stringify(response.data));
+        } catch (error) {
+          console.error("Error fetching data:", error);
+        }
+    };
+
+    useEffect(() => {
+        fetchData(currentPage);
+    }, [currentPage]);
 
     useEffect(() => {
         const people = new Set(residents.map(resident => resident.name));
@@ -60,9 +77,9 @@ function ResidentList(){
         return residents.filter((resident) => {
             if(filters.personName && filters.personName !== resident.name)
                 return false;
-            if(filters.floorNumber && filters.floorNumber !== resident.floornumber)
+            if(filters.floorNumber && filters.floorNumber !== resident.floors[0])
                 return false;
-            if(filters.roomNumber && filters.roomNumber !== resident.apartmentNumber)
+            if(filters.roomNumber && filters.roomNumber !== resident.numbers[0])
                 return false;
             return true;
         });
@@ -150,6 +167,14 @@ function ResidentList(){
                         )}
                     </tbody>
                 </table>
+                <div style={{ display: "flex", justifyContent: "center", marginTop: 16 }}>
+                    <Pagination 
+                        current={currentPage} 
+                        total={total}
+                        pageSize={limit}
+                        onChange={(page) => setCurrentPage(page)}
+                    />
+                </div>
             </div>
         </div>
     </>
