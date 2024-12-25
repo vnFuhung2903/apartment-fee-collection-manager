@@ -91,7 +91,7 @@ const HouseholdInfo = () => {
       render: (record) => (
         <Space size="middle">
           <Button color="default" icon={<EditOutlined />} onClick={() => {
-            setSelectedPerson(record._id);
+            setSelectedPerson(record.key);
           }} />
         </Space>
       ),
@@ -101,7 +101,7 @@ const HouseholdInfo = () => {
   const updateResidentInfo = (updatedInfo) => {
     const value = handleMember(updatedInfo);
     setData(prev => {
-      const index = prev.findIndex((item) => item._id === value._id);
+      const index = prev.findIndex((item) => item.key === value.key);
       const updatedData = [...prev];
       updatedData[index] = value;
       return updatedData;
@@ -122,9 +122,10 @@ const HouseholdInfo = () => {
       setSelectedRows(rows);
   }; 
   const handleDelete = () => {
-    fetch("http://localhost:8386/household/api/v1/deleteMem", {
+    fetch(`http://localhost:8386/household/api/v1/deleteMem?id=${householdId}`, {
       method: "POST",
       headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({ selectedRows })
     })
     .then((res) => {
       return res.json();
@@ -222,7 +223,7 @@ const HouseholdInfo = () => {
       
       {/* Modal sửa thông tin cá nhân */}
       <ModalEdit householdId={householdId} isModalEdit={isModalEdit} personInfo={editedOwnerInfo} updateInfor={setEditedOwnerInfo} onCancel={handleCancelModal1}/>
-      {data.map((item) => (<ModalEdit householdId={householdId} isModalEdit={selectedPerson === item._id} personInfo={item.description} updateInfor={updateResidentInfo} onCancel={handleCancelModal2}/>))}
+      {data.map((item) => (<ModalEdit householdId={householdId} isModalEdit={selectedPerson === item.key} personInfo={item.description} updateInfor={updateResidentInfo} onCancel={handleCancelModal2}/>))}
 
       {/* Danh sách người ở trong căn hộ */}
       <Card title="Danh sách người ở trong căn hộ" bordered={false} extra= {appearDelete? <Button onClick={handleConfirm} color="danger" variant="filled">Xóa</Button> : null}>
