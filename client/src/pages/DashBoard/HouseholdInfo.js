@@ -46,7 +46,7 @@ const HouseholdInfo = () => {
 
   const handleMember = (member) => {
     return {
-      _id: member._id,
+      key: member._id,
       name: member.name,
       dob: (new Date(member.dob)).toLocaleDateString('vi-VN'),
       relation_to_head: member.relation_to_head,
