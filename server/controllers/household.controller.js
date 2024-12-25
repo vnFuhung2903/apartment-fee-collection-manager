@@ -61,18 +61,21 @@ const createHousehold = async (req, res) => {
           totalArea: 85
         })
       }
-
+      
       const newHousehold = new household({
         head: id,
         apartments: [apartmentFound._id],
         contact_phone,
         members: []
       });
-
+      
       await newHousehold.save();
       apartmentFound.household = newHousehold._id;
       await apartmentFound.save();
-      res.status(200).json({ message: "Success", household: newHousehold._id });
+
+      const totalItems = await household.countDocuments(conditions);
+      const lastPage = Math.ceil(totalItems / 8); // limitItem = 8;
+      res.status(200).json({ message: "Success", household: newHousehold._id, lastPage});
     }
   } catch (error) {
     res.status(500).json(error);

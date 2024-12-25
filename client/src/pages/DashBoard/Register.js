@@ -82,8 +82,11 @@ function Register(){
                 return res.json()
             })
             .then(data => {
-                if(data.message === 'Success')
+                if(data.message === 'Success') {
+                    if (householdInfor.relationToOwner === "Chủ nhà")
+                        sessionStorage.removeItem(`households_page_${data.lastPage}`);
                     navigate(`/household_infor?household_id=${data.household}`);
+                }
                 else alert(data.message);
             })
         })

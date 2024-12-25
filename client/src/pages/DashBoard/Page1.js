@@ -40,7 +40,7 @@ function Page1(){
             sessionStorage.setItem(`households_page_${currentPage}`, JSON.stringify(data));
         };
         fetchHousehold();
-    }, [dispatch, currentPage, totalItems, limitItem]);
+    }, [dispatch, currentPage, totalItems]);
     const ownerNames = [
         {value: "",label: "Tất cả"},
         ...[...new Set(households?.map(household => household.head))]?.map(ownerName => ({
@@ -92,6 +92,8 @@ function Page1(){
         message.loading({ content: 'Deleting...', key: 'delete' });
         if(data.message === "Delete complete") {
             const updatedHouseholds = households?.filter((household) => household.id !== householdID);
+            for(let i = currentPage; i <= Math.ceil(totalItems / limitItem); ++i)
+                sessionStorage.removeItem(`households_page_${i}`);
 
             setHouseholds(updatedHouseholds);
             setTotalItems(totalItems - 1);
