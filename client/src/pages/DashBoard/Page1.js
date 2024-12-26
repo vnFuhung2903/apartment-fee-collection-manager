@@ -83,10 +83,11 @@ function Page1(){
 
     const handleDelete = async (householdID) => {
         //fetch api delete...
+        
         const response = await fetch("http://localhost:8386/household/api/v1/delete", {
             method: "POST",
             headers: {"Content-Type": "application/json"},
-            body: householdID,
+            body: JSON.stringify({householdID:householdID}),
         });
         const data = await response.json();
         message.loading({ content: 'Deleting...', key: 'delete' });
