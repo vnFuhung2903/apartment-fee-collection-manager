@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const person = require('../models/person.js');
 const household = require('../models/household.js');
 const apartment = require('../models/apartment.js');
+const payment = require('../models/payment.js');
 
 const getHouseholds = async (req, res) => {
   try {
@@ -27,10 +28,10 @@ const getHouseholds = async (req, res) => {
     for(const data of householdsFound) {
       const head = await person.findOne({ _id: data.head });
       
-      const ownedApartments = await Promise.all(data.apartments.map(ID => apartment.findOne({ _id: ID })))
+      const ownedApartments = await Promise.all(data.apartments.map(ID => apartment.findOne({ _id: ID })));
       const numbers = ownedApartments.map(owned => owned.number);
       const floors = ownedApartments.map(owned => (Number(owned.number) / 100).toFixed(0));
-      
+
       json.array.push({ 
         id: data._id, 
         head: head.name, 
@@ -68,10 +69,14 @@ const createHousehold = async (req, res) => {
         contact_phone,
         members: []
       });
-      
       await newHousehold.save();
+
       apartmentFound.household = newHousehold._id;
       await apartmentFound.save();
+
+      let headFound = await person.findOne({ _id: id });
+      headFound.householdId = newHousehold._id;
+      await headFound.save();
 
       const totalItems = await household.countDocuments(conditions);
       const lastPage = Math.ceil(totalItems / 8); // limitItem = 8;
@@ -132,10 +137,17 @@ const deleteHousehold = async (req, res) => {
     if (householdFound.head) {
       await person.deleteOne({ _id: householdFound.head });
     }
-
     householdFound.members.forEach(async (memberId) => {
       await person.deleteOne({ _id: memberId });
     });
+
+    const ownedApartments = await Promise.all(householdFound.apartments.map(ID => apartment.findOne({ _id: ID })));
+    for(let apt of ownedApartments) {
+      apt.household = null;
+      await apt.save();
+    }
+
+    await payment.deleteMany({ household_id: id });
 
     await household.deleteOne({ _id: id });
     res.status(200).json({ message: "Delete complete" });
@@ -209,8 +221,11 @@ const addNewMember = async (req, res) => {
     if(householdFound.members.includes({ member_id: id, relation_to_head: relationToOwner }))
       return res.status(407).json({ message: "Person is already in household" })
     householdFound.members.push({ member_id: id, relation_to_head: relationToOwner });
-
     await householdFound.save();
+
+    let memberFound = await person.findOne({ _id: id });
+    memberFound.householdId = householdFound._id;
+    await memberFound.save();
     return res.status(200).json({ message: "Success", household: householdFound._id });
   } catch (error) {
     res.status(500).json(error);

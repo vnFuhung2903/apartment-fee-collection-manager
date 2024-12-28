@@ -125,41 +125,23 @@ const getPersonAll = async (req, res) => {
       pagination.currentPage = parseInt(req.query.page);
     }
 
-    let skip = (pagination.currentPage - 1) * pagination.limitItem;
+    const skip = (pagination.currentPage - 1) * pagination.limitItem;
     pagination.totalItems = await person.countDocuments();
     pagination.totalPage = Math.ceil(pagination.totalItems / pagination.limitItem);
-
-    let householdsFound = await household.find({});
+    
+    let personFound = await person.find({}).skip(skip).limit(pagination.limitItem);
     let json = { ...pagination, array: [] };
-
-    for(const data of householdsFound) {
-      if(json.array.length === pagination.limitItem)
-        break;
-      if(skip >= 1 + data.members.length) {
-        skip -= (data.members.length + 1);
-        continue;
-      }
-      const [head, mem, ownedApartments] = await Promise.all([
-        person.findOne({ _id: data.head }),
-        Promise.all(data.members.map(member => person.findOne({ _id: member.member_id }))),
-        Promise.all(data.apartments.map(ID => apartment.findOne({ _id: ID }))),
-      ]);
+    
+    for(const data of personFound) {
+      const householdFound = await household.findOne({ _id: data.householdId });
+      const ownedApartments = await Promise.all(householdFound.apartments.map(ID => apartment.findOne({ _id: ID })));
       const numbers = ownedApartments.map(owned => owned.number);
       const floors = ownedApartments.map(owned => (Number(owned.number) / 100).toFixed(0));
-      
-      skip-- <= 0 && json.array.push({
-        ...head._doc,
-        householdId: data._id,
+
+      json.array.push({
+        ...data._doc,
         floors: floors,
         numbers: numbers,
-      });
-      mem.forEach((member) => {
-        return skip-- <= 0 && json.array.length < pagination.limitItem && json.array.push({
-          ...member._doc,
-          householdId: data._id,
-          floors: floors,
-          numbers: numbers,
-        });
       });
     }
     res.status(200).json(json);

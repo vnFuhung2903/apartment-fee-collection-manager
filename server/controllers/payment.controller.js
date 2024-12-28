@@ -1,8 +1,8 @@
-const mongoose = require("mongoose");
 const Payment = require("../models/payment.js");
 const Fee = require("../models/fee.js");
 const Household = require('../models/household.js');
 const Person = require('../models/person.js');
+
 //[GET] payments/api/v1/payments
 module.exports.index = async (req, res) => {
   try {
@@ -25,49 +25,40 @@ module.exports.index = async (req, res) => {
       currentPage:1,
       limitItem:8
     };
-    if (req.query.page){
+    if (req.query.page) {
       pagination.currentPage= parseInt(req.query.page);
     }
     const skip = (pagination.currentPage - 1) * pagination.limitItem;
     pagination.totalItems = await Payment.countDocuments(filter);
     pagination.totalPage = Math.ceil(pagination.totalItems / pagination.limitItem);
+
     //End Pagination
     const sort = {};
     if (req.query.sortKey && req.query.sortValue) {
       sort[req.query.sortKey] = parseInt(req.query.sortValue) || 1;
-    }else {
+    } else {
       sort.createdAt = -1;
     }
-    const limit = req.query.limit ? parseInt(req.query.limit) : null;
-    let query = Payment.find(filter)
+    pagination.limitItem = req.query.limit ? parseInt(req.query.limit) : 8;
+    let payments = await Payment.find(filter)
       .sort(sort)
       .lean().skip(skip).limit(pagination.limitItem);
-    
-    //Limit
-    if (limit && limit > 0) {
-      query = query.limit(limit);
-    }
-
-    const payments = await query;
-
-    if (!payments.length) {
-      return res.status(404).json({ message: "No payments found" });
-    }
 
     //Truy vấn tên hộ gia đình
     const householdIds = [...new Set(payments.map(payment => payment.household_id))];
     const households = await Household.find({
       _id: { $in: householdIds }
     }).lean();
+
     const householdMap = households.reduce((acc, household) => {
       acc[household._id.toString()] = household;
       return acc;
     }, {});
 
-    const personIds = households.map(household => household.head).filter(Boolean);
+    const personIds = households.map(household => household.head);
     const persons = await Person.find({
       _id: { $in: personIds }
-    }).select('name').lean();
+    }).lean();
 
     const personMap = persons.reduce((acc, person) => {
       acc[person._id.toString()] = person;
