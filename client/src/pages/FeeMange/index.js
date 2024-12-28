@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { Link } from "react-router-dom"
 import "./style.css"
 import { useDispatch, useSelector } from "react-redux";
-import { fetchTotalPayments } from "../../actions/feeManage";
+import { fetchAllPayments, fetchTotalPayments } from "../../actions/feeManage";
 import { Form, Select, Col, Row, DatePicker, Modal, Input, Checkbox, InputNumber, Pagination } from 'antd';
 import dayjs from 'dayjs';
 import axios from "axios";
@@ -11,19 +11,22 @@ import { message } from "antd";
 function FeeMange(){
   const [currentPage, setCurrentPage] = useState(1);
   const dispatch = useDispatch();
-  const totalPayment = useSelector((state) => state.feeManageReducer.totalPayments);
+  const allPayment = useSelector((state) => state.feeManageReducer.totalPayments);
+  const totalPayment = useSelector((state) => state.feePageReducer.totalPayments);
   const limitItem = useSelector((state) => state.feeManageReducer.limitItem);
-  const totalItems = useSelector((state) => state.feeManageReducer.totalItems);
+  const totalItems = useSelector((state) => state.feePageReducer.totalItems);
   const [reload, setReload] = useState(false);
 
   useEffect(() => {
-    dispatch(fetchTotalPayments(currentPage));
-  }, [dispatch, reload, currentPage]);
+    dispatch(fetchAllPayments())
+  },[])
+
+  console.log(allPayment);
 
   //Dữ liệu để lọc
   const householdName = [
     { value: "", label: "Tất cả" },
-    ...[...new Set(totalPayment?.map(Tpayment => Tpayment.householdHead))].map(householdHead => ({
+    ...[...new Set(allPayment?.map(Tpayment => Tpayment.householdHead))].map(householdHead => ({
       value: householdHead,
       label: householdHead,
     })),
@@ -31,7 +34,7 @@ function FeeMange(){
   
   const paymentName = [
     { value: "", label: "Tất cả" },
-    ...[...new Set(totalPayment?.map(Tpayment => Tpayment.feeName))].map(feeName => ({
+    ...[...new Set(allPayment?.map(Tpayment => Tpayment.feeName))].map(feeName => ({
       value: feeName,
       label: feeName,
     })),
@@ -39,7 +42,7 @@ function FeeMange(){
 
   const paymentStatus = [
     { value: "", label: "Tất cả" },
-    ...[...new Set(totalPayment?.map(Tpayment => Tpayment.status))].map(feeStatus => ({
+    ...[...new Set(allPayment?.map(Tpayment => Tpayment.status))].map(feeStatus => ({
       value: feeStatus,
       label: feeStatus,
     })),
@@ -57,29 +60,20 @@ function FeeMange(){
     toDate: null,
     paymentStatus: null      
   });
-  const filteredPayments = useMemo(() => {
-    return totalPayment?.filter((payment) => {
-      if (filters.paymentName && filters.paymentName !== payment.feeName) {
-        return false;
-      }
-      // Lọc theo tên chủ hộ
-      if (filters.householdName && filters.householdName !== payment.householdHead) {
-        return false;
-      }
-      // Lọc theo ngày
-      const paymentDate = dayjs(payment.payment_date); // Giả sử `payment.date` chứa ngày
-      if (filters.fromDate && paymentDate.isBefore(dayjs(filters.fromDate))) {
-        return false;
-      }
-      if (filters.toDate && paymentDate.isAfter(dayjs(filters.toDate))) {
-        return false;
-      }
-      if (filters.paymentStatus && filters.paymentStatus !== payment.status) {
-        return false;
-      }
-      return true;
-    });
-  }, [totalPayment, filters]);
+
+  useEffect(() => {
+    const params = {
+      page: currentPage,
+      limit: limitItem,
+      feeName: filters.paymentName ? filters.paymentName : null,
+      householdName: filters.householdName ? filters.householdName : null,
+      fromDate: filters.fromDate ? new Date(filters.fromDate) : null,
+      toDate: filters.toDate ? new Date(filters.toDate) : null,
+      status: filters.paymentStatus === "Đã thanh toán" ? "done" : filters.paymentStatus === "Chưa thanh toán" ? "undone" : null,
+    };
+    dispatch(fetchTotalPayments(currentPage));
+  }, [dispatch, currentPage, filters, limitItem]);
+  
 
   const handleCheck = (paymentId) => {
     setCheckedPayments((prev) => {
@@ -112,8 +106,8 @@ function FeeMange(){
   };
 
   const selectedPayments = useMemo(() => {
-    return totalPayment?.filter(payment => checkedPayments.includes(payment.payment_id));
-  }, [totalPayment, checkedPayments]);
+    return allPayment?.filter(payment => checkedPayments.includes(payment.payment_id));
+  }, [allPayment, checkedPayments]);
 
   const totalAmount = selectedPayments?.reduce(
     (sum, item) =>
@@ -134,7 +128,7 @@ function FeeMange(){
       if (response.status === 200) {
         message.success(response.data.message); // Hiển thị thông báo thành công
         await setReload(!reload);
-        await fetchTotalPayments();
+        await fetchAllPayments();
         handleCancel(); // Đóng modal
         // Reset danh sách các hóa đơn đã được check
         setCheckedPayments([]); 
@@ -208,14 +202,18 @@ function FeeMange(){
                 <Col className="gutter-row" span={4.8}>
                   <Form.Item label="Từ ngày">
                     <DatePicker 
-                      onChange={(date, dateString) => setFilters((prev) => ({ ...prev, fromDate: dateString }))}
+                      onChange={(date) => 
+                        setFilters((prev) => ({ ...prev, fromDate: date ? dayjs(date).format('YYYY-MM-DD') : null }))
+                      }
                     />
                   </Form.Item>
                 </Col>
                 <Col className="gutter-row" span={4.8}>
                   <Form.Item label="Đến ngày">
                     <DatePicker 
-                      onChange={(date, dateString) => setFilters((prev) => ({ ...prev, toDate: dateString }))}
+                      onChange={(date) => 
+                        setFilters((prev) => ({ ...prev, toDate: date ? dayjs(date).format('YYYY-MM-DD') : null }))
+                      }
                     />
                   </Form.Item>
                 </Col>
@@ -237,7 +235,7 @@ function FeeMange(){
               </tr>
             </thead>
             <tbody>
-            {filteredPayments?.map((Tpayment, index) => (
+            {totalPayment?.map((Tpayment, index) => (
                 <tr key={index}>
                   <td>{Tpayment.payment_id}</td> {/* Hiển thị payment_id */}
                   <td>{dayjs(Tpayment.payment_date).format('DD/MM/YYYY')}</td> {/* Định dạng ngày nộp */}

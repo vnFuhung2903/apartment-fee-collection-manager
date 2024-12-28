@@ -87,19 +87,32 @@ module.exports.index = async (req, res) => {
     }, {});
 
     let results = { ...pagination, array: [] };
+    const householdHeadFilter = req.query.householdHead || null;
+    const feeNameFilter = req.query.feeName || null;
     results.array = payments.map(payment => {
       const household = householdMap[payment.household_id.toString()];
       const headPerson = household && household.head ? personMap[household.head.toString()] : null;
       const paymentDateObj = new Date(payment.payment_date);
       const month = paymentDateObj.getMonth() + 1;
       const year = paymentDateObj.getFullYear();
+      const householdHead = headPerson ? headPerson.name : "Unknown";
+      const feeName = feeMap[payment.fee_id?.toString()] || "Unknown";
+      const payment_name = `${feeMap[payment.fee_id?.toString()]} tháng ${month}/${year}`;
+
+      if (
+        (householdHeadFilter && householdHead !== householdHeadFilter) ||
+        (feeNameFilter && feeName !== feeNameFilter)
+      ) {
+        return null; 
+      }
+
       return {
         ...payment,
-        householdHead: headPerson ? headPerson.name : "Unknown",
-        feeName: feeMap[payment.fee_id?.toString()] || "Unknown",
-        payment_name : `${feeMap[payment.fee_id?.toString()]} tháng ${month}/${year}`,
+        householdHead,
+        feeName,
+        payment_name,
       };
-    });
+    }).filter(payment => payment !== null);;
     res.json(results);
   } catch (error) {
     console.error('Payment index error:', error);
@@ -292,7 +305,7 @@ module.exports.addFee = async (req, res) => {
         payment_id: generatePaymentID(),
         household_id: household._id,
         amount: fee.amount,
-        payment_date: calculateDueDate(fee.due),
+        payment_date: fee.due,
         status: "Chưa thanh toán",
         count,
       };
