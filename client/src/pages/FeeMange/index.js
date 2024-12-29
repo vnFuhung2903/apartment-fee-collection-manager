@@ -21,8 +21,6 @@ function FeeMange(){
     dispatch(fetchAllPayments())
   },[])
 
-  console.log(allPayment);
-
   //Dữ liệu để lọc
   const householdName = [
     { value: "", label: "Tất cả" },
@@ -66,12 +64,12 @@ function FeeMange(){
       page: currentPage,
       limit: limitItem,
       feeName: filters.paymentName ? filters.paymentName : null,
-      householdName: filters.householdName ? filters.householdName : null,
+      householdHead: filters.householdName ? filters.householdName : null,
       fromDate: filters.fromDate ? new Date(filters.fromDate) : null,
       toDate: filters.toDate ? new Date(filters.toDate) : null,
       status: filters.paymentStatus === "Đã thanh toán" ? "done" : filters.paymentStatus === "Chưa thanh toán" ? "undone" : null,
     };
-    dispatch(fetchTotalPayments(currentPage));
+    dispatch(fetchTotalPayments(params));
   }, [dispatch, currentPage, filters, limitItem]);
   
 
@@ -140,6 +138,8 @@ function FeeMange(){
       message.error("Lỗi máy chủ. Vui lòng thử lại sau.");
     }
   };
+
+  console.log(totalPayment);
 
   return (
     <>

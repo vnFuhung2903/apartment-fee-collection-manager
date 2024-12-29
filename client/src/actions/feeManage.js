@@ -21,22 +21,39 @@ export const setError = (error) => ({
   payload: error
 });
 
-export const fetchTotalPayments = (page) => async (dispatch) => {
+export const fetchTotalPayments = (params) => async (dispatch) => {
   try {
-      // const queryString = new URLSearchParams(params).toString();
-      // console.log(queryString);
-      // console.log(params);
-      const response = await axios.get(`http://localhost:8386/payments/api/v1/payments?page=${page}`);
-        dispatch(setTotalPayments({
-        totalPayments: response.data.array,
-        limitItem: response.data.limitItem,
-        totalItems: response.data.totalItems,
-        currentPage: response.data.currentPage
-      })); 
+    // Lọc các tham số hợp lệ
+    const filteredParams = Object.fromEntries(
+      Object.entries(params || {}).filter(
+        ([key, value]) => value !== null && value !== undefined && value !== ''
+      )
+    );
+
+    // Tạo query string từ các tham số hợp lệ
+    const queryString = new URLSearchParams(filteredParams).toString();
+
+    console.log('Filtered Query String:', queryString);
+
+    // Gửi yêu cầu đến API
+    const response = await axios.get(`http://localhost:8386/payments/api/v1/payments?${queryString}`);
+    
+    // Kiểm tra dữ liệu từ response
+    if (response && response.data) {
+      dispatch(setTotalPayments({
+        totalPayments: response.data.array || [],
+        limitItem: response.data.limitItem || 0,
+        totalItems: response.data.totalItems || 0,
+        currentPage: response.data.currentPage || 1,
+      }));
+    } else {
+      console.error('Unexpected response format:', response);
+    }
   } catch (error) {
-      console.error('Error fetching payments:', error);
+    console.error('Error fetching payments:', error);
   }
 };
+
 
 export const fetchAllPayments = () => {
   return async (dispatch) => {
