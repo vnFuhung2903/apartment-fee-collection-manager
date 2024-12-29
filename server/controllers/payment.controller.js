@@ -324,18 +324,24 @@ module.exports.addFee = async (req, res) => {
         count = household.apartments.length;
       }
 
+      if (count === 0 && (household.motobikes.length === 0 || household.cars.length === 0)) {
+        return null; // Không tạo payment nếu không có xe máy hoặc ô tô
+      }
+
       return {
         fee_id: fee._id,
         payment_id: generatePaymentID(),
         household_id: household._id,
         amount: fee.amount,
-        payment_date: fee.due,
+        payment_date: calulateDueDate(fee.due),
         status: "Chưa thanh toán",
         count,
       };
-    });
+    }).filter(payment => payment !== null);;
 
-    await Payment.insertMany(payments);
+    if (payments.length > 0) {
+      await Payment.insertMany(payments);
+    }
 
     res.status(201).json({ message: "Fee created successfully", fee });
   } catch (error) {
@@ -365,19 +371,24 @@ module.exports.autoGeneratePayments = async () => {
             ? household.apartments.reduce((total, apartment) => total + (apartment.totalArea || 0), 0)
             : 0;
         }
+        if (count === 0 && (household.motobikes.length === 0 || household.cars.length === 0)) {
+          return null;
+        }
 
         return {
           fee_id: fee._id,
           household_id: household._id,
           amount: fee.amount,
-          payment_date: calculateDueDate(fee.due),
+          payment_date: calulateDueDate(fee.due),
           status: "Chưa thanh toán",
           payment_id: generatePaymentID(),
           count,
         };
-      });
+      }).filter(payment => payment !== null);;
 
-      await Payment.insertMany(payments);
+      if (payments.length > 0) {
+        await Payment.insertMany(payments);
+      }
     }
   } catch (error) {
     console.error("Lỗi khi tạo payment tự động:", error);

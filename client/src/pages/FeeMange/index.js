@@ -127,6 +127,16 @@ function FeeMange(){
         message.success(response.data.message); // Hiển thị thông báo thành công
         await setReload(!reload);
         await fetchAllPayments();
+        const params = {
+          page: currentPage,
+          limit: limitItem,
+          feeName: filters.paymentName ? filters.paymentName : null,
+          householdHead: filters.householdName ? filters.householdName : null,
+          fromDate: filters.fromDate ? new Date(filters.fromDate) : null,
+          toDate: filters.toDate ? new Date(filters.toDate) : null,
+          status: filters.paymentStatus === "Đã thanh toán" ? "done" : filters.paymentStatus === "Chưa thanh toán" ? "undone" : null,
+        };
+        await dispatch(fetchTotalPayments(params));
         handleCancel(); // Đóng modal
         // Reset danh sách các hóa đơn đã được check
         setCheckedPayments([]); 
