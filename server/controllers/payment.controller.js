@@ -320,7 +320,10 @@ module.exports.addFee = async (req, res) => {
         count = household.motobikes.length;
       } else if (name === "Phí gửi ô tô") {
         count = household.cars.length;
-      } else {
+      } else if (name === "Phí từ thiện"){
+        count = 1;
+      }
+      else {
         count = household.apartments.length;
       }
 
@@ -337,7 +340,7 @@ module.exports.addFee = async (req, res) => {
         status: "Chưa thanh toán",
         count,
       };
-    }).filter(payment => payment !== null);;
+    }).filter(payment => payment !== null);
 
     if (payments.length > 0) {
       await Payment.insertMany(payments);

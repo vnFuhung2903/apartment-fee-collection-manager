@@ -84,10 +84,16 @@ module.exports.addFee = async (req, res) => {
         count = household.motobikes.length;
       } else if (name === "Phí gửi ô tô") {
         count = household.cars.length;
-      } else {
+      } else if (name === "Phí từ thiện"){
+        count = 1;
+      }
+      else {
         count = household.apartments && Array.isArray(household.apartments)
             ? household.apartments.reduce((total, apartment) => total + (apartment.totalArea || 0), 0)
             : 0;
+      }
+      if (count === 0 && (household.motobikes.length === 0 || household.cars.length === 0)) {
+        return null; // Không tạo payment nếu không có xe máy hoặc ô tô
       }
 
       return {
@@ -99,7 +105,7 @@ module.exports.addFee = async (req, res) => {
         status: "Chưa thanh toán",
         count,
       };
-    });
+    }).filter(payment => payment !== null);
 
     await Payment.insertMany(payments);
 
