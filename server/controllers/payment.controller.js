@@ -14,11 +14,11 @@ module.exports.index = async (req, res) => {
     if (req.query.household_id) {
       filter.household_id = req.query.household_id;
     }
-    if (req.query.status=='done'){
-      filter.status='Đã thanh toán';
+    if (req.query.status == 'done'){
+      filter.status = 'Đã thanh toán';
     }
-    if (req.query.status=='undone'){
-      filter.status='Chưa thanh toán';
+    if (req.query.status == 'undone'){
+      filter.status = 'Chưa thanh toán';
     }
     //Pagination
     let pagination = {
@@ -33,15 +33,15 @@ module.exports.index = async (req, res) => {
     pagination.totalPage = Math.ceil(pagination.totalItems / pagination.limitItem);
 
     //End Pagination
-    const sort = {};
-    if (req.query.sortKey && req.query.sortValue) {
-      sort[req.query.sortKey] = parseInt(req.query.sortValue) || 1;
-    } else {
-      sort.createdAt = -1;
-    }
+    // const sort = {};
+    // if (req.query.sortKey && req.query.sortValue) {
+    //   sort[req.query.sortKey] = parseInt(req.query.sortValue) || 1;
+    // } else {
+    //   sort.createdAt = -1;
+    // }
     pagination.limitItem = req.query.limit ? parseInt(req.query.limit) : 8;
     let payments = await Payment.find(filter)
-      .sort(sort)
+      // .sort(sort)
       .lean().skip(skip).limit(pagination.limitItem);
 
     //Truy vấn tên hộ gia đình

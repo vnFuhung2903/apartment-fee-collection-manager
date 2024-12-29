@@ -243,7 +243,7 @@ function FeeMange(){
                   <td>{dayjs(Tpayment.payment_date).format('DD/MM/YYYY')}</td> {/* Định dạng ngày nộp */}
                   <td>{Tpayment.householdHead}</td>
                   <td>{Tpayment.payment_name}</td> {/* Hiển thị tên khoản thu */}
-                  <td>{Number(Tpayment.amount*Tpayment.count).toLocaleString("vi-VN")} VNĐ</td> {/* Định dạng số tiền */}
+                  <td>{Tpayment.amount && Tpayment.count ? Number(Tpayment.amount * Tpayment.count).toLocaleString("vi-VN"): "0"} VNĐ</td> {/* Định dạng số tiền */}
                   <td>{Tpayment.status}</td> {/* Hiển thị tên khoản thu */}
                   <td>
                     <Checkbox 

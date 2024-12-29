@@ -55,7 +55,11 @@ const editPerson = async (req, res) => {
           type: "Căn hộ chung cư",
           totalArea: 85
         })
-      } else apartmentFound.household = householdId;
+      } else {
+        if(apartmentFound.household)
+          return res.status(409).json({ message: "Apartment's in used" });
+        apartmentFound.household = householdId;
+      }
       
       householdFound.apartments[0] = apartmentFound._id;
       oldApartment.household = null;
