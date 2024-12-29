@@ -27,18 +27,21 @@ function Page1(){
     useEffect(() => {
         dispatch(fetchDashboardData());
         const fetchHousehold = async () => {
+        let totalItemsSaved = JSON.parse(localStorage.getItem("totalHousehold"));
         let data = JSON.parse(localStorage.getItem(`households_page_${currentPage}`));
-        localStorage.removeItem(`households_page_${Math.ceil(totalItems / limitItem)}`)
-            if (!data) {
+            if (!data || !totalItemsSaved) {
                 const response = await fetch(`http://localhost:8386/household/api/v1/all?page=${currentPage}`, {
                     method: "GET",
                     headers: {"Content-Type": "application/json"},
                 });
-                data = await response.json();
+                const json = await response.json();
+                totalItemsSaved = json.totalItems;
+                data = json.array;
+                localStorage.setItem(`households_page_${currentPage}`, JSON.stringify(data));
+                localStorage.setItem("totalHousehold", JSON.stringify(totalItemsSaved));
             }
-            setHouseholds(data?.array);
-            setTotalItems(data?.totalItems);
-            localStorage.setItem(`households_page_${currentPage}`, JSON.stringify(data));
+            setHouseholds(data);
+            setTotalItems(totalItemsSaved);
         };
         fetchHousehold();
     }, [dispatch, currentPage]);
@@ -96,7 +99,7 @@ function Page1(){
             const updatedHouseholds = households?.filter((household) => household.id !== householdID);
             for(let i = currentPage; i <= Math.ceil(totalItems / limitItem); ++i)
                 localStorage.removeItem(`households_page_${i}`);
-
+            localStorage.removeItem("totalHousehold");
             setHouseholds(updatedHouseholds);
             setTotalItems(totalItems - 1);
 

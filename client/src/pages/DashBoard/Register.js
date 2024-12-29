@@ -83,8 +83,10 @@ function Register(){
             })
             .then(data => {
                 if(data.message === 'Success') {
-                    if (householdInfor.relationToOwner === "Chủ nhà")
+                    if (householdInfor.relationToOwner === "Chủ nhà") {
                         localStorage.removeItem(`households_page_${data.lastPage}`);
+                        localStorage.removeItem("totalHousehold");
+                    }
                     navigate(`/household_infor?household_id=${data.household}`);
                 }
                 else alert(data.message);
