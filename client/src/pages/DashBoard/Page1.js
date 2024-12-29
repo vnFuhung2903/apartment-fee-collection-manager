@@ -27,7 +27,8 @@ function Page1(){
     useEffect(() => {
         dispatch(fetchDashboardData());
         const fetchHousehold = async () => {
-        let data = JSON.parse(sessionStorage.getItem(`households_page_${currentPage}`));
+        let data = JSON.parse(localStorage.getItem(`households_page_${currentPage}`));
+        localStorage.removeItem(`households_page_${Math.ceil(totalItems / limitItem)}`)
             if (!data) {
                 const response = await fetch(`http://localhost:8386/household/api/v1/all?page=${currentPage}`, {
                     method: "GET",
@@ -37,10 +38,10 @@ function Page1(){
             }
             setHouseholds(data?.array);
             setTotalItems(data?.totalItems);
-            sessionStorage.setItem(`households_page_${currentPage}`, JSON.stringify(data));
+            localStorage.setItem(`households_page_${currentPage}`, JSON.stringify(data));
         };
         fetchHousehold();
-    }, [dispatch, currentPage, totalItems]);
+    }, [dispatch, currentPage]);
     const ownerNames = [
         {value: "",label: "Tất cả"},
         ...[...new Set(households?.map(household => household.head))]?.map(ownerName => ({
@@ -94,7 +95,7 @@ function Page1(){
         if(data.message === "Delete complete") {
             const updatedHouseholds = households?.filter((household) => household.id !== householdID);
             for(let i = currentPage; i <= Math.ceil(totalItems / limitItem); ++i)
-                sessionStorage.removeItem(`households_page_${i}`);
+                localStorage.removeItem(`households_page_${i}`);
 
             setHouseholds(updatedHouseholds);
             setTotalItems(totalItems - 1);

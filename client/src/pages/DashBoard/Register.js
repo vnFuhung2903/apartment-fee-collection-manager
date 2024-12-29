@@ -84,7 +84,7 @@ function Register(){
             .then(data => {
                 if(data.message === 'Success') {
                     if (householdInfor.relationToOwner === "Chủ nhà")
-                        sessionStorage.removeItem(`households_page_${data.lastPage}`);
+                        localStorage.removeItem(`households_page_${data.lastPage}`);
                     navigate(`/household_infor?household_id=${data.household}`);
                 }
                 else alert(data.message);

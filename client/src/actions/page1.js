@@ -17,7 +17,7 @@ export const fetchHouseholds = (page) => {
       if (res.status === 200) return res.json();
     })
     .then((data) => {
-      sessionStorage.setItem(`households_page_${page}`, JSON.stringify(data));
+      localStorage.setItem(`households_page_${page}`, JSON.stringify(data));
       return data;
     });
 };
