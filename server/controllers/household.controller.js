@@ -127,13 +127,13 @@ const editHousehold = async (req, res) => {
 
 const deleteHousehold = async (req, res) => {
   try {
-    const id = req.body.householdId;
+    const id = req.body.householdID;
     if (!mongoose.isValidObjectId(id))
       res.status(400).json('Invalid household');
-
+    // console.log(id);
     const householdFound = await household.findOne({ _id: id });
     if(!householdFound) res.status(400).json('Invalid household');
-
+    
     if (householdFound.head) {
       await person.deleteOne({ _id: householdFound.head });
     }

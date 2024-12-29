@@ -1,13 +1,13 @@
 const initialState = {
   totalPayments: [], // Khởi tạo state rỗng
   limitItem: 8,
-  totalItems: 32,
+  totalItems: 41,
   currentPage: 1
 };
 
-const feeManageReducer = (state = initialState, action) => {
+const feePageReducer = (state = initialState, action) => {
   switch (action.type) {
-    case "SET_ALL_PAYMENTS":
+    case "SET_TOTAL_PAYMENTS":
       return {
         ...state,
         totalPayments: action.payload.totalPayments, // Cập nhật totalPayments
@@ -20,4 +20,4 @@ const feeManageReducer = (state = initialState, action) => {
   }
 };
 
-export default feeManageReducer;
+export default feePageReducer;

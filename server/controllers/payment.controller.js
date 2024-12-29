@@ -8,6 +8,7 @@ module.exports.index = async (req, res) => {
   try {
     // Build query filter
     const filter = {};
+    const householdFilter = {};
     if (req.query.fee_id) {
       filter.fee_id = req.query.fee_id;
     }
@@ -20,6 +21,47 @@ module.exports.index = async (req, res) => {
     if (req.query.status == 'undone'){
       filter.status = 'Chưa thanh toán';
     }
+    // Lọc Fee theo feeName
+    if (req.query.feeName) {
+      const fees = await Fee.find({ name: req.query.feeName }).select('_id').lean();
+      const feeIds = fees.map(fee => fee._id.toString());
+      filter.fee_id = { $in: feeIds };
+    }
+    // Lọc Household theo HouseholdHead
+    if (req.query.householdHead) {
+      const headPersons = await Person.find({ name: req.query.householdHead }).select('_id').lean();
+      const headPersonIds = headPersons.map(person => person._id.toString());
+      householdFilter.head = { $in: headPersonIds };
+    }
+    const Households = await Household.find(householdFilter).select('_id').lean();
+    const HouseholdIds = Households.map(household => household._id.toString());
+    if (HouseholdIds.length > 0) {
+      filter.household_id = { $in: HouseholdIds };
+    }
+    // Lọc theo ngày
+    if (req.query.fromDate || req.query.toDate) {
+      const fromDate = req.query.fromDate ? new Date(req.query.fromDate) : null;
+      const toDate = req.query.toDate ? new Date(req.query.toDate) : null;
+    
+      // Kiểm tra tính hợp lệ của ngày
+      if (fromDate && isNaN(fromDate)) {
+        return res.status(400).json({ message: 'Ngày bắt đầu không hợp lệ' });
+      }
+      if (toDate && isNaN(toDate)) {
+        return res.status(400).json({ message: 'Ngày kết thúc không hợp lệ' });
+      }
+    
+      // Tạo filter.payment_date nếu chưa có
+      if (!filter.payment_date) {
+        filter.payment_date = {};
+      }
+    
+      // Áp dụng điều kiện lọc
+      if (fromDate) filter.payment_date.$gte = fromDate;
+      if (toDate) filter.payment_date.$lte = toDate;
+    }
+    
+
     //Pagination
     let pagination = {
       currentPage:1,
@@ -84,13 +126,17 @@ module.exports.index = async (req, res) => {
       const paymentDateObj = new Date(payment.payment_date);
       const month = paymentDateObj.getMonth() + 1;
       const year = paymentDateObj.getFullYear();
+      const householdHead = headPerson ? headPerson.name : "Unknown";
+      const feeName = feeMap[payment.fee_id?.toString()] || "Unknown";
+      const payment_name = `${feeMap[payment.fee_id?.toString()]} tháng ${month}/${year}`;
+
       return {
         ...payment,
-        householdHead: headPerson ? headPerson.name : "Unknown",
-        feeName: feeMap[payment.fee_id?.toString()] || "Unknown",
-        payment_name : `${feeMap[payment.fee_id?.toString()]} tháng ${month}/${year}`,
+        householdHead,
+        feeName,
+        payment_name,
       };
-    });
+    }).filter(payment => payment !== null);;
     res.json(results);
   } catch (error) {
     console.error('Payment index error:', error);
@@ -283,7 +329,7 @@ module.exports.addFee = async (req, res) => {
         payment_id: generatePaymentID(),
         household_id: household._id,
         amount: fee.amount,
-        payment_date: calculateDueDate(fee.due),
+        payment_date: fee.due,
         status: "Chưa thanh toán",
         count,
       };
