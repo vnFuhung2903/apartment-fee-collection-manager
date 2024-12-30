@@ -73,7 +73,7 @@ function Register(){
                 return res.json();
         })
         .then(data => {
-            if(data.status !== 200) {
+            if(data.message !== 'Success') {
                 alert(data.message);
                 return;
             }
