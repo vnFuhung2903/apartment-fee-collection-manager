@@ -219,9 +219,7 @@ const addNewMember = async (req, res) => {
     householdFound.members.push({ member_id: id, relation_to_head: relationToOwner });
     await householdFound.save();
 
-    let memberFound = await person.findOne({ _id: id });
-    memberFound.householdId = householdFound._id;
-    await memberFound.save();
+    await person.findByIdAndUpdate(id, { householdId: householdFound._id });
     return res.status(200).json({ message: "Success", household: householdFound._id });
   } catch (error) {
     res.status(500).json(error);
@@ -241,9 +239,9 @@ const deleteHouseholdMember = async (req, res) => {
 
     const newHouseholdMembers = householdFound.members.filter(per => selectedRows.includes(per));
     for (const deleteMember of selectedRows) {
-      await person.deleteOne(deleteMember.description._id);
+      await person.deleteOne({_id: deleteMember.key});
     }
-    
+
     householdFound.members = newHouseholdMembers;
     await householdFound.save();
     res.status(200).json({ message: "Success", household: householdFound._id });

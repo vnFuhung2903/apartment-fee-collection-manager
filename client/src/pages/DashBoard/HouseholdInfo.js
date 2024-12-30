@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';  
-import { Card, Descriptions, Table ,Button, Modal} from "antd";
+import { Card, Descriptions, Table ,Button, Modal, message} from "antd";
 import { EditOutlined , ExclamationCircleOutlined } from '@ant-design/icons';
 import { Space , Tag} from 'antd';
 import DescriptionPerson from './DescriptionPerson';
@@ -133,6 +133,7 @@ const HouseholdInfo = () => {
     .then(res => {
       if(res.status === 200) {
         setIsDeleted(true);
+        window.location.reload();
       }
       else if(res.message)
         alert(res.message);
