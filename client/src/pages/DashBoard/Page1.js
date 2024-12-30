@@ -4,7 +4,7 @@ import { Link } from "react-router-dom"
 import  React,{ useEffect,useMemo, useState,} from "react"
 import { useSelector, useDispatch } from "react-redux";
 import { fetchDashboardData } from "../../actions";
-import { Form,Row,Col,Select ,Button,Modal,message,Pagination} from "antd";
+import { Form,Row,Col,Select ,Button,Modal,message,Pagination,Tag} from "antd";
 import {ExclamationCircleOutlined,ExportOutlined} from '@ant-design/icons';
 function Page1(){
     const [currentPage, setCurrentPage] = useState(1);
@@ -239,7 +239,12 @@ function Page1(){
                             <td> { household.contact } </td>
                             <td> { household.floors } </td>
                             <td> { household.numbers } </td>
-                            <td>{household.status}</td>
+                            <td>
+                                {(() => {
+                                    const color = household.status === "Thường trú" ? "orange" : household.status === "Tạm trú" ? "green" : "red";
+                                    return <Tag color={color}>{household.status}</Tag>;
+                                })()}
+                            </td>
                             <td><span>
                                 <Link to={`/household_infor?household_id=${household.id}`}>
                                     <ExportOutlined className="status"/>
