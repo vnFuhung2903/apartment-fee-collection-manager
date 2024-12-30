@@ -239,11 +239,10 @@ const deleteHouseholdMember = async (req, res) => {
     if(!householdFound) 
       return res.status(400).json({ message: 'Invalid household' });
 
-    const newHouseholdMembers = householdFound.members.filter(per => !selectedRows.includes(per));
+    const newHouseholdMembers = householdFound.members.filter(per => selectedRows.includes(per));
     for (const deleteMember of selectedRows) {
       await person.deleteOne(deleteMember._id);
     }
-    console.log(newHouseholdMembers);
     
     householdFound.members = newHouseholdMembers;
     await householdFound.save();
