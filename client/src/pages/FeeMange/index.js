@@ -299,7 +299,7 @@ function FeeMange(){
                     <tr key={index}>
                       <td>{Tpayment.payment_id}</td>
                       <td>{Tpayment.feeName}</td> 
-                      <td>{Number(Tpayment.amount).toLocaleString('vi-VN')}</td>
+                      <td>{Number(Tpayment.amount * Tpayment.count).toLocaleString('vi-VN')}</td>
                       <td>{dayjs(Tpayment.payment_date).format('DD/MM/YYYY')}</td>
                   </tr>
                   ))}
