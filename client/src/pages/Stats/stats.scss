@@ -49,7 +49,7 @@
   //max-height: 45vh;
 
   h2{
-    font-weight: 600;
+    font-weight: 700;
     color: var(--blue);
   }
 }
@@ -156,6 +156,7 @@ main .insights > div .middle{
 }
 main .insights > div .middle h1{
   font-size: 1.6rem;
+  font-weight: 700;
 }
 
 main h1{
@@ -224,7 +225,7 @@ main .recent_order{
 }
 
 main .recent_order h2{
-  font-weight: 600;
+  font-weight: 700;
   color: var(--blue);
 }
 
@@ -308,6 +309,9 @@ Right Side
    grid-template-columns: 2.6rem auto;
    gap: 1rem;
    padding-bottom: 1rem;
+}
+.material-symbols-sharp{
+  font-family: 'Material Symbols Sharp'!important;
 }
 
 
