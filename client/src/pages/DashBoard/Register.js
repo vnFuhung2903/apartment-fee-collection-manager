@@ -69,9 +69,14 @@ function Register(){
             body: JSON.stringify(personalInfor)
         })
         .then((res) => {
-            return res.json();
+            if(res.status === 200 || res.status === 402)
+                return res.json();
         })
         .then(data => {
+            if(data.status !== 200) {
+                alert(data.message);
+                return;
+            }
             const url = householdInfor.relationToOwner === "Chủ nhà" ? "http://localhost:8386/household/api/v1/create" : "http://localhost:8386/household/api/v1/addMember"
             fetch(url, {
                 method: "POST",
