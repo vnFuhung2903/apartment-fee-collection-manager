@@ -27,16 +27,18 @@ module.exports.index = async (req, res) => {
       const feeIds = fees.map(fee => fee._id.toString());
       filter.fee_id = { $in: feeIds };
     }
-    // Lọc Household theo HouseholdHead
-    if (req.query.householdHead) {
-      const headPersons = await Person.find({ name: req.query.householdHead }).select('_id').lean();
-      const headPersonIds = headPersons.map(person => person._id.toString());
-      householdFilter.head = { $in: headPersonIds };
-    }
-    const Households = await Household.find(householdFilter).select('_id').lean();
-    const HouseholdIds = Households.map(household => household._id.toString());
-    if (HouseholdIds.length > 0) {
-      filter.household_id = { $in: HouseholdIds };
+    //Lọc Household theo HouseholdHead
+    if (!req.query.household_id){
+      if (req.query.householdHead) {
+        const headPersons = await Person.find({ name: req.query.householdHead }).select('_id').lean();
+        const headPersonIds = headPersons.map(person => person._id.toString());
+        householdFilter.head = { $in: headPersonIds };
+      }
+      const Households = await Household.find(householdFilter).select('_id').lean();
+      const HouseholdIds = Households.map(household => household._id.toString());
+      if (HouseholdIds.length > 0) {
+        filter.household_id = { $in: HouseholdIds };
+      }
     }
     // Lọc theo ngày
     if (req.query.fromDate || req.query.toDate) {
