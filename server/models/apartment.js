@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 const apartmentSchema = new mongoose.Schema({
-    household: { type: mongoose.Schema.Types.ObjectId, ref: 'households' },
+    household: { type: mongoose.Schema.Types.ObjectId, ref: 'households', default: null },
     number: Number,
     type: String,
     totalArea: Number

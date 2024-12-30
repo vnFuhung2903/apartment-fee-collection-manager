@@ -10,14 +10,11 @@ function Page1(){
     const [currentPage, setCurrentPage] = useState(1);
     const dispatch = useDispatch();
     const {
-        // households,
         recentCustomers,
         numApartment,
         numPerson,
         numTemporary,
         numAbsence,
-        // totalItems,
-        // limitItem
     } = useSelector((state) => state.page1Reducer);
 
     const [households, setHouseholds] = useState([]);
@@ -27,8 +24,8 @@ function Page1(){
     useEffect(() => {
         dispatch(fetchDashboardData());
         const fetchHousehold = async () => {
-        let totalItemsSaved = JSON.parse(localStorage.getItem("totalHousehold"));
-        let data = JSON.parse(localStorage.getItem(`households_page_${currentPage}`));
+            let totalItemsSaved = JSON.parse(localStorage.getItem("totalHousehold"));
+            let data = JSON.parse(localStorage.getItem(`households_page_${currentPage}`));
             if (!data || !totalItemsSaved) {
                 const response = await fetch(`http://localhost:8386/household/api/v1/all?page=${currentPage}`, {
                     method: "GET",
@@ -91,7 +88,7 @@ function Page1(){
         const response = await fetch("http://localhost:8386/household/api/v1/delete", {
             method: "POST",
             headers: {"Content-Type": "application/json"},
-            body: JSON.stringify({householdID:householdID}),
+            body: JSON.stringify({householdID: householdID}),
         });
         const data = await response.json();
         message.loading({ content: 'Deleting...', key: 'delete' });

@@ -118,7 +118,7 @@ function Register(){
         const data = remainData?.filter(apt => apt.floor === householdInfor.floor);
         const rooms = data?.map(apt => apt.number);
         setAvailableRooms(rooms);
-    }, [householdInfor.floor])
+    }, [householdInfor.relationToOwner, householdInfor.floor])
 
     return(
     <>

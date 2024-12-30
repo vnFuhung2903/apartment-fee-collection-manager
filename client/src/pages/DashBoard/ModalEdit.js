@@ -152,7 +152,7 @@ function ModalEdit (props) {
           </Col>}
           {isOwner && <Col span={10}>
             <Form.Item label="Số căn hộ" name="numbers">
-              <InputNumber />
+              <InputNumber disabled={true} />
             </Form.Item>
           </Col>}
           <Col span={12}>

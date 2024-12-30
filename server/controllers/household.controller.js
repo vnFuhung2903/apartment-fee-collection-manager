@@ -74,11 +74,9 @@ const createHousehold = async (req, res) => {
       apartmentFound.household = newHousehold._id;
       await apartmentFound.save();
 
-      let headFound = await person.findOne({ _id: id });
-      headFound.householdId = newHousehold._id;
-      await headFound.save();
+      await person.findByIdAndUpdate(id, { householdId: newHousehold._id });
 
-      const totalItems = await household.countDocuments(conditions);
+      const totalItems = await household.countDocuments();
       const lastPage = Math.ceil(totalItems / 8); // limitItem = 8;
       res.status(200).json({ message: "Success", household: newHousehold._id, lastPage});
     }
@@ -137,14 +135,12 @@ const deleteHousehold = async (req, res) => {
     if (householdFound.head) {
       await person.deleteOne({ _id: householdFound.head });
     }
-    householdFound.members.forEach(async (memberId) => {
+    for(const memberId of householdFound.members) {
       await person.deleteOne({ _id: memberId });
-    });
+    };
 
-    const ownedApartments = await Promise.all(householdFound.apartments.map(ID => apartment.findOne({ _id: ID })));
-    for(let apt of ownedApartments) {
-      apt.household = null;
-      await apt.save();
+    for (const id of householdFound.apartments) {
+      await apartment.findByIdAndUpdate(id, { household: null });
     }
 
     await payment.deleteMany({ household_id: id });
@@ -242,8 +238,8 @@ const deleteHouseholdMember = async (req, res) => {
     const householdFound = await household.findOne({ _id: id });
     if(!householdFound) 
       return res.status(400).json({ message: 'Invalid household' });
-    
-    const newHouseholdMembers = householdFound.members.filter(per => selectedRows.includes(per));
+
+    const newHouseholdMembers = householdFound.members.filter(per => !selectedRows.includes(per));
     for (const deleteMember of selectedRows) {
       await person.deleteOne(deleteMember._id);
     }
