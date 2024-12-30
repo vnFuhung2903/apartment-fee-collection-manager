@@ -241,7 +241,7 @@ const deleteHouseholdMember = async (req, res) => {
 
     const newHouseholdMembers = householdFound.members.filter(per => selectedRows.includes(per));
     for (const deleteMember of selectedRows) {
-      await person.deleteOne(deleteMember._id);
+      await person.deleteOne(deleteMember.description._id);
     }
     
     householdFound.members = newHouseholdMembers;
