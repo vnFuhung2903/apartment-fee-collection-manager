@@ -7,8 +7,9 @@ import { fetchTotalPayment} from "../../actions"
 function Table(){
   const dispatch = useDispatch();
   const totalPaymentData = useSelector((state) => state.feeManageReducer1.totalPayment) || [];
+  const filteredData = totalPaymentData.filter(item => item.headName !== "Unknown");
   const [showAll, setShowAll] = useState(false);
-  const visibleData = showAll ? totalPaymentData : totalPaymentData.slice(0, 3);
+  const visibleData = showAll ? filteredData : totalPaymentData.slice(0, 3);
 
   useEffect(() => {
     dispatch(fetchTotalPayment());
