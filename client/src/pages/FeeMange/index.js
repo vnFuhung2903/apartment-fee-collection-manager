@@ -16,6 +16,7 @@ function FeeMange(){
   const limitItem = useSelector((state) => state.feeManageReducer.limitItem);
   const totalItems = useSelector((state) => state.feePageReducer.totalItems);
   const [reload, setReload] = useState(false);
+  const [filteredTotalItems, setFilteredTotalItems] = useState(0);
 
   useEffect(() => {
     dispatch(fetchAllPayments())
@@ -24,10 +25,12 @@ function FeeMange(){
   //Dữ liệu để lọc
   const householdName = [
     { value: "", label: "Tất cả" },
-    ...[...new Set(allPayment?.map(Tpayment => Tpayment.householdHead))].map(householdHead => ({
-      value: householdHead,
-      label: householdHead,
-    })),
+    ...[...new Set(allPayment?.map(Tpayment => Tpayment.householdHead))] 
+      .filter(householdHead => householdHead !== "Unknown")
+      .map(householdHead => ({
+        value: householdHead,
+        label: householdHead,
+      })),
   ];
   
   const paymentName = [
@@ -60,6 +63,8 @@ function FeeMange(){
   });
 
   useEffect(() => {
+    const filteredPayments = allPayment?.filter(payment => payment.householdHead !== "Unknown");
+    setFilteredTotalItems(filteredPayments?.length || 0);
     const params = {
       page: currentPage,
       limit: limitItem,
@@ -245,7 +250,7 @@ function FeeMange(){
               </tr>
             </thead>
             <tbody>
-            {totalPayment?.map((Tpayment, index) => (
+            {totalPayment?.filter(Tpayment => Tpayment.householdHead !== "Unknown")?.map((Tpayment, index) => (
                 <tr key={index}>
                   <td>{Tpayment.payment_id}</td> {/* Hiển thị payment_id */}
                   <td>{dayjs(Tpayment.payment_date).format('DD/MM/YYYY')}</td> {/* Định dạng ngày nộp */}
@@ -269,7 +274,7 @@ function FeeMange(){
             <Pagination
               current={currentPage}
               pageSize={limitItem}
-              total={totalItems}
+              total={filteredTotalItems}
               onChange={(page) => setCurrentPage(page)}
             />
           </div>
