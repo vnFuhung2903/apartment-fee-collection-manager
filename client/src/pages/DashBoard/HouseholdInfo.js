@@ -81,7 +81,7 @@ const HouseholdInfo = () => {
       title: "Trạng Thái",
       dataIndex: "status",
       render: (status) => {
-        let color = status === "Thường trú" ? "orange" : " red";
+        let color = status === "Thường trú" ? "green" : status === "Tạm trú" ? "yellow" : "red";
         return <Tag color={color}>{status}</Tag>;
       },
     },
