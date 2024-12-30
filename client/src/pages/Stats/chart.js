@@ -1,6 +1,6 @@
 import "./stats.scss";
 import profile from "./images/profile-1.jpg";
-import { useState, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchPayments, fetchTotalPayment } from "../../actions";
 
@@ -8,17 +8,16 @@ function Chart() {
   const dispatch = useDispatch();
   const payments = useSelector((state) => state.chartReducer.payments);
   const totalPaymentData = useSelector((state) => state.feeManageReducer1.totalPayment || []);
-  const filteredData = totalPaymentData.filter(item => item.headName !== "Unknown");
   const r = 30;
 
-  const payFull = filteredData.reduce(
+  const payFull = totalPaymentData.reduce(
       (payFull, item) =>
         (item.totalAmount-item.payed) === item.totalAmount ? payFull + 1 : payFull,
       0
     ) || 0;
 
-  const payment = filteredData.reduce((sum, item) => sum + (item.totalAmount-item.payed), 0) || 0;
-  const total = filteredData.reduce((sum, item) => sum + item.totalAmount, 0) || 0;
+  const payment = totalPaymentData.reduce((sum, item) => sum + (item.totalAmount-item.payed), 0) || 0;
+  const total = totalPaymentData.reduce((sum, item) => sum + item.totalAmount, 0) || 0;
 
   useEffect(() => {
     dispatch(fetchPayments());
@@ -58,7 +57,7 @@ function Chart() {
                 <div className="left">
                   <h3>Số hộ đã nộp đủ</h3>
                   <h1>
-                    {payFull}/{filteredData.length}
+                    {payFull}/{totalPaymentData.length}
                   </h1>
                 </div>
                 <div className="progress">
@@ -69,13 +68,13 @@ function Chart() {
                       cx="40"
                       strokeDasharray={2 * Math.PI * r}
                       strokeDashoffset={
-                        2 * Math.PI * r * (1 - payFull / filteredData.length)
+                        2 * Math.PI * r * (1 - payFull / totalPaymentData.length)
                       }
                       transform={`rotate(-90, 40, 40)`}
                     ></circle>
                   </svg>
                   <div className="number">
-                    <p>{Math.floor((payFull / filteredData.length) * 100)}%</p>
+                    <p>{Math.floor((payFull / totalPaymentData.length) * 100)}%</p>
                   </div>
                 </div>
               </div>
@@ -114,7 +113,6 @@ function Chart() {
         {/* <!------------------
          end main Insights
         ------------------->
-
       <!----------------
         start right main 
       ----------------------> */}

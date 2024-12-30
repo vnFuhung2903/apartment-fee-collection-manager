@@ -16,7 +16,6 @@ function FeeMange(){
   const limitItem = useSelector((state) => state.feeManageReducer.limitItem);
   const totalItems = useSelector((state) => state.feePageReducer.totalItems);
   const [reload, setReload] = useState(false);
-  const [filteredTotalItems, setFilteredTotalItems] = useState(0);
 
   useEffect(() => {
     dispatch(fetchAllPayments())
@@ -25,12 +24,10 @@ function FeeMange(){
   //Dữ liệu để lọc
   const householdName = [
     { value: "", label: "Tất cả" },
-    ...[...new Set(allPayment?.map(Tpayment => Tpayment.householdHead))] 
-      .filter(householdHead => householdHead !== "Unknown")
-      .map(householdHead => ({
-        value: householdHead,
-        label: householdHead,
-      })),
+    ...[...new Set(allPayment?.map(Tpayment => Tpayment.householdHead))].map(householdHead => ({
+      value: householdHead,
+      label: householdHead,
+    })),
   ];
   
   const paymentName = [
@@ -63,8 +60,6 @@ function FeeMange(){
   });
 
   useEffect(() => {
-    const filteredPayments = allPayment?.filter(payment => payment.householdHead !== "Unknown");
-    setFilteredTotalItems(filteredPayments?.length || 0);
     const params = {
       page: currentPage,
       limit: limitItem,
@@ -130,8 +125,8 @@ function FeeMange(){
       // Kiểm tra phản hồi từ API
       if (response.status === 200) {
         message.success(response.data.message); // Hiển thị thông báo thành công
-        await setReload(!reload);
-        await fetchAllPayments();
+        setReload(!reload);
+        fetchAllPayments();
         const params = {
           page: currentPage,
           limit: limitItem,
@@ -141,7 +136,7 @@ function FeeMange(){
           toDate: filters.toDate ? new Date(filters.toDate) : null,
           status: filters.paymentStatus === "Đã thanh toán" ? "done" : filters.paymentStatus === "Chưa thanh toán" ? "undone" : null,
         };
-        await dispatch(fetchTotalPayments(params));
+        dispatch(fetchTotalPayments(params));
         handleCancel(); // Đóng modal
         // Reset danh sách các hóa đơn đã được check
         setCheckedPayments([]); 
@@ -250,7 +245,7 @@ function FeeMange(){
               </tr>
             </thead>
             <tbody>
-            {totalPayment?.filter(Tpayment => Tpayment.householdHead !== "Unknown")?.map((Tpayment, index) => (
+              {totalPayment?.map((Tpayment, index) => (
                 <tr key={index}>
                   <td>{Tpayment.payment_id}</td> {/* Hiển thị payment_id */}
                   <td>{dayjs(Tpayment.payment_date).format('DD/MM/YYYY')}</td> {/* Định dạng ngày nộp */}
@@ -274,7 +269,7 @@ function FeeMange(){
             <Pagination
               current={currentPage}
               pageSize={limitItem}
-              total={filteredTotalItems}
+              total={totalItems}
               onChange={(page) => setCurrentPage(page)}
             />
           </div>
