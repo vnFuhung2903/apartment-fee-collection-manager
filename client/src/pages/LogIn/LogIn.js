@@ -1,4 +1,3 @@
-import { checkAuth } from "../../actions";
 import "./asset/css/material-design-iconic-font.min.css"
 import "./asset/css/style.css"
 import signInImg from "./asset/images/signin-image.jpg"

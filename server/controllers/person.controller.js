@@ -9,14 +9,18 @@ const createPerson = async (req, res) => {
     const reqPerson = req.body;
     const personFound = await person.findOne({ cic: reqPerson.cic });
     if(personFound)
-      res.status(402).json({ message: "User found", person: personFound._id });
-    else {
-      const newPerson = new person({
-        ...reqPerson
-      });
-      await newPerson.save();
-      res.status(200).json({ message: "Success", person: newPerson._id });
-    }
+      return res.status(402).json({ message: "CIC already exists", person: personFound._id });
+
+    if(reqPerson.status !== 'Thường trú' && reqPerson.movingIn >= reqPerson.endTemporary)
+      return res.status(402).json({ message: "Invalid date range" });
+    if(reqPerson.dob > reqPerson.endTemporary)
+      return res.status(402).json({ message: "Invalid date range" });
+
+    const newPerson = new person({
+      ...reqPerson
+    });
+    await newPerson.save();
+    res.status(200).json({ message: "Success", person: newPerson._id });
   } catch (error) {
     res.status(500).json(error);
   }
@@ -33,6 +37,16 @@ const editPerson = async (req, res) => {
 
     if(!personFound)
       return res.status(402).json({ message: "Invalid person" });
+
+    let checkPerson = await person.findOne({ cic: reqPerson.cic });
+    if(checkPerson && checkPerson._id !== personFound._id)
+      return res.status(402).json({ message: "CIC already exists" });
+
+    if(reqPerson.status !== 'Thường trú' && reqPerson.movingIn >= reqPerson.endTemporary)
+      return res.status(402).json({ message: "Invalid date range" });
+    if(reqPerson.dob > reqPerson.endTemporary)
+      return res.status(402).json({ message: "Invalid date range" });
+
     Object.keys(reqPerson).forEach(key => {
       personFound[key] = reqPerson[key];
     });

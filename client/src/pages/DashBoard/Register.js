@@ -108,6 +108,8 @@ function Register(){
         let remainData = remains;
         if(householdInfor.relationToOwner === 'Chủ nhà')
             remainData = remains?.filter(apt => apt.household_id === null);
+        else
+            remainData = remains?.filter(apt => apt.household_id !== null);
 
         const data = remainData?.map(apt => apt.floor);
         const set = new Set(data);
@@ -120,6 +122,9 @@ function Register(){
         let remainData = remains;
         if(householdInfor.relationToOwner === 'Chủ nhà')
             remainData = remains?.filter(apt => apt.household_id === null);
+        else
+            remainData = remains?.filter(apt => apt.household_id !== null);
+
         const data = remainData?.filter(apt => apt.floor === householdInfor.floor);
         const rooms = data?.map(apt => apt.number);
         setAvailableRooms(rooms);
