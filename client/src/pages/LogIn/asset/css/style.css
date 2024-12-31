@@ -416,6 +416,10 @@ label.valid {
   margin-right: 20px;
   margin-top: 10px; }
 
+.zmdi{
+  font: normal normal normal 14px / 1 'Material-Design-Iconic-Font'!important;
+}
+
 @media screen and (max-width: 1200px) {
   .container {
     width: calc( 100% - 30px);
@@ -489,4 +493,6 @@ label.valid {
   .social-label {
     margin-right: 0px;
     margin-bottom: 10px; } }
+
+
 

@@ -241,7 +241,7 @@ function Page1(){
                             <td> { household.numbers } </td>
                             <td>
                                 {(() => {
-                                    const color = household.status === "Thường trú" ? "green" : household.status === "Tạm trú" ? "orange" : "red";
+                                    const color = household.status === "Thường trú" ? "green" : household.status === "Tạm trú" ? "yellow" : "red";
                                     return <Tag color={color}>{household.status}</Tag>;
                                 })()}
                             </td>

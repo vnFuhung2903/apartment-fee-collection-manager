@@ -3,6 +3,7 @@ const person = require('../models/person.js');
 const household = require('../models/household.js');
 const apartment = require('../models/apartment.js');
 const payment = require('../models/payment.js');
+const vehicle = require('../models/vehicle.js');
 
 const getHouseholds = async (req, res) => {
   try {
@@ -144,7 +145,7 @@ const deleteHousehold = async (req, res) => {
     }
 
     await payment.deleteMany({ household_id: id });
-
+    await vehicle.deleteOne({ household_id: id });
     await household.deleteOne({ _id: id });
     res.status(200).json({ message: "Delete complete" });
   } catch (error) {

@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom"
-import { useEffect,useMemo, useState } from "react"
-import { Form,Select,Row,Col,Pagination} from "antd";
+import { useEffect, useMemo, useState } from "react"
+import { Form, Select, Row, Col, Pagination, Tag} from "antd";
 import {ExportOutlined } from '@ant-design/icons';
 import "./style.css";
 import axios from "axios";
@@ -150,7 +150,12 @@ function ResidentList(){
                                 <td> { resident.contact_phone } </td>
                                 <td> { resident.floors } </td>
                                 <td> { resident.numbers } </td>
-                                <td> { resident.status } </td>
+                                <td>
+                                    {(() => {
+                                        const color = resident.status === "Thường trú" ? "green" : resident.status === "Tạm trú" ? "yellow" : "red";
+                                        return <Tag color={color}>{resident.status}</Tag>;
+                                    })()}
+                                </td>
                                 <td><span className="status"><Link to={`/household_infor?household_id=${resident.householdId}`}><ExportOutlined /></Link></span></td>
                             </tr>
                         )}

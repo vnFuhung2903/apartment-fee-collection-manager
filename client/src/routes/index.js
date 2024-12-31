@@ -15,10 +15,10 @@ import ResidentList from "../pages/DashBoard/ResidentList";
 import VehicleMange from "../pages/VehicleManage";
 
 export const routes = [
-  {
-    path: "/",
-    element: <Navigate to='dashboard' replace/>,
-  },
+  // {
+  //   path: "/",
+  //   element: <Navigate to='dashboard' replace/>,
+  // },
   {
     path: "login",
     element: <LogIn/>
