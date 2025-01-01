@@ -43,14 +43,14 @@ function LayoutDefault(){
                     </Link>
                 </li>
 
-                <li>
+                {/* <li>
                     <Link to="dashboard">
                         <span className="icon">
                             <ion-icon name="home-outline"></ion-icon>
                         </span>
                         <span className="title">Trang chủ</span>
                     </Link>
-                </li>
+                </li> */}
 
                 <li>
                     <Link to="dashboard">
